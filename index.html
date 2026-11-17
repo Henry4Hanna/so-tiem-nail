@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sổ Tiệm Nail">
+<meta name="theme-color" content="#1c1424">
+<title>Sổ Tiệm Nail</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{--bg:#f5f2f7;--card:#fff;--ink:#1c1424;--mut:#7d7286;--line:#ebe5ef;--acc:#c2185b;--acc-soft:#fce4ec;--cash:#2e7d32;--cardc:#1565c0;--tip:#e65100}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg)}
+body{font-family:'Be Vietnam Pro',-apple-system,system-ui,sans-serif;color:var(--ink);font-size:15px;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 18px 14px;display:flex;align-items:center;gap:10px}
+header .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#ec407a,#8e24aa);display:grid;place-items:center;font-size:18px}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+header small{display:block;font-size:11.5px;color:#bfb3c8;font-weight:400}
+main{padding:14px 14px 20px;max-width:560px;margin:0 auto}
+.nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.nav>button{width:42px;height:42px;border-radius:12px;background:var(--card);font-size:22px;box-shadow:0 1px 2px #0000000d}
+.nl{flex:1;text-align:center;line-height:1.25}
+.nl b{display:block;font-size:15.5px}
+.nl small,.nl a{font-size:12px;color:var(--mut)}
+.nl a{color:var(--acc);font-weight:600;cursor:pointer}
+.kpi{background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:0 1px 2px #0000000d}
+.kpi span{font-size:12px;color:var(--mut);display:block}
+.kpi b{font-size:19px;font-weight:700;display:block;margin-top:2px}
+.kpi.big{background:linear-gradient(135deg,#2a1838,#4a1c4f 60%,#7b1f5b);color:#fff;padding:16px 16px 14px;margin-bottom:10px}
+.kpi.big span{color:#e5d3ea}.kpi.big b{font-size:30px}
+.kpi.big small{font-size:12.5px;color:#e5d3ea}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.c-cash{color:var(--cash)}.c-card{color:var(--cardc)}.c-tip{color:var(--tip)}
+.card{background:var(--card);border-radius:16px;padding:6px 14px;margin-bottom:10px;box-shadow:0 1px 2px #0000000d}
+.wh{display:flex;align-items:center;gap:9px;padding:9px 0}
+.wh i,.dot{width:11px;height:11px;border-radius:50%;flex:none;display:inline-block}
+.wh b{font-weight:600}
+.wh span{font-size:12.5px;color:var(--mut)}
+.wh em{margin-left:auto;font-style:normal;font-weight:700}
+.tk{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.tm{font-size:12.5px;color:var(--mut);width:42px}
+.am{flex:1;font-weight:600}
+.am small{font-weight:500;color:var(--tip);font-size:12.5px}
+.pay{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:20px}
+.pay.cash{background:#e8f5e9;color:var(--cash)}.pay.card{background:#e3f2fd;color:var(--cardc)}
+.empty{text-align:center;color:var(--mut);padding:30px 10px;background:var(--card);border-radius:16px;line-height:1.6}
+.sec{font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin:18px 4px 8px}
+.fab{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:6;background:var(--acc);color:#fff;font-weight:700;padding:14px 20px;border-radius:30px;box-shadow:0 6px 18px #c2185b55;font-size:15px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:7;background:#fffffff2;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;color:var(--mut);font-weight:500}
+.tabs button svg{width:24px;height:24px}
+.tabs button.on{color:var(--acc);font-weight:700}
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--card);border-radius:16px;padding:10px;margin-bottom:14px;box-shadow:0 1px 2px #0000000d}
+.cal .h{font-size:11px;color:var(--mut);text-align:center;font-weight:600;padding-bottom:4px}
+.cd{aspect-ratio:1/1.15;border-radius:10px;padding:4px 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;cursor:pointer;position:relative;background:#faf8fb}
+.cd span{font-size:13px;font-weight:600}
+.cd b{font-size:10px;font-weight:600;color:var(--acc)}
+.cd.td{outline:2px solid var(--acc)}
+.cd.hot b,.cd.hot span{color:#fff}
+/* report */
+.seg{display:flex;background:#e9e3ee;border-radius:12px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;padding:8px 0;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--mut)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #0000001a}
+.chart{background:var(--card);border-radius:16px;padding:14px 12px 8px;margin-bottom:10px;box-shadow:0 1px 2px #0000000d}
+.chart h4,.split h4{margin:0 0 10px;font-size:13px;color:var(--mut);font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:3px;height:130px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bars i{width:100%;max-width:28px;border-radius:5px 5px 2px 2px;background:linear-gradient(#ec407a,#8e24aa);min-height:2px}
+.bars small{font-size:9.5px;color:var(--mut);margin-top:4px;height:12px}
+.split{background:var(--card);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 1px 2px #0000000d}
+.sbar{display:flex;height:12px;border-radius:8px;overflow:hidden;background:var(--line)}
+.sbar i{display:block}
+.sleg{display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px;color:var(--mut)}
+.wr{padding:10px 0;border-top:1px solid var(--line)}
+.wr:first-child{border-top:0}
+.ws{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:12px;color:var(--mut);padding-left:20px}
+.ws b{display:block;color:var(--ink);font-size:13.5px}
+.tot{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+/* workers */
+.wl{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line);cursor:pointer}
+.wl:first-child{border-top:0}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none}
+.wl .nm{flex:1}.wl .nm small{display:block;color:var(--mut);font-size:12.5px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-weight:700;text-align:center;font-size:15px}
+.btn.pri{background:var(--acc);color:#fff}
+.btn.sec2{background:var(--card);color:var(--ink);box-shadow:0 1px 2px #0000000d;margin-top:8px}
+.btn.del{color:#c62828;background:#ffebee;margin-top:8px}
+/* sheet */
+.ov{position:fixed;inset:0;background:#1c142466;z-index:20;opacity:0;pointer-events:none;transition:.2s}
+.ov.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:22px 22px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;transform:translateY(105%);transition:.25s cubic-bezier(.3,.8,.3,1);max-width:560px;margin:0 auto}
+.sheet.on{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:#d5ccdb;margin:0 auto 10px}
+.sheet h3{margin:0 0 14px;font-size:18px;display:flex;justify-content:space-between;align-items:center}
+.sheet h3 button{font-size:14px;color:var(--mut);font-weight:500}
+.lab{font-size:12.5px;color:var(--mut);font-weight:600;margin:12px 2px 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:22px;background:var(--card);font-weight:600;font-size:14px;display:flex;align-items:center;gap:7px;border:2px solid transparent}
+.chip.on{border-color:var(--acc);background:var(--acc-soft)}
+.money{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:0 14px;border:2px solid transparent}
+.money:focus-within{border-color:var(--acc)}
+.money span{font-size:22px;color:var(--mut);font-weight:600}
+.money input{flex:1;border:0;outline:0;background:none;font-size:26px;font-weight:700;padding:12px 8px;width:100%}
+.quick{display:flex;gap:6px;margin-top:8px}
+.quick button{flex:1;padding:8px 0;border-radius:10px;background:var(--card);font-size:13px;font-weight:600;color:var(--tip)}
+.tog{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tog button{padding:13px;border-radius:14px;background:var(--card);font-weight:700;border:2px solid transparent}
+.tog button.on.cash{border-color:var(--cash);background:#e8f5e9;color:var(--cash)}
+.tog button.on.card{border-color:var(--cardc);background:#e3f2fd;color:var(--cardc)}
+.field{width:100%;background:var(--card);border:2px solid transparent;border-radius:14px;padding:13px 14px;outline:0;font-size:16px}
+.field:focus{border-color:var(--acc)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.colors{display:flex;gap:10px;flex-wrap:wrap}
+.colors button{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.colors button.on{box-shadow:0 0 0 2px var(--ink)}
+.dlg{position:fixed;left:24px;right:24px;top:50%;transform:translateY(-50%) scale(.95);z-index:31;background:#fff;border-radius:18px;padding:20px;opacity:0;pointer-events:none;transition:.18s;max-width:360px;margin:0 auto}
+.dlg.on{opacity:1;pointer-events:auto;transform:translateY(-50%)}
+.dlg p{margin:0 0 16px;line-height:1.5}
+.dlg .row2 .btn{padding:12px}
+.ov2{position:fixed;inset:0;background:#0006;z-index:30;display:none}
+.ov2.on{display:block}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%) translateY(-20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:24px;font-size:14px;font-weight:600;z-index:40;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+textarea.field{min-height:110px;font-size:12px;font-family:ui-monospace,monospace}
+.note{font-size:12.5px;color:var(--mut);line-height:1.5;margin:8px 4px}
+.wh.tap{cursor:pointer;user-select:none;-webkit-user-select:none;padding:12px 0}
+.wn{flex:1;min-width:0}.wn b{display:block;font-size:16px}.wn span{font-size:12px!important}
+.wt{text-align:right}.wt em{display:block;font-style:normal;font-weight:700;font-size:17px}.wt span{font-size:11.5px;color:var(--mut)}
+.chev{width:20px;height:20px;color:var(--mut);flex:none;transition:transform .2s}.chev.up{transform:rotate(180deg)}
+.btn.pdfb{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:#fff;margin-bottom:12px;padding:12px}
+.btn.pdfb svg{width:20px;height:20px}.btn:disabled{opacity:.6}
+/* lock */
+.lock{position:fixed;inset:0;z-index:28;background:linear-gradient(160deg,#1c1424,#3a1840 60%,#6d1b4f);color:#fff;display:none;align-items:center;justify-content:center;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.lock.on{display:flex}
+.lk{text-align:center;width:100%;max-width:340px}
+.lgo{width:64px;height:64px;border-radius:18px;font-size:32px;margin:0 auto 12px;background:linear-gradient(135deg,#ec407a,#8e24aa);display:grid;place-items:center}
+.lk h2{margin:0 0 6px;font-size:21px}
+.lk p{margin:0 0 20px;color:#e5d3ea;font-size:14.5px;min-height:20px}.lk p.err{color:#ff8a80;font-weight:600}
+.dots{display:flex;justify-content:center;gap:18px;margin-bottom:34px}.dots i{width:14px;height:14px;border-radius:50%;border:2px solid #fff}.dots i.f{background:#fff}
+.pad{display:grid;grid-template-columns:repeat(3,76px);gap:16px 26px;justify-content:center}
+.pad button{width:76px;height:76px;border-radius:50%;background:#ffffff1f;font-size:30px;color:#fff;font-weight:500}
+.pad button.sm{background:none;font-size:14.5px}
+.pad button:active{background:#ffffff45}
+.by{display:block;margin-top:30px;color:#bfb3c8;font-size:12px}
+.shake{animation:sh .4s}@keyframes sh{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.busy{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;align-items:center;justify-content:center;text-align:center;font-weight:600;color:var(--mut)}.busy.on{display:flex}
+.spin{width:36px;height:36px;border:4px solid var(--line);border-top-color:var(--acc);border-radius:50%;margin:0 auto 12px;animation:rot .8s linear infinite}@keyframes rot{to{transform:rotate(360deg)}}
+/* pdf */
+.pdf{position:absolute;left:0;top:0;z-index:50;width:794px;background:#fff;color:#1c1424;padding:0 40px;font-size:12.5px}
+.pdh{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #c2185b;padding:8px 0 14px}
+.pdh .pt{font-size:11px;letter-spacing:1.2px;color:#c2185b;font-weight:700}.pdh h1{margin:4px 0 2px;font-size:24px}.pdh p{margin:0;color:#7d7286}
+.pl{font-weight:700;font-size:14px;color:#4a1c4f;padding:8px 12px;border:1.5px solid #e6d6ea;border-radius:10px}
+.pk{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 6px}
+.pk div{border:1px solid #ebe5ef;border-radius:10px;padding:10px 12px}.pk span{display:block;color:#7d7286;font-size:11px}.pk b{font-size:18px}
+.pk .hi{background:#2a1838;color:#fff;border-color:#2a1838}.pk .hi span{color:#e5d3ea}
+.pdf h2{font-size:14px;margin:20px 0 6px;color:#4a1c4f}
+.tr{display:grid;padding:7px 8px;border-bottom:1px solid #f0eaf2;align-items:center}
+.tr.w7{grid-template-columns:1.6fr .6fr .7fr 1fr .9fr 1fr 1.1fr}.tr.w6{grid-template-columns:1.5fr .7fr 1fr .9fr 1fr 1.6fr}
+.tr span:not(:first-child){text-align:right}
+.tr i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.tr.th{background:#f5f2f7;font-weight:700;font-size:11px;color:#7d7286;border-radius:6px;border:0}
+.tr.tf{font-weight:700;background:#fdf6f9}
+.keep{display:flex;justify-content:space-between;padding:10px 8px;font-size:14px}.keep b{color:#c2185b}
+.pf{display:flex;justify-content:space-between;margin-top:26px;padding-top:10px;border-top:1px solid #ebe5ef;color:#9a90a2;font-size:10.5px}
+header .hb{margin-left:auto;display:flex;gap:8px}
+header .hb button{height:34px;min-width:34px;padding:0 10px;border-radius:10px;background:#ffffff1f;color:#fff;font-weight:700;font-size:13px}
+.kgrid.k6{grid-template-columns:1fr 1fr}
+.c-gift{color:#8e24aa}
+.pay.gift{background:#f3e5f5;color:#8e24aa}
+.tog.t3{grid-template-columns:1fr 1fr 1fr}
+.tog.t3 button{padding:12px 4px;font-size:14px}
+.tog button.on.gift{border-color:#8e24aa;background:#f3e5f5;color:#8e24aa}
+select.field{appearance:none;-webkit-appearance:none;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237d7286' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center}
+.warn{background:#fff3e0;color:#e65100;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-top:10px;font-weight:500}
+.err-t{color:#c62828;font-size:13px;font-weight:600;margin-top:8px}
+.gsum{background:linear-gradient(135deg,#4a148c,#8e24aa 55%,#d81b60);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden}
+.gsum:after{content:"🎁";position:absolute;right:-6px;bottom:-14px;font-size:84px;opacity:.18}
+.gsum span{font-size:12.5px;color:#f3d9f7;display:block}.gsum b{font-size:30px;display:block;margin:2px 0}
+.gsum small{font-size:12.5px;color:#f3d9f7}
+.search{width:100%;background:var(--card);border:2px solid transparent;border-radius:14px;padding:12px 14px;outline:0;font-size:16px;margin-bottom:10px}
+.search:focus{border-color:var(--acc)}
+.gl{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.gl:first-child{border-top:0}
+.gico{width:42px;height:30px;border-radius:7px;background:linear-gradient(135deg,#8e24aa,#ec407a);flex:none;position:relative}
+.gico.used{background:#d9d2de}
+.gico:after{content:"";position:absolute;left:0;right:0;top:11px;height:4px;background:#ffffff66}
+.gm{flex:1;min-width:0}.gm b{display:block;font-size:15px}.gm small{display:block;color:var(--mut);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gb{text-align:right}.gb b{display:block;font-size:16px}.gb small{font-size:11.5px;color:var(--mut)}
+.prog{height:5px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}.prog i{display:block;height:100%;background:#8e24aa}
+.ghist{padding:9px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:13.5px}
+.ghist span{color:var(--mut)}
+.help h4{margin:16px 0 4px;font-size:15.5px}
+.help p{margin:0;line-height:1.55;font-size:14.5px;color:#3d3346}
+.langsw{display:flex;gap:8px}
+.langsw button{flex:1;padding:12px;border-radius:14px;background:var(--card);font-weight:700;border:2px solid transparent}
+.langsw button.on{border-color:var(--acc);background:var(--acc-soft);color:var(--acc)}
+.lk .lsw{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;background:#ffffff1f;border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px;color:#fff}
+.tabs button{font-size:10.5px}
+.tr.w8{grid-template-columns:1.4fr .6fr .9fr .8fr .9fr .9fr .8fr 1fr;font-size:11.5px}
+.pk.p4{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<header><div class="logo">💅</div><div><h1>Sổ Tiệm Nail</h1><small id="sub"></small></div>
+<div class="hb"><button onclick="setLang(LANG==='vi'?'en':'vi')" id="lb">EN</button><button onclick="openHelp()" aria-label="Help">?</button></div></header>
+<main id="main"></main>
+<button class="fab" id="fab"></button>
+<nav class="tabs" id="tabs"></nav>
+<div class="ov" id="ov" onclick="closeS()"></div>
+<div class="sheet" id="sheet"></div>
+<div class="ov2" id="ov2"></div>
+<div class="dlg" id="dlg"></div>
+<div class="toast" id="toast"></div>
+<div class="lock on" id="lock"></div>
+<div class="busy" id="busy"><div><div class="spin"></div><span id="busyT"></span></div></div>
+
+<script>
+// ---------- i18n ----------
+const LK='so-tiem-nail.lang';
+let LANG=(()=>{try{return localStorage.getItem(LK)||'vi'}catch(e){return'vi'}})();
+const D={
+sub:['Quản lý thợ · doanh thu','Staff & revenue manager'],
+tabDay:['Hôm nay','Today'],tabCal:['Lịch','Calendar'],tabRep:['Báo cáo','Reports'],tabGift:['Gift card','Gift cards'],tabWork:['Thợ','Staff'],
+addCust:['＋ Thêm khách','＋ Add customer'],sellGift:['＋ Bán gift card','＋ Sell gift card'],
+total:['Tổng thu','Total revenue'],svcTip:[(a,b)=>`Dịch vụ ${a} · Bo ${b}`,(a,b)=>`Services ${a} · Tips ${b}`],
+cash:['💵 Tiền mặt','💵 Cash'],card:['💳 Thẻ','💳 Card'],gift:['🎁 Gift card','🎁 Gift card'],tips:['Tiền bo','Tips'],custs:['Số khách','Customers'],giftSold:['Bán gift card','Gift cards sold'],
+cashW:['Tiền mặt','Cash'],cardW:['Thẻ','Card'],giftW:['Gift card','Gift card'],
+today:['Hôm nay','Today'],backToday:['Về hôm nay','Back to today'],
+emptyDay:['Chưa có khách nào ngày này.<br>Bấm <b>＋ Thêm khách</b> để bắt đầu.','No customers on this day yet.<br>Tap <b>＋ Add customer</b> to start.'],
+byStaff:['Theo thợ','By staff'],openAll:['Mở hết','Expand all'],closeAll:['Thu gọn hết','Collapse all'],
+nCust:[n=>`${n} khách`,n=>`${n} customer${n==1?'':'s'}`],staffGets:[m=>`thợ nhận ${m}`,m=>`staff gets ${m}`],tipPlus:[m=>`+ bo ${m}`,m=>`+ tip ${m}`],
+giftToday:['Gift card bán trong ngày','Gift cards sold this day'],
+calHint:['Bấm vào ngày để xem chi tiết','Tap a day to see details'],monthSum:['Tổng kết tháng','Month summary'],
+pday:['Ngày','Day'],pweek:['Tuần','Week'],pmonth:['Tháng','Month'],pyear:['Năm','Year'],
+daysWorked:[n=>`${n} ngày có làm`,n=>`${n} working days`],noData:['Chưa có dữ liệu','No data yet'],
+exportPdf:['Xuất báo cáo PDF','Export PDF report'],makingPdf:['Đang tạo PDF…','Creating PDF…'],
+revBy:[y=>'Doanh thu theo '+(y?'tháng':'ngày'),y=>'Revenue by '+(y?'month':'day')],payMix:['Cách khách trả','Payment mix'],
+staffPay:['Tiền thợ','Staff pay'],custsL:['khách','customers'],svcL:['dịch vụ','services'],tipL:['bo','tips'],comL:['hoa hồng','commission'],
+totalStaff:['Tổng trả thợ','Total staff pay'],shopKeeps:['Tiệm giữ lại','Salon keeps'],
+payNote:['Thợ nhận = dịch vụ × % hoa hồng + toàn bộ tiền bo. Đổi % trong tab Thợ.','Staff pay = services × commission % + all tips. Change % in the Staff tab.'],
+giftSec:['Gift card','Gift cards'],soldL:['Bán ra','Sold'],usedL:['Đã dùng','Redeemed'],outL:['Còn lưu hành (tất cả thẻ)','Outstanding (all cards)'],
+activeStaff:[n=>`Thợ đang làm (${n})`,n=>`Active staff (${n})`],commission:[p=>`Hoa hồng ${p}%`,p=>`Commission ${p}%`],
+noStaff:['Chưa có thợ.','No staff yet.'],addStaff:['＋ Thêm thợ','＋ Add staff'],data:['Dữ liệu & cài đặt','Data & settings'],
+sampleOn:['Đang dùng dữ liệu mẫu','Using sample data'],sampleTxt:['Số liệu hiện tại là giả để bạn xem thử. Xoá đi khi bắt đầu dùng thật.','These numbers are fake so you can try the app. Clear them when you start for real.'],
+clearSample:['Xoá dữ liệu mẫu','Clear sample data'],clearSampleQ:['Xoá toàn bộ dữ liệu mẫu và bắt đầu từ đầu?','Delete all sample data and start fresh?'],cleared:['Đã xoá – sẵn sàng dùng thật','Cleared – ready for real use'],
+del:['Xoá','Delete'],cancel:['Huỷ','Cancel'],close:['Đóng','Close'],save:['Lưu','Save'],
+backup:['💾 Sao lưu / Khôi phục','💾 Backup / Restore'],changePin:['🔒 Đổi mã số vào app','🔒 Change passcode'],lockNow:['Khoá app ngay','Lock app now'],
+guide:['📖 Hướng dẫn cách dùng','📖 How to use'],language:['Ngôn ngữ','Language'],
+localOnly:['Mọi số liệu chỉ lưu trên điện thoại này, không gửi lên mạng.','All data stays on this phone only and is never sent online.'],by:['App viết bởi','App by'],
+editCust:['Sửa khách','Edit customer'],addCustT:['Thêm khách','Add customer'],staffDid:['Thợ làm','Staff'],
+svcAmt:['Tiền dịch vụ','Service amount'],tipAmt:['Tiền bo','Tip'],noTip:['Không','None'],paidBy:['Khách trả bằng','Paid with'],
+date:['Ngày','Date'],time:['Giờ','Time'],saveChanges:['Lưu thay đổi','Save changes'],saveCust:['Lưu khách','Save customer'],
+delCust:['Xoá khách này','Delete this customer'],delCustQ:['Xoá khách này?','Delete this customer?'],
+deleted:['Đã xoá','Deleted'],updated:['Đã cập nhật','Updated'],saved:['Đã lưu ✓','Saved ✓'],
+needStaff:['Bạn cần thêm thợ trước khi nhập khách.','Please add a staff member first.'],
+pickGift:['Chọn gift card','Choose gift card'],noGiftBal:['Không có gift card nào còn tiền. Bán gift card trong tab Gift card.','No gift cards with a balance. Sell one in the Gift cards tab.'],
+left:[m=>`còn ${m}`,m=>`${m} left`],shortBy:[m=>`Gift card thiếu ${m}. Phần còn lại khách trả bằng:`,m=>`Gift card is short ${m}. Customer pays the rest with:`],
+editStaff:['Sửa thợ','Edit staff'],addStaffT:['Thêm thợ','Add staff'],staffName:['Tên thợ','Name'],namePh:['VD: Lan','e.g. Lan'],
+comPct:['Hoa hồng thợ nhận (%)','Staff commission (%)'],color:['Màu','Color'],delStaff:['Xoá thợ','Delete staff'],
+delStaffQ:[n=>`Xoá thợ <b>${n}</b>? Lịch sử tiền cũ vẫn được giữ trong báo cáo.`,n=>`Delete <b>${n}</b>? Past records stay in reports.`],
+staffSaved:['Đã lưu thợ','Staff saved'],staffDeleted:['Đã xoá thợ','Staff deleted'],deletedW:['(đã xoá)','(deleted)'],
+bkTxt:['Bấm <b>Lưu file sao lưu</b> để lưu toàn bộ số liệu ra file (nên làm mỗi tuần). Hoặc <b>Chép dữ liệu</b> rồi dán vào Ghi chú. Khi cần khôi phục, dán lại vào ô dưới.','Tap <b>Save backup file</b> to save all data to a file (do it weekly). Or <b>Copy data</b> and paste it into Notes. To restore, paste it into the box below.'],
+saveBkFile:['Lưu file sao lưu','Save backup file'],copyData:['Chép dữ liệu','Copy data'],pasteRestore:['Dán dữ liệu để khôi phục','Paste data to restore'],restore:['Khôi phục','Restore'],
+restoreQ:['Thay toàn bộ dữ liệu hiện tại bằng bản sao lưu?','Replace all current data with this backup?'],restored:['Đã khôi phục','Restored'],badData:['Dữ liệu không hợp lệ','Invalid data'],
+copied:['Đã chép ✓','Copied ✓'],selectCopy:['Chọn & chép đoạn bên dưới','Select & copy the text below'],
+fileSaved:['Đã lưu file ✓','File saved ✓'],noFile:['Máy này chưa cho lưu file','Saving files isn’t available here'],fileFail:['Không lưu được file','Could not save the file'],
+pdfDone:['Đã xuất PDF ✓','PDF exported ✓'],pdfFail:['Không tạo được PDF','Could not create PDF'],
+enterPin:['Nhập mã số để vào app','Enter your passcode'],newPin:['Tạo mã số 4 số để bảo vệ app','Create a 4-digit passcode'],confirmPin:['Nhập lại mã số để xác nhận','Re-enter to confirm'],
+oldPin:['Nhập mã số hiện tại','Enter current passcode'],wrongPin:['Sai mã số, thử lại','Wrong passcode, try again'],newPin2:['Nhập mã số mới','Enter new passcode'],
+mismatch:['Không khớp, tạo lại','Didn’t match, try again'],forgot:['Quên mã?','Forgot?'],pinSet:['Đã đặt mã số ✓','Passcode set ✓'],delAll:['Xoá hết','Delete all'],
+forgotQ:['Quên mã số thì phải <b>xoá hết dữ liệu</b> trên máy này và tạo mã mới. Bạn có thể khôi phục lại từ file sao lưu. Xoá?','If you forgot the passcode, you must <b>delete all data</b> on this phone and create a new one. You can restore from a backup file afterwards. Delete?'],
+giftOutT:['Số dư gift card còn lưu hành','Outstanding gift card balance'],activeCards:[(n,m)=>`${n} thẻ còn tiền · tháng này bán ${m}`,(n,m)=>`${n} cards with balance · sold ${m} this month`],
+search:['Tìm mã thẻ hoặc tên…','Search code or name…'],noGifts:['Chưa có gift card nào.<br>Bấm <b>＋ Bán gift card</b> để bắt đầu.','No gift cards yet.<br>Tap <b>＋ Sell gift card</b> to start.'],
+usedUp:['Đã dùng hết','Used up'],soldOn:[d=>`Bán ${d}`,d=>`Sold ${d}`],ofV:[m=>`/ ${m}`,m=>`of ${m}`],
+sellGiftT:['Bán gift card','Sell gift card'],editGift:['Gift card','Gift card'],code:['Mã thẻ','Card code'],giftAmt:['Giá trị thẻ','Card value'],
+buyerPaid:['Người mua trả bằng','Buyer paid with'],buyer:['Người mua','Buyer'],recipient:['Tặng cho (không bắt buộc)','For (optional)'],note:['Ghi chú','Note'],
+balance:['Số dư','Balance'],history:['Lịch sử dùng','Usage history'],noUse:['Chưa dùng lần nào','Not used yet'],delGift:['Xoá gift card','Delete gift card'],
+delGiftQ:['Xoá gift card này?','Delete this gift card?'],cantDelGift:['Thẻ này đã được dùng nên không xoá được. Hãy sửa hoặc xoá các lần dùng trước.','This card has been used and can’t be deleted. Edit or delete those visits first.'],
+codeExists:['Mã thẻ này đã có','This code already exists'],giftSaved:['Đã lưu gift card ✓','Gift card saved ✓'],needAmt:['Nhập số tiền','Enter an amount'],
+rptTitle:[p=>`BÁO CÁO DOANH THU · ${p}`,p=>`REVENUE REPORT · ${p}`],detailBy:[y=>y?'Chi tiết theo tháng':'Chi tiết theo ngày',y=>y?'Breakdown by month':'Breakdown by day'],
+custDetail:['Chi tiết khách','Customer details'],staff:['Thợ','Staff'],tot:['Tổng','Total'],exported:[(d,t)=>`Xuất ngày ${d} lúc ${t}`,(d,t)=>`Exported ${d} at ${t}`],
+giftSoldP:['Gift card bán ra','Gift cards sold'],giftUsedP:['Gift card đã dùng','Gift cards redeemed'],giftCodeL:['Gift card','Gift card'],
+helpT:['Hướng dẫn cách dùng','How to use'],
+};
+const T=(k,...a)=>{const v=D[k];if(!v)return k;const s=v[LANG==='en'?1:0];return typeof s==='function'?s(...a):s};
+const HELP={vi:[
+['🔒 Mã số vào app','Lần đầu mở app, tạo mã 4 số rồi nhập lại để xác nhận. App tự khoá khi bạn rời app hơn 1 phút. Đổi mã trong tab <b>Thợ</b>. Quên mã thì phải xoá dữ liệu rồi khôi phục từ file sao lưu.'],
+['👩 Thêm thợ','Tab <b>Thợ</b> → <b>＋ Thêm thợ</b>. Nhập tên, % hoa hồng thợ nhận (VD 60%) và chọn màu. Bấm vào thợ để sửa hoặc xoá. Thợ đã xoá vẫn còn trong báo cáo cũ.'],
+['💅 Nhập khách','Tab <b>Hôm nay</b> → <b>＋ Thêm khách</b>. Chọn thợ, nhập tiền dịch vụ và tiền bo (có nút nhanh $5, $10, 15%, 20%), chọn <b>Tiền mặt / Thẻ / Gift card</b>, rồi bấm Lưu. Mỗi lần lưu là 1 khách.'],
+['✏️ Sửa hoặc xoá','Bấm tên thợ để mở danh sách khách (bấm lần nữa để thu gọn). Bấm vào dòng khách để sửa số tiền, đổi thợ, đổi cách trả hoặc xoá.'],
+['📅 Lịch','Xem cả tháng; ô càng đậm là ngày càng nhiều tiền. Bấm vào một ngày để xem chi tiết ngày đó.'],
+['📊 Báo cáo & PDF','Chọn <b>Ngày / Tuần / Tháng / Năm</b>, dùng ‹ › để đổi thời gian. Xem tổng thu, tiền mặt, thẻ, gift card, tiền bo và tiền trả từng thợ. Bấm <b>Xuất báo cáo PDF</b> để lưu, gửi hoặc in.'],
+['🎁 Gift card','<b>Bán:</b> tab <b>Gift card</b> → <b>＋ Bán gift card</b>. Nhập mã thẻ (app tự gợi ý), giá trị, người mua và cách trả.<br><b>Dùng:</b> khi nhập khách, chọn <b>Gift card</b> rồi chọn thẻ, app tự trừ số dư. Nếu thẻ không đủ tiền, app hỏi phần còn lại trả tiền mặt hay thẻ.<br>Bấm vào một thẻ để xem số dư và lịch sử dùng.'],
+['💰 Cách tính tiền','<b>Tổng thu</b> = tiền dịch vụ + tiền bo.<br><b>Thợ nhận</b> = dịch vụ × % hoa hồng + toàn bộ tiền bo.<br><b>Tiệm giữ lại</b> = tổng thu − tiền trả thợ.<br>Tiền <b>bán</b> gift card được tính riêng; khi khách <b>dùng</b> gift card thì mới tính vào doanh thu.'],
+['💾 Sao lưu','Số liệu chỉ nằm trên điện thoại này. Tab <b>Thợ</b> → <b>Sao lưu / Khôi phục</b> → <b>Lưu file sao lưu</b>. Nên làm mỗi tuần. Khi đổi máy hoặc mất số liệu, dùng <b>Khôi phục</b>.'],
+['🌐 Ngôn ngữ','Bấm nút <b>EN / VI</b> ở góc trên để đổi tiếng Anh hoặc tiếng Việt.']],
+en:[
+['🔒 Passcode','The first time you open the app, create a 4-digit passcode and enter it again to confirm. The app locks itself when you leave it for more than 1 minute. Change it in the <b>Staff</b> tab. If you forget it, you must delete the data and restore from a backup file.'],
+['👩 Add staff','<b>Staff</b> tab → <b>＋ Add staff</b>. Enter the name, the commission % the staff member keeps (e.g. 60%) and pick a color. Tap a staff member to edit or delete. Deleted staff stay in past reports.'],
+['💅 Add a customer','<b>Today</b> tab → <b>＋ Add customer</b>. Pick the staff member, enter the service amount and tip (quick buttons $5, $10, 15%, 20%), choose <b>Cash / Card / Gift card</b>, then Save. Each save counts as 1 customer.'],
+['✏️ Edit or delete','Tap a staff name to open their customer list (tap again to collapse). Tap a customer line to change the amount, staff, payment, or delete it.'],
+['📅 Calendar','See the whole month; darker days earned more. Tap a day to see its details.'],
+['📊 Reports & PDF','Choose <b>Day / Week / Month / Year</b> and use ‹ › to move in time. See revenue, cash, card, gift card, tips and pay for each staff member. Tap <b>Export PDF report</b> to save, send or print.'],
+['🎁 Gift cards','<b>Sell:</b> <b>Gift cards</b> tab → <b>＋ Sell gift card</b>. Enter the code (suggested automatically), value, buyer and how they paid.<br><b>Redeem:</b> when adding a customer, choose <b>Gift card</b> and pick the card; the balance is deducted automatically. If the card doesn’t cover it all, the app asks whether the rest is cash or card.<br>Tap a card to see its balance and history.'],
+['💰 How money is counted','<b>Total revenue</b> = services + tips.<br><b>Staff pay</b> = services × commission % + all tips.<br><b>Salon keeps</b> = total revenue − staff pay.<br>Money from <b>selling</b> gift cards is tracked separately; it counts as revenue when the card is <b>used</b>.'],
+['💾 Backup','Data lives only on this phone. <b>Staff</b> tab → <b>Backup / Restore</b> → <b>Save backup file</b>. Do it every week. If you change phones or lose data, use <b>Restore</b>.'],
+['🌐 Language','Tap <b>EN / VI</b> at the top to switch between English and Vietnamese.']]};
+
+// ---------- helpers ----------
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pd=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)};
+const today=()=>ymd(new Date());
+const nowHM=()=>{const d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())};
+const r2=n=>Math.round(n*100)/100;
+const money=n=>'$'+r2(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});
+const short=n=>n>=1000?'$'+(n/1000).toFixed(1).replace('.0','')+'k':'$'+Math.round(n);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOWE=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const vDow=d=>d.getDay()?'Thứ '+(d.getDay()+1):'Chủ nhật';
+const fmtDay=s=>{const d=pd(s);return LANG==='en'?`${DOWE[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`:`${vDow(d)}, ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`};
+const fmtShort=s=>{const d=pd(s);return LANG==='en'?`${DOWE[d.getDay()]} ${d.getMonth()+1}/${d.getDate()}`:`${d.getDay()?'T'+(d.getDay()+1):'CN'}, ${d.getDate()}/${d.getMonth()+1}`};
+const fmtDate=s=>{const d=pd(s);return LANG==='en'?`${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`:`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`};
+const monthName=(y,m)=>LANG==='en'?`${MONL[m]} ${y}`:`Tháng ${m+1}/${y}`;
+const COLORS=['#ec407a','#8e24aa','#5c6bc0','#26a69a','#ffa726','#ef5350','#29b6f6','#7cb342','#8d6e63','#546e7a'];
+const KEY='so-tiem-nail.v1';
+
+// ---------- data ----------
+function seed(){
+  const ws=[['Lan',60],['Vy',60],['Tâm',55],['Kim',60]].map((x,i)=>({id:uid(),name:x[0],pct:x[1],color:COLORS[i],del:false}));
+  const names=['Linda','Jessica','Mai Anh','Sarah','Thu Hà','Emily','Ngọc','Ashley'];
+  const gifts=[];for(let i=0;i<8;i++)gifts.push({id:uid(),code:'GC-'+(1001+i),amount:[50,100,75,50,100,150,50,25][i],date:addD(today(),-75+i*9),pay:i%3?'card':'cash',buyer:names[i],to:i%2?names[(i+3)%8]:'',note:''});
+  const bal={};gifts.forEach(g=>bal[g.id]=g.amount);
+  const prices=[25,30,35,40,45,50,55,60,65,70,85];const tickets=[];
+  for(let k=80;k>=0;k--){const ds=addD(today(),-k);if(pd(ds).getDay()===0&&Math.random()<.6)continue;
+    ws.forEach(w=>{if(Math.random()<.12)return;const n=3+Math.floor(Math.random()*6);
+      for(let j=0;j<n;j++){const amt=prices[Math.floor(Math.random()*prices.length)];
+        const tip=Math.random()<.85?Math.round(amt*(.12+Math.random()*.1)):0;
+        const t={id:uid(),date:ds,wid:w.id,amt,tip,pay:Math.random()<.62?'card':'cash',time:pad(9+Math.floor(j*1.4))+':'+pad(Math.floor(Math.random()*4)*15)};
+        if(Math.random()<.012){const c=gifts.filter(g=>g.date<=ds&&addD(g.date,25)>=ds&&bal[g.id]>0),g=c[Math.floor(Math.random()*c.length)];if(g){const ga=Math.min(bal[g.id],amt+tip);bal[g.id]-=ga;t.pay2=t.pay;t.pay='gift';t.gid=g.id;t.gamt=ga}}
+        tickets.push(t)}})}
+  return{workers:ws,tickets,gifts,sample:true};
+}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);d.gifts=d.gifts||[];return d}}catch(e){}return seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let S=load();save();
+const W=id=>S.workers.find(w=>w.id===id)||{id,name:T('deletedW'),color:'#999',pct:60};
+const G=id=>S.gifts.find(g=>g.id===id);
+const activeW=()=>S.workers.filter(w=>!w.del);
+const inRange=(a,b)=>S.tickets.filter(t=>t.date>=a&&t.date<=b);
+const giftsIn=(a,b)=>S.gifts.filter(g=>g.date>=a&&g.date<=b);
+const gUsed=(gid,exceptId)=>S.tickets.filter(t=>t.pay==='gift'&&t.gid===gid&&t.id!==exceptId).reduce((s,t)=>s+(t.gamt||0),0);
+const gBal=(g,exceptId)=>r2(g.amount-gUsed(g.id,exceptId));
+function sum(l){const r={svc:0,tip:0,cash:0,card:0,gift:0,n:l.length,pay:0};
+  l.forEach(t=>{r.svc+=t.amt;r.tip+=t.tip;const x=t.amt+t.tip;
+    if(t.pay==='gift'){const g=Math.min(t.gamt||0,x);r.gift+=g;const rem=x-g;if(rem>0)t.pay2==='cash'?r.cash+=rem:r.card+=rem}
+    else t.pay==='cash'?r.cash+=x:r.card+=x;
+    r.pay+=t.amt*W(t.wid).pct/100+t.tip});
+  r.total=r.svc+r.tip;return r}
+function gsum(l){const r={n:l.length,total:0,cash:0,card:0};l.forEach(g=>{r.total+=g.amount;g.pay==='cash'?r.cash+=g.amount:r.card+=g.amount});return r}
+const outstanding=()=>S.gifts.reduce((s,g)=>s+Math.max(0,gBal(g)),0);
+
+// ---------- state ----------
+const st={tab:'day',day:today(),cal:today(),rp:'week',rd:today(),open:new Set(),q:''};
+function range(p,s){const d=pd(s);let a,b,label;
+  if(p==='day'){a=b=s;label=fmtDay(s)}
+  else if(p==='week'){a=addD(s,-((d.getDay()+6)%7));b=addD(a,6);const A=pd(a),B=pd(b);label=LANG==='en'?`Week ${MON[A.getMonth()]} ${A.getDate()} – ${MON[B.getMonth()]} ${B.getDate()}`:`Tuần ${A.getDate()}/${A.getMonth()+1} – ${B.getDate()}/${B.getMonth()+1}`}
+  else if(p==='month'){a=ymd(new Date(d.getFullYear(),d.getMonth(),1));b=ymd(new Date(d.getFullYear(),d.getMonth()+1,0));label=monthName(d.getFullYear(),d.getMonth())}
+  else{a=d.getFullYear()+'-01-01';b=d.getFullYear()+'-12-31';label=(LANG==='en'?'Year ':'Năm ')+d.getFullYear()}
+  return{a,b,label}}
+function shift(p,s,dir){const d=pd(s);if(p==='day')d.setDate(d.getDate()+dir);else if(p==='week')d.setDate(d.getDate()+7*dir);else if(p==='month'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else d.setFullYear(d.getFullYear()+dir);return ymd(d)}
+const payLabel=t=>t.pay==='cash'?T('cashW'):t.pay==='card'?T('cardW'):T('giftW');
+
+// ---------- views ----------
+function kpis(r,gs){return`<div class="kpi big"><span>${T('total')}</span><b>${money(r.total)}</b><small>${T('svcTip',money(r.svc),money(r.tip))}</small></div>
+<div class="kgrid"><div class="kpi"><span>${T('cash')}</span><b class="c-cash">${money(r.cash)}</b></div><div class="kpi"><span>${T('card')}</span><b class="c-card">${money(r.card)}</b></div>
+<div class="kpi"><span>${T('gift')}</span><b class="c-gift">${money(r.gift)}</b></div><div class="kpi"><span>${T('tips')}</span><b class="c-tip">${money(r.tip)}</b></div>
+<div class="kpi"><span>${T('custs')}</span><b>${r.n}</b></div><div class="kpi"><span>${T('giftSold')}</span><b>${money(gs?gs.total:0)}</b></div></div>`}
+
+function vDay(){const s=st.day,l=inRange(s,s),r=sum(l),gl=giftsIn(s,s);
+  let h=`<div class="nav"><button onclick="st.day=addD(st.day,-1);R()">‹</button><div class="nl"><b>${fmtDay(s)}</b>${s!==today()?`<a onclick="st.day=today();R()">${T('backToday')}</a>`:`<small>${T('today')}</small>`}</div><button onclick="st.day=addD(st.day,1);R()">›</button></div>`+kpis(r,gsum(gl));
+  if(!l.length)h+=`<div class="empty">${T('emptyDay')}</div>`;
+  else{const ids=S.workers.filter(w=>l.some(t=>t.wid===w.id)).map(w=>w.id),allOpen=ids.every(i=>st.open.has(i));
+  h+=`<div class="sec" style="display:flex;justify-content:space-between"><span>${T('byStaff')}</span><a style="color:var(--acc);text-transform:none;letter-spacing:0;cursor:pointer" onclick="${allOpen?'st.open.clear()':`[${ids.map(i=>`'${i}'`)}].forEach(i=>st.open.add(i))`};R()">${allOpen?T('closeAll'):T('openAll')}</a></div>`;
+  S.workers.forEach(w=>{const tl=l.filter(t=>t.wid===w.id);if(!tl.length)return;const x=sum(tl),op=st.open.has(w.id);
+    h+=`<div class="card"><div class="wh tap" onclick="tog('${w.id}')"><i style="background:${w.color}"></i><div class="wn"><b>${esc(w.name)}</b><span>${T('nCust',x.n)} · 💵 ${money(x.cash)} · 💳 ${money(x.card)}${x.gift?` · 🎁 ${money(x.gift)}`:''}</span></div><div class="wt"><em>${money(x.total)}</em><span>${T('staffGets',money(x.pay))}</span></div><svg class="chev${op?' up':''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>`+
+    (!op?'':tl.sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.time}</span><span class="am">${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.pay}">${payLabel(t)}</span></div>`).join(''))+`</div>`})}
+  if(gl.length)h+=`<div class="sec">${T('giftToday')}</div><div class="card">`+gl.map(giftRow).join('')+`</div>`;
+  return h}
+function tog(id){st.open.has(id)?st.open.delete(id):st.open.add(id);R()}
+
+function vCal(){const d=pd(st.cal),y=d.getFullYear(),m=d.getMonth(),days=new Date(y,m+1,0).getDate(),off=(new Date(y,m,1).getDay()+6)%7;
+  const rg=range('month',st.cal),l=inRange(rg.a,rg.b),by={};l.forEach(t=>(by[t.date]=by[t.date]||[]).push(t));
+  const tots={};Object.keys(by).forEach(k=>tots[k]=sum(by[k]).total);const max=Math.max(1,...Object.values(tots));
+  let h=`<div class="nav"><button onclick="st.cal=shift('month',st.cal,-1);R()">‹</button><div class="nl"><b>${monthName(y,m)}</b><small>${T('calHint')}</small></div><button onclick="st.cal=shift('month',st.cal,1);R()">›</button></div><div class="cal">`;
+  (LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN']).forEach(x=>h+=`<div class="h">${x}</div>`);
+  for(let i=0;i<off;i++)h+='<div></div>';
+  for(let i=1;i<=days;i++){const ds=y+'-'+pad(m+1)+'-'+pad(i),t=tots[ds]||0,a=t?.12+.88*t/max:0;
+    h+=`<div class="cd${ds===today()?' td':''}${a>.55?' hot':''}" style="${t?`background:rgba(194,24,91,${a.toFixed(2)})`:''}" onclick="st.day='${ds}';go('day')"><span>${i}</span><b>${t?short(t):''}</b></div>`}
+  return h+`</div><div class="sec">${T('monthSum')}</div>`+kpis(sum(l),gsum(giftsIn(rg.a,rg.b)))}
+
+function vRep(){const rg=range(st.rp,st.rd),l=inRange(rg.a,rg.b),r=sum(l),gl=giftsIn(rg.a,rg.b),gs=gsum(gl);
+  let h=`<div class="seg">${['day','week','month','year'].map(p=>`<button class="${st.rp===p?'on':''}" onclick="st.rp='${p}';R()">${T('p'+p)}</button>`).join('')}</div>
+  <div class="nav"><button onclick="st.rd=shift(st.rp,st.rd,-1);R()">‹</button><div class="nl"><b>${rg.label}</b><small>${l.length?T('daysWorked',new Set(l.map(t=>t.date)).size):T('noData')}</small></div><button onclick="st.rd=shift(st.rp,st.rd,1);R()">›</button></div>
+  <button class="btn pdfb" onclick="exportPDF(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${T('exportPdf')}</button>`+kpis(r,gs);
+  let B=[];
+  if(st.rp==='week'){const lb=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];for(let i=0;i<7;i++){const ds=addD(rg.a,i);B.push([lb[i],sum(inRange(ds,ds)).total])}}
+  else if(st.rp==='month'){const n=pd(rg.b).getDate();for(let i=0;i<n;i++){const ds=addD(rg.a,i);B.push([(i+1)%5===0||i===0?i+1:'',sum(inRange(ds,ds)).total])}}
+  else if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',y+'-'+pad(i+1)+'-01');B.push([LANG==='en'?MON[i][0]:'T'+(i+1),sum(inRange(x.a,x.b)).total])}}
+  if(B.length){const mx=Math.max(1,...B.map(b=>b[1]));h+=`<div class="chart"><h4>${T('revBy',st.rp==='year')}</h4><div class="bars">${B.map(b=>`<div><i style="height:${b[1]/mx*100}%"></i><small>${b[0]}</small></div>`).join('')}</div></div>`}
+  if(r.total){const c=r.cash/r.total*100,k=r.card/r.total*100,g=r.gift/r.total*100;h+=`<div class="split"><h4>${T('payMix')}</h4><div class="sbar"><i style="width:${c}%;background:var(--cash)"></i><i style="width:${k}%;background:var(--cardc)"></i><i style="width:${g}%;background:#8e24aa"></i></div><div class="sleg"><span>💵 ${Math.round(c)}%</span><span>💳 ${Math.round(k)}%</span><span>🎁 ${Math.round(g)}%</span></div></div>`}
+  const rows=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
+  if(rows.length){h+=`<div class="sec">${T('staffPay')}</div><div class="card">`+rows.map(({w,x})=>`<div class="wr"><div class="wh" style="padding:0 0 6px"><i style="background:${w.color}"></i><b>${esc(w.name)}</b><span>${w.pct}%</span><em>${money(x.pay)}</em></div>
+  <div class="ws"><div><b>${x.n}</b>${T('custsL')}</div><div><b>${money(x.svc)}</b>${T('svcL')}</div><div><b>${money(x.tip)}</b>${T('tipL')}</div><div><b>${money(x.svc*w.pct/100)}</b>${T('comL')}</div></div></div>`).join('')+
+  `<div class="tot"><span>${T('totalStaff')}</span><b>${money(r.pay)}</b></div><div class="tot"><span>${T('shopKeeps')}</span><b style="color:var(--acc)">${money(r.total-r.pay)}</b></div></div>
+  <p class="note">${T('payNote')}</p>`}
+  h+=`<div class="sec">${T('giftSec')}</div><div class="card"><div class="tot" style="border:0"><span>${T('soldL')} (${gs.n})</span><b>${money(gs.total)}</b></div><div class="tot"><span style="color:var(--mut);font-size:13px">💵 ${money(gs.cash)} · 💳 ${money(gs.card)}</span></div><div class="tot"><span>${T('usedL')}</span><b class="c-gift">${money(r.gift)}</b></div><div class="tot"><span>${T('outL')}</span><b>${money(outstanding())}</b></div></div>`;
+  return h}
+
+function giftRow(g){const b=gBal(g),p=g.amount?Math.max(0,b)/g.amount*100:0;
+  return`<div class="gl" onclick="openG('${g.id}')"><div class="gico${b<=0?' used':''}"></div><div class="gm"><b>${esc(g.code)}</b><small>${esc(g.buyer)}${g.to?' → '+esc(g.to):''} · ${T('soldOn',fmtDate(g.date))}</small><div class="prog"><i style="width:${p}%"></i></div></div><div class="gb"><b>${b<=0?`<span style="color:var(--mut);font-size:13px">${T('usedUp')}</span>`:money(b)}</b><small>${T('ofV',money(g.amount))}</small></div></div>`}
+function vGift(){const rg=range('month',today()),act=S.gifts.filter(g=>gBal(g)>0);
+  let h=`<div class="gsum"><span>${T('giftOutT')}</span><b>${money(outstanding())}</b><small>${T('activeCards',act.length,money(gsum(giftsIn(rg.a,rg.b)).total))}</small></div>
+  <input class="search" id="gq" placeholder="${T('search')}" value="${esc(st.q)}" oninput="st.q=this.value;drawGL()">
+  <div id="glist"></div>`;return h}
+function drawGL(){const q=st.q.trim().toLowerCase();let l=S.gifts.filter(g=>!q||[g.code,g.buyer,g.to].join(' ').toLowerCase().includes(q));
+  l.sort((a,b)=>{const x=gBal(a)>0,y=gBal(b)>0;return x!==y?(x?-1:1):(a.date<b.date?1:-1)});
+  $('#glist').innerHTML=l.length?`<div class="card">${l.map(giftRow).join('')}</div>`:`<div class="empty">${T('noGifts')}</div>`}
+
+function vWork(){const a=activeW();
+  return`<div class="sec" style="margin-top:4px">${T('activeStaff',a.length)}</div><div class="card">`+
+  (a.length?a.map(w=>`<div class="wl" onclick="openW('${w.id}')"><div class="av" style="background:${w.color}">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div class="nm"><b>${esc(w.name)}</b><small>${T('commission',w.pct)}</small></div><span style="color:var(--mut)">›</span></div>`).join(''):`<div class="note" style="padding:10px 0">${T('noStaff')}</div>`)+
+  `</div><button class="btn pri" onclick="openW()">${T('addStaff')}</button>
+  <div class="sec">${T('data')}</div>
+  ${S.sample?`<div class="card" style="padding:14px"><b>${T('sampleOn')}</b><p class="note" style="margin:6px 0 10px">${T('sampleTxt')}</p><button class="btn del" style="margin:0" onclick="ask(T('clearSampleQ'),T('del'),()=>{S={workers:[],tickets:[],gifts:[],sample:false};save();R();toast(T('cleared'))})">${T('clearSample')}</button></div>`:''}
+  <button class="btn sec2" onclick="openHelp()">${T('guide')}</button>
+  <button class="btn sec2" onclick="openBk()">${T('backup')}</button>
+  <button class="btn sec2" onclick="showLock(getPin()?'old':'new')">${T('changePin')}</button>
+  <button class="btn sec2" onclick="showLock('enter')">${T('lockNow')}</button>
+  <div class="lab" style="margin-top:16px">🌐 ${T('language')}</div><div class="langsw"><button class="${LANG==='vi'?'on':''}" onclick="setLang('vi')">Tiếng Việt</button><button class="${LANG==='en'?'on':''}" onclick="setLang('en')">English</button></div>
+  <p class="note">${T('localOnly')}</p>
+  <p class="note" style="text-align:center;margin-top:24px">💅 Sổ Tiệm Nail<br>${T('by')} <b>Ryan Nguyen</b></p>`}
+
+// ---------- render ----------
+const TABS=[['day','tabDay','<path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/>'],['cal','tabCal','<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke-linecap="round"/>'],['rep','tabRep','<path d="M5 20V11M12 20V5M19 20v-6" stroke-linecap="round"/>'],['gift','tabGift','<rect x="3.5" y="8" width="17" height="12" rx="2"/><path d="M3.5 12h17M12 8v12M12 8c-1.5-3.5-5.5-4-5.5-1.5S12 8 12 8zm0 0c1.5-3.5 5.5-4 5.5-1.5S12 8 12 8z" stroke-linejoin="round"/>'],['work','tabWork','<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.8.8 3 2.6 3.5 5.2" stroke-linecap="round"/>']];
+function R(){document.documentElement.lang=LANG;$('#sub').textContent=T('sub');$('#lb').textContent=LANG==='vi'?'EN':'VI';
+  $('#tabs').innerHTML=TABS.map(t=>`<button class="${st.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${t[2]}</svg>${T(t[1])}</button>`).join('');
+  $('#main').innerHTML={day:vDay,cal:vCal,rep:vRep,gift:vGift,work:vWork}[st.tab]();
+  if(st.tab==='gift')drawGL();
+  const f=$('#fab');f.style.display=st.tab==='day'||st.tab==='gift'?'':'none';
+  f.textContent=st.tab==='gift'?T('sellGift'):T('addCust');f.onclick=st.tab==='gift'?()=>openG():()=>openT()}
+function go(t){st.tab=t;R();scrollTo(0,0)}
+function setLang(l){LANG=l;try{localStorage.setItem(LK,l)}catch(e){}R();if($('#lock').classList.contains('on'))drawLock()}
+
+// ---------- sheets ----------
+function openS(html){$('#sheet').innerHTML='<div class="grab"></div>'+html;$('#ov').classList.add('on');$('#sheet').classList.add('on')}
+function closeS(){$('#ov').classList.remove('on');$('#sheet').classList.remove('on')}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1900)}
+function ask(msg,ok,fn,okOnly){$('#dlg').innerHTML=`<p>${msg}</p>`+(okOnly?`<button class="btn pri" style="margin:0" onclick="closeD()">OK</button>`:`<div class="row2"><button class="btn sec2" style="margin:0" onclick="closeD()">${T('cancel')}</button><button class="btn pri" style="margin:0;background:#c62828" id="dok">${ok}</button></div>`);
+  if(!okOnly)$('#dok').onclick=()=>{closeD();fn()};$('#ov2').classList.add('on');$('#dlg').classList.add('on')}
+function closeD(){$('#ov2').classList.remove('on');$('#dlg').classList.remove('on')}
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)&&n>0?r2(n):0};
+const head=t=>`<h3>${t}<button onclick="closeS()">${T('close')}</button></h3>`;
+
+// customer ticket
+let E=null,lastW=null;
+function openT(id){if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
+  const t=id?S.tickets.find(x=>x.id===id):null;
+  E=t?{...t,amt:String(t.amt),tip:t.tip?String(t.tip):'',pay2:t.pay2||'cash'}:{id:null,date:st.day,wid:(lastW&&!W(lastW).del?lastW:activeW()[0].id),amt:'',tip:'',pay:'card',pay2:'cash',gid:'',time:nowHM()};drawT()}
+function syncT(){E.amt=$('#iA').value;E.tip=$('#iT').value;E.date=$('#iD').value||E.date;E.time=$('#iH').value||E.time;const s=$('#iG');if(s)E.gid=s.value}
+function giftBlock(){const opts=S.gifts.filter(g=>gBal(g,E.id)>0||g.id===E.gid);
+  if(!opts.length)return`<div class="warn">${T('noGiftBal')}</div>`;
+  if(!E.gid||!opts.some(g=>g.id===E.gid))E.gid=opts[0].id;
+  const g=G(E.gid),bal=gBal(g,E.id),tot=num(E.amt)+num(E.tip),short=r2(tot-bal);
+  return`<div class="lab">${T('pickGift')}</div><select class="field" id="iG" onchange="syncT();drawT()">${opts.map(o=>`<option value="${o.id}" ${o.id===E.gid?'selected':''}>${esc(o.code)} · ${esc(o.buyer)} · ${T('left',money(gBal(o,E.id)))}</option>`).join('')}</select>`+
+  (short>0&&tot>0?`<div class="warn">${T('shortBy',money(short))}</div><div class="tog" style="margin-top:8px"><button class="cash ${E.pay2==='cash'?'on':''}" onclick="syncT();E.pay2='cash';drawT()">${T('cash')}</button><button class="card ${E.pay2==='card'?'on':''}" onclick="syncT();E.pay2='card';drawT()">${T('card')}</button></div>`:'')}
+function drawT(){const ws=S.workers.filter(w=>!w.del||w.id===E.wid);
+  openS(head(E.id?T('editCust'):T('addCustT'))+`
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${E.wid===w.id?'on':''}" onclick="syncT();E.wid='${w.id}';drawT()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('svcAmt')}</div><div class="money"><span>$</span><input id="iA" inputmode="decimal" placeholder="0" value="${esc(E.amt)}" ${E.pay==='gift'?'onchange="syncT();drawT()"':''}></div>
+  <div class="lab">${T('tipAmt')}</div><div class="money"><span>$</span><input id="iT" inputmode="decimal" placeholder="0" value="${esc(E.tip)}" ${E.pay==='gift'?'onchange="syncT();drawT()"':''}></div>
+  <div class="quick">${[5,10].map(v=>`<button onclick="$('#iT').value=${v};tipQ()">$${v}</button>`).join('')}${[15,20].map(p=>`<button onclick="$('#iT').value=Math.round(num($('#iA').value)*${p/100});tipQ()">${p}%</button>`).join('')}<button style="color:var(--mut)" onclick="$('#iT').value='';tipQ()">${T('noTip')}</button></div>
+  <div class="lab">${T('paidBy')}</div><div class="tog t3"><button class="cash ${E.pay==='cash'?'on':''}" onclick="syncT();E.pay='cash';drawT()">${T('cash')}</button><button class="card ${E.pay==='card'?'on':''}" onclick="syncT();E.pay='card';drawT()">${T('card')}</button><button class="gift ${E.pay==='gift'?'on':''}" onclick="syncT();E.pay='gift';drawT()">🎁 Gift</button></div>
+  ${E.pay==='gift'?giftBlock():''}
+  <div class="row2" style="margin-top:4px"><div><div class="lab">${T('date')}</div><input class="field" type="date" id="iD" value="${E.date}"></div><div><div class="lab">${T('time')}</div><input class="field" type="time" id="iH" value="${E.time}"></div></div>
+  <div id="tErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" onclick="saveT()">${E.id?T('saveChanges'):T('saveCust')}</button>
+  ${E.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${E.id}');save();closeS();R();toast(T('deleted'))})">${T('delCust')}</button>`:''}</div>`);
+  if(!E.id&&!E.amt)setTimeout(()=>$('#iA')&&$('#iA').focus(),280)}
+function tipQ(){if(E.pay==='gift'){syncT();drawT()}}
+function saveT(){syncT();const amt=num(E.amt);if(!amt){$('#iA').parentNode.style.borderColor='#c62828';$('#tErr').textContent=T('needAmt');return}
+  const t={id:E.id||uid(),date:E.date,wid:E.wid,amt,tip:num(E.tip),pay:E.pay,time:E.time};
+  if(E.pay==='gift'){const g=G(E.gid);if(!g){$('#tErr').textContent=T('noGiftBal');return}
+    const bal=gBal(g,E.id);t.gid=g.id;t.gamt=r2(Math.min(bal,amt+t.tip));t.pay2=E.pay2}
+  const isEdit=!!E.id;
+  if(isEdit)S.tickets=S.tickets.map(x=>x.id===E.id?t:x);else S.tickets.push(t);
+  lastW=E.wid;save();closeS();st.day=t.date;R();toast(isEdit?T('updated'):T('saved'))}
+
+// staff
+let F=null;
+function openW(id){const w=id?S.workers.find(x=>x.id===id):null;F=w?{...w}:{id:null,name:'',pct:60,color:COLORS[S.workers.length%COLORS.length]};drawW()}
+function drawW(){openS(head(F.id?T('editStaff'):T('addStaffT'))+`
+  <div class="lab">${T('staffName')}</div><input class="field" id="wN" value="${esc(F.name)}" placeholder="${T('namePh')}">
+  <div class="lab">${T('comPct')}</div><input class="field" id="wP" inputmode="numeric" value="${F.pct}">
+  <div class="lab">${T('color')}</div><div class="colors">${COLORS.map(c=>`<button class="${F.color===c?'on':''}" style="background:${c}" onclick="F.name=$('#wN').value;F.pct=$('#wP').value;F.color='${c}';drawW()"></button>`).join('')}</div>
+  <div style="margin-top:20px"><button class="btn pri" onclick="saveW()">${T('save')}</button>
+  ${F.id?`<button class="btn del" onclick="ask(T('delStaffQ',esc(F.name)),T('del'),()=>{S.workers.find(x=>x.id==='${F.id}').del=true;save();closeS();R();toast(T('staffDeleted'))})">${T('delStaff')}</button>`:''}</div>`)}
+function saveW(){const name=$('#wN').value.trim();if(!name){$('#wN').style.borderColor='#c62828';return}
+  const pct=Math.min(100,Math.max(0,parseFloat($('#wP').value)||0));
+  if(F.id){Object.assign(S.workers.find(x=>x.id===F.id),{name,pct,color:F.color})}else S.workers.push({id:uid(),name,pct,color:F.color,del:false});
+  save();closeS();R();toast(T('staffSaved'))}
+
+// gift cards
+let GF=null;
+function nextCode(){const n=S.gifts.map(g=>parseInt(String(g.code).replace(/\D/g,''))||0);return'GC-'+(n.length?Math.max(1000,...n)+1:1001)}
+function openG(id){const g=id?G(id):null;GF=g?{...g,amount:String(g.amount)}:{id:null,code:nextCode(),amount:'',date:st.tab==='day'?st.day:today(),pay:'card',buyer:'',to:'',note:''};drawG()}
+function syncG(){GF.code=$('#gC').value;GF.amount=$('#gA').value;GF.date=$('#gD').value||GF.date;GF.buyer=$('#gB').value;GF.to=$('#gT').value;GF.note=$('#gN').value}
+function drawG(){const g=GF.id?G(GF.id):null,uses=g?S.tickets.filter(t=>t.pay==='gift'&&t.gid===g.id).sort((a,b)=>a.date<b.date?1:-1):[];
+  openS(head(GF.id?T('editGift')+' '+esc(g.code):T('sellGiftT'))+
+  (g?`<div class="gsum" style="margin-bottom:4px"><span>${T('balance')}</span><b>${money(Math.max(0,gBal(g)))}</b><small>${T('ofV',money(g.amount))}</small></div>`:'')+`
+  <div class="row2"><div><div class="lab">${T('code')}</div><input class="field" id="gC" value="${esc(GF.code)}" autocapitalize="characters"></div><div><div class="lab">${T('date')}</div><input class="field" type="date" id="gD" value="${GF.date}"></div></div>
+  <div class="lab">${T('giftAmt')}</div><div class="money"><span>$</span><input id="gA" inputmode="decimal" placeholder="0" value="${esc(GF.amount)}"></div>
+  <div class="quick">${[25,50,75,100,150].map(v=>`<button style="color:#8e24aa" onclick="$('#gA').value=${v}">$${v}</button>`).join('')}</div>
+  <div class="lab">${T('buyerPaid')}</div><div class="tog"><button class="cash ${GF.pay==='cash'?'on':''}" onclick="syncG();GF.pay='cash';drawG()">${T('cash')}</button><button class="card ${GF.pay==='card'?'on':''}" onclick="syncG();GF.pay='card';drawG()">${T('card')}</button></div>
+  <div class="lab">${T('buyer')}</div><input class="field" id="gB" value="${esc(GF.buyer)}">
+  <div class="lab">${T('recipient')}</div><input class="field" id="gT" value="${esc(GF.to)}">
+  <div class="lab">${T('note')}</div><input class="field" id="gN" value="${esc(GF.note)}">
+  <div id="gErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" style="background:#8e24aa" onclick="saveG()">${T('save')}</button>
+  ${g?`<button class="btn del" onclick="${uses.length?`ask(T('cantDelGift'),'',null,true)`:`ask(T('delGiftQ'),T('del'),()=>{S.gifts=S.gifts.filter(x=>x.id!=='${g.id}');save();closeS();R();toast(T('deleted'))})`}">${T('delGift')}</button>`:''}</div>`+
+  (g?`<div class="lab" style="margin-top:18px">${T('history')}</div><div class="card">${uses.length?uses.map(t=>`<div class="ghist" onclick="openT('${t.id}')"><span>${fmtDate(t.date)} · ${esc(W(t.wid).name)}</span><b>− ${money(t.gamt||0)}</b></div>`).join(''):`<div class="note" style="padding:8px 0">${T('noUse')}</div>`}</div>`:''))}
+function saveG(){syncG();const amount=num(GF.amount),code=GF.code.trim().toUpperCase();
+  if(!code){$('#gC').style.borderColor='#c62828';return}
+  if(S.gifts.some(g=>g.code.toUpperCase()===code&&g.id!==GF.id)){$('#gErr').textContent=T('codeExists');return}
+  if(!amount){$('#gA').parentNode.style.borderColor='#c62828';$('#gErr').textContent=T('needAmt');return}
+  const g={id:GF.id||uid(),code,amount,date:GF.date,pay:GF.pay,buyer:GF.buyer.trim(),to:GF.to.trim(),note:GF.note.trim()};
+  if(GF.id)S.gifts=S.gifts.map(x=>x.id===GF.id?g:x);else S.gifts.push(g);
+  save();closeS();R();toast(T('giftSaved'))}
+
+// help
+function openHelp(){openS(head(T('helpT'))+`<div class="help">${HELP[LANG].map(h=>`<h4>${h[0]}</h4><p>${h[1]}</p>`).join('')}</div>
+  <div class="lab" style="margin-top:20px">🌐 ${T('language')}</div><div class="langsw"><button class="${LANG==='vi'?'on':''}" onclick="setLang('vi');openHelp()">Tiếng Việt</button><button class="${LANG==='en'?'on':''}" onclick="setLang('en');openHelp()">English</button></div>
+  <p class="note" style="text-align:center;margin-top:20px">💅 Sổ Tiệm Nail · ${T('by')} <b>Ryan Nguyen</b></p>`)}
+
+// backup
+function openBk(){openS(head(T('backup'))+`<p class="note">${T('bkTxt')}</p>
+  <button class="btn pri" onclick="fileBk()">${T('saveBkFile')}</button>
+  <button class="btn sec2" onclick="copyBk()">${T('copyData')}</button>
+  <div class="lab">${T('pasteRestore')}</div><textarea class="field" id="bk" placeholder='{"workers":...}'></textarea>
+  <button class="btn sec2" onclick="restore()">${T('restore')}</button>`)}
+async function copyBk(){const txt=JSON.stringify({...S,sample:false});if(window.Android){Android.copy(txt);toast(T('copied'));return}try{await navigator.clipboard.writeText(txt);toast(T('copied'))}catch(e){$('#bk').value=txt;$('#bk').select();toast(T('selectCopy'))}}
+function restore(){try{const d=JSON.parse($('#bk').value);if(!Array.isArray(d.workers)||!Array.isArray(d.tickets))throw 0;d.gifts=d.gifts||[];
+  ask(T('restoreQ'),T('restore'),()=>{S=d;save();closeS();R();toast(T('restored'))})}catch(e){toast(T('badData'))}}
+
+// ---------- file saving ----------
+async function getDL(){try{return window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){return null}}
+async function saveFile(name,data,okMsg){if(window.Android){Android.saveFile(name,name.endsWith('.json')?'application/json':'text/plain',String(data));return true}const dl=await getDL();if(!dl){toast(T('noFile'));return false}
+  try{await dl.save({filename:name,data});toast(okMsg);return true}catch(e){if(!e||e.code!=='declined')toast(T('fileFail'));return false}}
+function fileBk(){saveFile('So-Tiem-Nail-backup-'+today()+'.json',JSON.stringify({...S,sample:false}),T('fileSaved'))}
+
+// ---------- PDF ----------
+function loadJS(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function libs(){if(!window.html2canvas)await loadJS('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  if(!window.jspdf)await loadJS('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')}
+function pdfHTML(rg,l,r,gs){
+  let h=`<div class="pdh brk"><div><div class="pt">${T('rptTitle',T('p'+st.rp).toUpperCase())}</div><h1>${rg.label}</h1><p>${fmtDate(rg.a)}${rg.a!==rg.b?' – '+fmtDate(rg.b):''}</p></div><div class="pl">Sổ Tiệm Nail</div></div>
+  <div class="pk p4 brk">${[[T('total'),money(r.total),1],[T('svcL').replace(/^./,c=>c.toUpperCase()),money(r.svc)],[T('tips'),money(r.tip)],[T('custs'),r.n],[T('cashW'),money(r.cash)],[T('cardW'),money(r.card)],[T('giftUsedP'),money(r.gift)],[T('giftSoldP'),money(gs.total)]].map(k=>`<div class="${k[2]?'hi':''}"><span>${k[0]}</span><b>${k[1]}</b></div>`).join('')}</div>`;
+  const rows=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
+  const cap=s=>s.replace(/^./,c=>c.toUpperCase());
+  h+=`<h2 class="brk">${T('staffPay')}</h2><div class="tr th brk w7"><span>${T('staff')}</span><span>%</span><span>${cap(T('custsL'))}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${cap(T('comL'))}</span><span>${cap(T('staffGets','').trim())}</span></div>`+
+  rows.map(({w,x})=>`<div class="tr brk w7"><span><i style="background:${w.color}"></i>${esc(w.name)}</span><span>${w.pct}%</span><span>${x.n}</span><span>${money(x.svc)}</span><span>${money(x.tip)}</span><span>${money(x.svc*w.pct/100)}</span><span><b>${money(x.pay)}</b></span></div>`).join('')+
+  `<div class="tr tf brk w7"><span>${T('totalStaff')}</span><span></span><span>${r.n}</span><span>${money(r.svc)}</span><span>${money(r.tip)}</span><span>${money(r.pay-r.tip)}</span><span><b>${money(r.pay)}</b></span></div>
+  <div class="keep brk"><span>${T('shopKeeps')}</span><b>${money(r.total-r.pay)}</b></div>`;
+  if(st.rp==='day'){h+=`<h2 class="brk">${T('custDetail')}</h2><div class="tr th brk w6"><span>${T('time')}</span><span>${T('staff')}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${T('paidBy')}</span><span>${T('tot')}</span></div>`+
+    [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tr brk w6"><span>${t.time}</span><span>${esc(W(t.wid).name)}</span><span>${money(t.amt)}</span><span>${money(t.tip)}</span><span>${payLabel(t)}${t.pay==='gift'?' '+esc((G(t.gid)||{}).code||''):''}</span><span><b>${money(t.amt+t.tip)}</b></span></div>`).join('')}
+  else{const B=[];if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',y+'-'+pad(i+1)+'-01');B.push([monthName(y,i),inRange(x.a,x.b)])}}
+    else{let d=rg.a;while(d<=rg.b){B.push([fmtShort(d),inRange(d,d)]);d=addD(d,1)}}
+    h+=`<h2 class="brk">${T('detailBy',st.rp==='year')}</h2><div class="tr th brk w8"><span>${st.rp==='year'?T('pmonth'):T('pday')}</span><span>${cap(T('custsL'))}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${T('cashW')}</span><span>${T('cardW')}</span><span>Gift</span><span>${T('tot')}</span></div>`+
+    B.filter(b=>b[1].length).map(([n,ls])=>{const x=sum(ls);return`<div class="tr brk w8"><span>${n}</span><span>${x.n}</span><span>${money(x.svc)}</span><span>${money(x.tip)}</span><span>${money(x.cash)}</span><span>${money(x.card)}</span><span>${money(x.gift)}</span><span><b>${money(x.total)}</b></span></div>`}).join('')}
+  const gl=giftsIn(rg.a,rg.b);
+  if(gl.length){h+=`<h2 class="brk">${T('giftSoldP')} (${gl.length}) · ${money(gs.total)}</h2><div class="tr th brk w6"><span>${T('code')}</span><span>${T('date')}</span><span>${T('buyer')}</span><span>${T('giftAmt')}</span><span>${T('paidBy')}</span><span>${T('balance')}</span></div>`+
+    gl.map(g=>`<div class="tr brk w6"><span>${esc(g.code)}</span><span>${fmtDate(g.date)}</span><span>${esc(g.buyer)}</span><span>${money(g.amount)}</span><span>${g.pay==='cash'?T('cashW'):T('cardW')}</span><span><b>${money(Math.max(0,gBal(g)))}</b></span></div>`).join('')}
+  return h+`<div class="pf brk"><span>${T('exported',fmtDate(today()),nowHM())}</span><span>Sổ Tiệm Nail · ${T('by')} Ryan Nguyen</span></div>`}
+async function exportPDF(btn){if(window.Android){const d=printDoc();Android.printHtml(d.html,d.name);return}if(btn.disabled)return;btn.disabled=true;
+  try{await libs();const rg=range(st.rp,st.rd),l=inRange(rg.a,rg.b),r=sum(l),gs=gsum(giftsIn(rg.a,rg.b));
+    $('#busyT').textContent=T('makingPdf');$('#busy').classList.add('on');scrollTo(0,0);
+    const el=document.createElement('div');el.className='pdf';el.innerHTML=pdfHTML(rg,l,r,gs);document.body.appendChild(el);
+    try{await document.fonts.ready}catch(e){}
+    const PW=595.28,PH=841.89,M=28,W0=el.offsetWidth,pagePx=Math.floor(W0*(PH-2*M)/PW),H=el.offsetHeight;
+    const marks=[...el.querySelectorAll('.brk')].map(n=>n.offsetTop+n.offsetHeight);
+    const cuts=[0];let cur=0;while(H-cur>pagePx){const ok=marks.filter(m=>m>cur&&m<=cur+pagePx);const b=ok.length?Math.max(...ok):cur+pagePx;cuts.push(b);cur=b}cuts.push(H);
+    const SC=2,cv=await html2canvas(el,{scale:SC,backgroundColor:'#ffffff',logging:false,scrollX:0,scrollY:0});el.remove();$('#busy').classList.remove('on');
+    const pdf=new window.jspdf.jsPDF({unit:'pt',format:'a4'});
+    for(let i=0;i<cuts.length-1;i++){const y=cuts[i]*SC,hh=Math.min((cuts[i+1]-cuts[i])*SC,cv.height-y);if(hh<=0)continue;
+      const c=document.createElement('canvas');c.width=cv.width;c.height=hh;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,hh);g.drawImage(cv,0,y,cv.width,hh,0,0,cv.width,hh);
+      if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.92),'JPEG',0,M,PW,hh*PW/cv.width);
+      pdf.setFontSize(8);pdf.setTextColor(150);pdf.text((i+1)+' / '+(cuts.length-1),PW-40,PH-14)}
+    await saveFile((LANG==='en'?'Report-':'Bao-cao-')+(st.rp==='day'?rg.a:rg.a+'_'+rg.b)+'.pdf',pdf.output('blob'),T('pdfDone'))}
+  catch(e){$('#busy').classList.remove('on');toast(T('pdfFail'));document.querySelectorAll('.pdf').forEach(n=>n.remove())}
+  btn.disabled=false}
+
+
+// ---------- Android app bridge ----------
+function appBack(){if($('#dlg').classList.contains('on')){closeD();return true}if($('#sheet').classList.contains('on')){closeS();return true}if($('#lock').classList.contains('on'))return false;if(st.tab!=='day'){go('day');return true}return false}
+function appPause(){hiddenAt=Date.now()}
+function appResume(){if(hiddenAt&&Date.now()-hiddenAt>60000&&getPin()&&!$('#lock').classList.contains('on'))showLock('enter')}
+function printDoc(){const rg=range(st.rp,st.rd),l=inRange(rg.a,rg.b),r=sum(l),gs=gsum(giftsIn(rg.a,rg.b));
+  return{name:(LANG==='en'?'Report-':'Bao-cao-')+(st.rp==='day'?rg.a:rg.a+'_'+rg.b),html:`<!DOCTYPE html><html lang="${LANG}"><head><meta charset="utf-8"><style>${document.querySelector('style').textContent}
+html,body{background:#fff!important;padding:0!important;margin:0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdf{position:static!important;width:auto!important;padding:0!important}.brk{break-inside:avoid;page-break-inside:avoid}@page{size:A4;margin:12mm}</style></head><body><div class="pdf">${pdfHTML(rg,l,r,gs)}</div></body></html>`}}
+
+// ---------- passcode ----------
+const PK='so-tiem-nail.pin';let L={mode:'enter',buf:'',first:'',msg:''},hiddenAt=0;
+function getPin(){try{return localStorage.getItem(PK)}catch(e){return null}}
+async function hash(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('stn:'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=7;for(const c of'stn:'+s)h=(h*31+c.charCodeAt(0))|0;return'x'+h}}
+function showLock(mode){closeS();L={mode:mode||(getPin()?'enter':'new'),buf:'',first:'',msg:''};drawLock();$('#lock').classList.add('on')}
+function hideLock(){$('#lock').classList.remove('on')}
+function drawLock(){const t={enter:'enterPin',new:'newPin',confirm:'confirmPin',old:'oldPin'}[L.mode];
+  const left=L.mode==='enter'?['forgot()',T('forgot')]:L.mode==='old'?['hideLock()',T('cancel')]:['',''];
+  $('#lock').innerHTML=`<button class="lsw" style="position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;background:#ffffff1f;border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px;color:#fff" onclick="setLang(LANG==='vi'?'en':'vi')">${LANG==='vi'?'EN':'VI'}</button>
+  <div class="lk"><div class="lgo">💅</div><h2>Sổ Tiệm Nail</h2><p class="${L.msg&&L.msg[0]==='!'?'err':''}">${L.msg?T(L.msg.replace('!','')):T(t)}</p>
+  <div class="dots" id="dots">${[0,1,2,3].map(i=>`<i class="${i<L.buf.length?'f':''}"></i>`).join('')}</div>
+  <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="key('${n}')">${n}</button>`).join('')}<button class="sm" onclick="${left[0]}">${left[1]}</button><button onclick="key('0')">0</button><button class="sm" onclick="key('del')">⌫</button></div>
+  <small class="by">${T('by')} Ryan Nguyen</small></div>`}
+function shake(){const d=$('#dots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake')}
+let busy=false;
+async function key(k){if(busy)return;if(k==='del'){L.buf=L.buf.slice(0,-1);drawLock();return}if(L.buf.length>=4)return;L.buf+=k;drawLock();if(L.buf.length<4)return;
+  busy=true;const b=L.buf;await new Promise(r=>setTimeout(r,150));
+  if(L.mode==='enter'){if(await hash(b)===getPin())hideLock();else{L.buf='';L.msg='!wrongPin';drawLock();shake()}}
+  else if(L.mode==='old'){if(await hash(b)===getPin()){L={mode:'new',buf:'',first:'',msg:'newPin2'};drawLock()}else{L.buf='';L.msg='!wrongPin';drawLock();shake()}}
+  else if(L.mode==='new'){L={mode:'confirm',buf:'',first:b,msg:''};drawLock()}
+  else{if(b===L.first){try{localStorage.setItem(PK,await hash(b))}catch(e){}hideLock();toast(T('pinSet'))}else{L={mode:'new',buf:'',first:'',msg:'!mismatch'};drawLock();shake()}}
+  busy=false}
+function forgot(){ask(T('forgotQ'),T('delAll'),()=>{try{localStorage.removeItem(PK);localStorage.removeItem(KEY)}catch(e){}S={workers:[],tickets:[],gifts:[],sample:false};save();R();showLock('new')})}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();else if(hiddenAt&&Date.now()-hiddenAt>60000&&getPin()&&!$('#lock').classList.contains('on'))showLock('enter')});
+
+
+// ================= Offline web-app (Netlify) version =================
+D.pickFile=['📂 Mở file sao lưu','📂 Open backup file'];
+D.install=['Để dùng offline: bấm <b>Chia sẻ</b> <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px"><path d="M12 3v12M7 8l5-5 5 5M5 12v8h14v-8"/></svg> → <b>Thêm vào MH chính</b>, rồi mở app từ icon.','To use offline: tap <b>Share</b> <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px"><path d="M12 3v12M7 8l5-5 5 5M5 12v8h14v-8"/></svg> → <b>Add to Home Screen</b>, then open the app from its icon.'];
+
+function dlBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+function shareBlob(blob,name,okMsg){let f=null;try{f=new File([blob],name,{type:blob.type})}catch(e){}
+  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).then(()=>{if(okMsg)toast(okMsg)}).catch(e=>{if(e&&e.name!=='AbortError'){dlBlob(blob,name)}});return}
+  dlBlob(blob,name);if(okMsg)toast(okMsg)}
+function saveFile(name,data,okMsg){shareBlob(new Blob([data],{type:name.endsWith('.json')?'application/json':'text/plain'}),name,okMsg);return true}
+
+// ---- report drawn on canvas (works offline, keeps Vietnamese text) ----
+function reportCanvases(){
+  const rg=range(st.rp,st.rd),l=inRange(rg.a,rg.b),r=sum(l),gl=giftsIn(rg.a,rg.b),gs=gsum(gl);
+  const WD=1240,H=1754,M=72,CW=WD-2*M,BOT=H-M-46,F='-apple-system,"Helvetica Neue",Roboto,"Segoe UI",Arial,sans-serif';
+  const cap=s=>s.replace(/^./,c=>c.toUpperCase());
+  const pages=[];let c,g,y;
+  const newPage=()=>{c=document.createElement('canvas');c.width=WD;c.height=H;g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,WD,H);y=M;pages.push(c)};
+  const font=(sz,w)=>{g.font=`${w||400} ${sz}px ${F}`};
+  const fit=(s,mw,sz,w)=>{s=String(s);font(sz,w);if(g.measureText(s).width<=mw)return s;while(s.length>1&&g.measureText(s+'…').width>mw)s=s.slice(0,-1);return s+'…'};
+  const text=(s,x,yy,sz,w,col,al)=>{font(sz,w);g.fillStyle=col||'#1c1424';g.textAlign=al||'left';g.textBaseline='alphabetic';g.fillText(s,x,yy)};
+  const rrect=(x,yy,w,h,rad,fill,stroke)=>{g.beginPath();if(g.roundRect)g.roundRect(x,yy,w,h,rad);else g.rect(x,yy,w,h);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=2;g.stroke()}};
+  newPage();
+  text(T('rptTitle',T('p'+st.rp).toUpperCase()),M,y+22,20,700,'#c2185b');
+  text(fit(rg.label,CW-300,46,700),M,y+74,46,700);
+  text(fmtDate(rg.a)+(rg.a!==rg.b?' – '+fmtDate(rg.b):''),M,y+110,22,400,'#7d7286');
+  font(24,700);const bw=g.measureText('Sổ Tiệm Nail').width+40;rrect(WD-M-bw,y,bw,56,12,null,'#e6d6ea');text('Sổ Tiệm Nail',WD-M-20,y+37,24,700,'#4a1c4f','right');
+  y+=134;g.fillStyle='#c2185b';g.fillRect(M,y,CW,5);y+=32;
+  const K=[[T('total'),money(r.total),1],[cap(T('svcL')),money(r.svc)],[T('tips'),money(r.tip)],[T('custs'),String(r.n)],[T('cashW'),money(r.cash)],[T('cardW'),money(r.card)],[T('giftUsedP'),money(r.gift)],[T('giftSoldP'),money(gs.total)]];
+  const kw=(CW-3*18)/4,kh=108;
+  K.forEach((k,i)=>{const x=M+(i%4)*(kw+18),yy=y+Math.floor(i/4)*(kh+18);rrect(x,yy,kw,kh,16,k[2]?'#2a1838':null,k[2]?null:'#ebe5ef');
+    text(fit(k[0],kw-40,19),x+20,yy+40,19,400,k[2]?'#e5d3ea':'#7d7286');text(fit(k[1],kw-40,34,700),x+20,yy+84,34,700,k[2]?'#fff':'#1c1424')});
+  y+=2*kh+18+44;
+  const RH=46;
+  function table(title,cols,rows){
+    if(y+60+RH*2>BOT)newPage();
+    text(title,M,y+30,26,700,'#4a1c4f');y+=50;
+    const xs=[];let acc=M;cols.forEach(cl=>{xs.push(acc);acc+=cl.w*CW});
+    const px=(i,cl)=>cl.a==='r'?xs[i]+cl.w*CW-14:xs[i]+14;
+    const head=()=>{rrect(M,y,CW,RH,10,'#f5f2f7');cols.forEach((cl,i)=>text(fit(cl.t,cl.w*CW-22,17,700),px(i,cl),y+30,17,700,'#7d7286',cl.a==='r'?'right':'left'));y+=RH};
+    head();
+    rows.forEach(rw=>{if(y+RH>BOT){newPage();head()}
+      if(rw.bg){g.fillStyle=rw.bg;g.fillRect(M,y,CW,RH)}
+      rw.cells.forEach((v,i)=>{const cl=cols[i],dot=rw.dot&&i===0,x=px(i,cl)+(dot?24:0),bold=rw.bold||i===cols.length-1;
+        if(dot){g.fillStyle=rw.dot;g.beginPath();g.arc(px(i,cl)+8,y+RH/2,8,0,7);g.fill()}
+        text(fit(v,cl.w*CW-26-(dot?24:0),20,bold?700:400),x,y+31,20,bold?700:400,'#1c1424',cl.a==='r'?'right':'left')});
+      y+=RH;g.fillStyle='#f0eaf2';g.fillRect(M,y-2,CW,2)});
+    y+=26}
+  const ws=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
+  table(T('staffPay'),[{t:T('staff'),w:.22},{t:'%',w:.08,a:'r'},{t:cap(T('custsL')),w:.11,a:'r'},{t:cap(T('svcL')),w:.15,a:'r'},{t:cap(T('tipL')),w:.12,a:'r'},{t:cap(T('comL')),w:.15,a:'r'},{t:cap(T('staffGets','').trim()),w:.17,a:'r'}],
+    ws.map(({w,x})=>({dot:w.color,cells:[w.name,w.pct+'%',x.n,money(x.svc),money(x.tip),money(x.svc*w.pct/100),money(x.pay)]})).concat([{bold:1,bg:'#fdf6f9',cells:[T('totalStaff'),'',r.n,money(r.svc),money(r.tip),money(r.pay-r.tip),money(r.pay)]}]));
+  if(y+60>BOT)newPage();y-=10;text(T('shopKeeps'),M+14,y+30,24,400);text(money(r.total-r.pay),WD-M-14,y+30,26,700,'#c2185b','right');y+=74;
+  if(st.rp==='day'){
+    table(T('custDetail'),[{t:T('time'),w:.11},{t:T('staff'),w:.2},{t:cap(T('svcL')),w:.16,a:'r'},{t:cap(T('tipL')),w:.14,a:'r'},{t:T('paidBy'),w:.21},{t:T('tot'),w:.18,a:'r'}],
+      [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>({cells:[t.time,W(t.wid).name,money(t.amt),money(t.tip),payLabel(t)+(t.pay==='gift'?' '+((G(t.gid)||{}).code||''):''),money(t.amt+t.tip)]})));
+  }else{const B=[];
+    if(st.rp==='year'){const yr=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',yr+'-'+pad(i+1)+'-01');B.push([monthName(yr,i),inRange(x.a,x.b)])}}
+    else{let d=rg.a;while(d<=rg.b){B.push([fmtShort(d),inRange(d,d)]);d=addD(d,1)}}
+    table(T('detailBy',st.rp==='year'),[{t:st.rp==='year'?T('pmonth'):T('pday'),w:.19},{t:cap(T('custsL')),w:.09,a:'r'},{t:cap(T('svcL')),w:.13,a:'r'},{t:cap(T('tipL')),w:.11,a:'r'},{t:T('cashW'),w:.12,a:'r'},{t:T('cardW'),w:.12,a:'r'},{t:'Gift',w:.11,a:'r'},{t:T('tot'),w:.13,a:'r'}],
+      B.filter(b=>b[1].length).map(([n,ls])=>{const x=sum(ls);return{cells:[n,x.n,money(x.svc),money(x.tip),money(x.cash),money(x.card),money(x.gift),money(x.total)]}}))}
+  if(gl.length)table(`${T('giftSoldP')} (${gl.length}) · ${money(gs.total)}`,[{t:T('code'),w:.16},{t:T('date'),w:.16},{t:T('buyer'),w:.22},{t:T('giftAmt'),w:.14,a:'r'},{t:T('paidBy'),w:.16},{t:T('balance'),w:.16,a:'r'}],
+    gl.map(gc=>({cells:[gc.code,fmtDate(gc.date),gc.buyer,money(gc.amount),gc.pay==='cash'?T('cashW'):T('cardW'),money(Math.max(0,gBal(gc)))]})));
+  const ex=T('exported',fmtDate(today()),nowHM());
+  pages.forEach((pc,i)=>{g=pc.getContext('2d');g.fillStyle='#ebe5ef';g.fillRect(M,H-M-22,CW,2);
+    text(ex,M,H-M+8,16,400,'#9a90a2');text(`Sổ Tiệm Nail · ${T('by')} Ryan Nguyen   ·   ${i+1}/${pages.length}`,WD-M,H-M+8,16,400,'#9a90a2','right')});
+  return pages}
+
+function pdfFromCanvases(cs){const enc=new TextEncoder(),chunks=[],off=[];let len=0;
+  const put=x=>{const b=typeof x==='string'?enc.encode(x):x;chunks.push(b);len+=b.length};
+  const obj=id=>{off[id]=len;put(id+' 0 obj\n')};
+  const PW=595.28,PH=841.89,n=cs.length;
+  put(new Uint8Array([37,80,68,70,45,49,46,52,10,37,226,227,207,211,10]));
+  obj(1);put('<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+  obj(2);put('<< /Type /Pages /Kids ['+cs.map((_,i)=>(3+i*3)+' 0 R').join(' ')+'] /Count '+n+' >>\nendobj\n');
+  cs.forEach((c,i)=>{const p=3+i*3,ct=p+1,im=p+2;
+    const bin=atob(c.toDataURL('image/jpeg',.9).split(',')[1]),jb=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)jb[k]=bin.charCodeAt(k);
+    obj(p);put(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im${i} ${im} 0 R >> >> /Contents ${ct} 0 R >>\nendobj\n`);
+    const s=`q ${PW} 0 0 ${PH} 0 0 cm /Im${i} Do Q`;
+    obj(ct);put(`<< /Length ${s.length} >>\nstream\n${s}\nendstream\nendobj\n`);
+    obj(im);put(`<< /Type /XObject /Subtype /Image /Width ${c.width} /Height ${c.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jb.length} >>\nstream\n`);put(jb);put('\nendstream\nendobj\n')});
+  const size=3+n*3,xref=len;let x='xref\n0 '+size+'\n0000000000 65535 f \n';for(let i=1;i<size;i++)x+=String(off[i]).padStart(10,'0')+' 00000 n \n';
+  put(x+'trailer\n<< /Size '+size+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF\n');
+  return new Blob(chunks,{type:'application/pdf'})}
+
+function exportPDF(btn){try{const rg=range(st.rp,st.rd);
+    shareBlob(pdfFromCanvases(reportCanvases()),(LANG==='en'?'Report-':'Bao-cao-')+(st.rp==='day'?rg.a:rg.a+'_'+rg.b)+'.pdf',T('pdfDone'))}
+  catch(e){console.error(e);toast(T('pdfFail'))}}
+
+// ---- backup: also restore from a file ----
+function openBk(){openS(head(T('backup'))+`<p class="note">${T('bkTxt')}</p>
+  <button class="btn pri" onclick="fileBk()">${T('saveBkFile')}</button>
+  <label class="btn sec2" style="cursor:pointer">${T('pickFile')}<input type="file" accept=".json,application/json,text/plain" style="display:none" onchange="readBk(this)"></label>
+  <button class="btn sec2" onclick="copyBk()">${T('copyData')}</button>
+  <div class="lab">${T('pasteRestore')}</div><textarea class="field" id="bk" placeholder='{"workers":...}'></textarea>
+  <button class="btn sec2" onclick="restore()">${T('restore')}</button>`)}
+function readBk(inp){const f=inp.files&&inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{$('#bk').value=rd.result;restore()};rd.readAsText(f)}
+
+// ---- install hint (only when opened in Safari, not from the Home Screen icon) ----
+function installHint(){const sa=navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+  let b=$('#ih');if(sa){if(b)b.remove();return}
+  if(!b){b=document.createElement('div');b.id='ih';b.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:8;background:#1c1424;color:#fff;border-radius:14px;padding:12px 40px 12px 14px;font-size:13.5px;line-height:1.45;box-shadow:0 6px 20px #0004';document.body.appendChild(b)}
+  b.innerHTML=T('install')+'<button onclick="this.parentNode.remove()" style="position:absolute;right:8px;top:8px;color:#fff;font-size:18px;width:28px;height:28px">×</button>'}
+const _R=R;R=function(){_R();if($('#ih'))installHint()};
+setTimeout(installHint,1500);
+
+// ---- offline cache + ask the browser to keep data ----
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+
+R();showLock();
+</script>
+</body>
+</html>

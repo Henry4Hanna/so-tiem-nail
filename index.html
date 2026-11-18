@@ -162,7 +162,7 @@ textarea.field{min-height:110px;font-size:12px;font-family:ui-monospace,monospac
 .pk .hi{background:#2a1838;color:#fff;border-color:#2a1838}.pk .hi span{color:#e5d3ea}
 .pdf h2{font-size:14px;margin:20px 0 6px;color:#4a1c4f}
 .tr{display:grid;padding:7px 8px;border-bottom:1px solid #f0eaf2;align-items:center}
-.tr.w7{grid-template-columns:1.6fr .6fr .7fr 1fr .9fr 1fr 1.1fr}.tr.w6{grid-template-columns:1.5fr .7fr 1fr .9fr 1fr 1.6fr}
+.tr.w7{grid-template-columns:1.5fr .55fr .65fr .65fr .95fr .85fr .95fr 1.05fr}.tr.w6{grid-template-columns:1.5fr .7fr 1fr .9fr 1fr 1.6fr}
 .tr span:not(:first-child){text-align:right}
 .tr i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
 .tr.th{background:#f5f2f7;font-weight:700;font-size:11px;color:#7d7286;border-radius:6px;border:0}
@@ -248,6 +248,35 @@ textarea.field{font-size:16px!important}
 .names .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nost{background:#ffffff14;border-radius:14px;padding:16px;line-height:1.6}
 .lback{margin-top:18px;color:#e5d3ea;font-weight:600;font-size:15px;padding:8px 14px}
+
+.pay.mix{background:#ede7f6;color:#4527a0}
+.wkg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.wkd{background:var(--card);border-radius:12px;padding:8px 2px;text-align:center;box-shadow:0 1px 2px #0000000d;color:var(--mut)}
+.wkd b{display:block;font-size:13px}.wkd span{display:block;font-size:11px;margin-top:3px}
+.wkd.on{background:var(--acc);color:#fff}.wkd.on span{font-weight:700}
+
+.fab2{right:auto;left:18px;background:var(--ink);box-shadow:0 6px 18px #1c142455}
+
+.att{padding:8px 10px}
+.atr{display:grid;grid-template-columns:72px repeat(7,minmax(0,1fr)) 24px;gap:3px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:11.5px;text-align:center}
+.atr.ah{border-top:0;color:var(--mut);font-weight:700;font-size:12px}
+.atr .nm{text-align:left;font-weight:700;font-size:13px;display:flex;align-items:center;gap:5px;overflow:hidden;white-space:nowrap}
+.atr .nm i{width:8px;height:8px;border-radius:50%;flex:none}
+.atr .on{background:var(--acc-soft);color:var(--acc);border-radius:7px;padding:5px 0;font-weight:700}
+.atr .off{color:#c9bfd0}
+.atr b{font-size:14px}
+
+.keepRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #ffffff2e}
+.keepRow span{font-size:12.5px!important;color:#e5d3ea!important;display:block}
+.keepRow em{font-style:normal;font-size:22px;font-weight:700;display:block;margin-top:2px;color:#fff}
+.keepRow div:first-child em{color:#ffd6e7}
+html,body{overscroll-behavior:none;overscroll-behavior-y:none}
+.sheet{overscroll-behavior:contain}
+
+main{padding-bottom:104px!important}
+.fab{left:auto;right:14px;width:calc(50% - 21px);max-width:260px;padding:14px 8px;text-align:center;white-space:nowrap;font-size:15px}
+.fab2{right:auto;left:14px}
+@media (min-width:600px){.fab{right:calc(50% - 266px)}.fab2{right:auto;left:calc(50% - 266px)}}
 </style>
 </head>
 <body>
@@ -372,7 +401,7 @@ const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)};
 const today=()=>ymd(new Date());
 const nowHM=()=>{const d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())};
 const r2=n=>Math.round(n*100)/100;
-const money=n=>'$'+r2(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});
+const money=n=>{const v=r2(n);return'$'+v.toLocaleString('en-US',{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2})};
 const short=n=>n>=1000?'$'+(n/1000).toFixed(1).replace('.0','')+'k':'$'+Math.round(n);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -413,12 +442,12 @@ const inRange=(a,b)=>S.tickets.filter(t=>t.date>=a&&t.date<=b&&(st.role!=='staff
 const giftsIn=(a,b)=>st.role==='staff'?[]:S.gifts.filter(g=>g.date>=a&&g.date<=b);
 const gUsed=(gid,exceptId)=>S.tickets.filter(t=>t.pay==='gift'&&t.gid===gid&&t.id!==exceptId).reduce((s,t)=>s+(t.gamt||0),0);
 const gBal=(g,exceptId)=>r2(g.amount-gUsed(g.id,exceptId));
-function sum(l){const r={svc:0,tip:0,cash:0,card:0,gift:0,n:l.length,pay:0};
+function sum(l){const r={svc:0,tip:0,cash:0,card:0,gift:0,n:l.reduce((a,t)=>a+(t.kind==='day'?(t.n||0):1),0),pay:0};
   l.forEach(t=>{r.svc+=t.amt;r.tip+=t.tip;const x=t.amt+t.tip;
-    if(t.pay==='gift'){const g=Math.min(t.gamt||0,x);r.gift+=g;const rem=x-g;if(rem>0)t.pay2==='cash'?r.cash+=rem:r.card+=rem}
+    if(t.kind==='day'){r.cash+=t.cash||0;r.card+=t.card||0}else if(t.pay==='gift'){const g=Math.min(t.gamt||0,x);r.gift+=g;const rem=x-g;if(rem>0)t.pay2==='cash'?r.cash+=rem:r.card+=rem}
     else t.pay==='cash'?r.cash+=x:r.card+=x;
     r.pay+=t.amt*W(t.wid).pct/100+t.tip});
-  r.total=r.svc+r.tip;return r}
+  r.total=r.svc+r.tip;r.days=new Set(l.map(t=>t.date)).size;return r}
 function gsum(l){const r={n:l.length,total:0,cash:0,card:0};l.forEach(g=>{r.total+=g.amount;g.pay==='cash'?r.cash+=g.amount:r.card+=g.amount});return r}
 const outstanding=()=>S.gifts.reduce((s,g)=>s+Math.max(0,gBal(g)),0);
 
@@ -431,10 +460,10 @@ function range(p,s){const d=pd(s);let a,b,label;
   else{a=d.getFullYear()+'-01-01';b=d.getFullYear()+'-12-31';label=(LANG==='en'?'Year ':'Năm ')+d.getFullYear()}
   return{a,b,label}}
 function shift(p,s,dir){const d=pd(s);if(p==='day')d.setDate(d.getDate()+dir);else if(p==='week')d.setDate(d.getDate()+7*dir);else if(p==='month'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else d.setFullYear(d.getFullYear()+dir);return ymd(d)}
-const payLabel=t=>t.pay==='cash'?T('cashW'):t.pay==='card'?T('cardW'):T('giftW');
+const payLabel=t=>t.kind==='day'?dayPill(t):t.pay==='cash'?T('cashW'):t.pay==='card'?T('cardW'):T('giftW');
 
 // ---------- views ----------
-function kpis(r,gs){return`<div class="kpi big"><span>${T('total')}</span><b>${money(r.total)}</b><small>${T('svcTip',money(r.svc),money(r.tip))}</small></div>
+function kpis(r,gs){return`<div class="kpi big"><span>${T('total')}</span><b>${money(r.total)}</b><small>${T('svcTip',money(r.svc),money(r.tip))}${r.days&&st.tab!=='day'&&!(st.tab==='rep'&&st.rp==='day')?' · <span style="color:#fff;font-weight:700">'+T('nDays',r.days)+'</span>':''}</small>${st.role==='staff'?'':`<div class="keepRow"><div><span>🏠 ${T('shopKeeps')}</span><em>${money(r.total-r.pay)}</em></div><div><span>👩 ${T('totalStaff')}</span><em>${money(r.pay)}</em></div></div>`}</div>
 <div class="kgrid"><div class="kpi"><span>${T('cash')}</span><b class="c-cash">${money(r.cash)}</b></div><div class="kpi"><span>${T('card')}</span><b class="c-card">${money(r.card)}</b></div>
 <div class="kpi"><span>${T('gift')}</span><b class="c-gift">${money(r.gift)}</b></div><div class="kpi"><span>${T('tips')}</span><b class="c-tip">${money(r.tip)}</b></div>
 <div class="kpi"><span>${T('custs')}</span><b>${r.n}</b></div>${st.role==='staff'?'':`<div class="kpi"><span>${T('giftSold')}</span><b>${money(gs?gs.total:0)}</b></div>`}</div>`}
@@ -446,7 +475,7 @@ function vDay(){const s=st.day,l=inRange(s,s),r=sum(l),gl=giftsIn(s,s);
   h+=`<div class="sec" style="display:flex;justify-content:space-between"><span>${T('byStaff')}</span><a style="color:var(--acc);text-transform:none;letter-spacing:0;cursor:pointer" onclick="${allOpen?'st.open.clear()':`[${ids.map(i=>`'${i}'`)}].forEach(i=>st.open.add(i))`};R()">${allOpen?T('closeAll'):T('openAll')}</a></div>`;
   S.workers.forEach(w=>{const tl=l.filter(t=>t.wid===w.id);if(!tl.length)return;const x=sum(tl),op=st.open.has(w.id);
     h+=`<div class="card"><div class="wh tap" onclick="tog('${w.id}')"><i style="background:${w.color}"></i><div class="wn"><b>${esc(w.name)}</b><span>${T('nCust',x.n)} · 💵 ${money(x.cash)} · 💳 ${money(x.card)}${x.gift?` · 🎁 ${money(x.gift)}`:''}</span></div><div class="wt"><em>${money(x.total)}</em><span>${T('staffGets',money(x.pay))}</span></div><svg class="chev${op?' up':''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>`+
-    (!op?'':tl.sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.time}</span><span class="am">${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.pay}">${payLabel(t)}</span></div>`).join(''))+`</div>`})}
+    (!op?'':tl.sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.kind==='day'?'📋':t.time}</span><span class="am">${t.kind==='day'&&t.n?`<small style="color:var(--mut);font-weight:600">${T('nCust',t.n)} · </small>`:''}${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.kind==='day'?(t.cash&&!t.card?'cash':t.card&&!t.cash?'card':'mix'):t.pay}">${payLabel(t)}</span></div>`).join(''))+`</div>`})}
   if(gl.length)h+=`<div class="sec">${T('giftToday')}</div><div class="card">`+gl.map(giftRow).join('')+`</div>`;
   return h}
 
@@ -463,7 +492,7 @@ function vStaffDay(s,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w
   <div class="kpi"><span>${T('cash')}</span><b class="c-cash">${money(x.cash)}</b></div><div class="kpi"><span>${T('card')}</span><b class="c-card">${money(x.card)}</b></div></div>`;
   if(x.gift)h+=`<div class="kpi" style="margin:-4px 0 14px"><span>${T('gift')}</span><b class="c-gift">${money(x.gift)}</b></div>`;
   if(!tl.length)return h+`<div class="empty">${T('noCustStaff')}</div>`;
-  return h+`<div class="sec">${T('custDetail')}</div><div class="card">`+tl.map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.time}</span><span class="am">${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.pay}">${payLabel(t)}</span></div>`).join('')+`</div>`}
+  return h+`<div class="sec">${T('custDetail')}</div><div class="card">`+tl.map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.kind==='day'?'📋':t.time}</span><span class="am">${t.kind==='day'&&t.n?`<small style="color:var(--mut);font-weight:600">${T('nCust',t.n)} · </small>`:''}${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.kind==='day'?(t.cash&&!t.card?'cash':t.card&&!t.cash?'card':'mix'):t.pay}">${payLabel(t)}</span></div>`).join('')+`</div>`}
 const cap1=s=>s.replace(/^./,c=>c.toUpperCase());
 D.wholeShop=['Cả tiệm','Whole salon'];D.oneStaff=['Từng thợ','One staff'];D.earn=['Thợ nhận','Earnings'];
 D.comPlusTip=[(a,b)=>`Hoa hồng ${a} + Bo ${b}`,(a,b)=>`Commission ${a} + Tips ${b}`];
@@ -490,11 +519,12 @@ function vStaffRep(rg,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===
   <div class="kpi"><span>${T('cash')}</span><b class="c-cash">${money(x.cash)}</b></div><div class="kpi"><span>${T('card')}</span><b class="c-card">${money(x.card)}</b></div></div>`;
   if(x.gift)h+=`<div class="kpi" style="margin:-4px 0 14px"><span>${T('gift')}</span><b class="c-gift">${money(x.gift)}</b></div>`;
   if(!tl.length)return h+`<div class="empty">${T('noData')}</div>`;
-  if(st.rp==='day')return h+`<div class="sec">${T('custDetail')}</div><div class="card">`+[...tl].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.time}</span><span class="am">${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.pay}">${payLabel(t)}</span></div>`).join('')+`</div>`;
+  if(st.rp==='day')return h+`<div class="sec">${T('custDetail')}</div><div class="card">`+[...tl].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.kind==='day'?'📋':t.time}</span><span class="am">${t.kind==='day'&&t.n?`<small style="color:var(--mut);font-weight:600">${T('nCust',t.n)} · </small>`:''}${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.kind==='day'?(t.cash&&!t.card?'cash':t.card&&!t.cash?'card':'mix'):t.pay}">${payLabel(t)}</span></div>`).join('')+`</div>`;
   const B=[];
   if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const r2_=range('month',y+'-'+pad(i+1)+'-01');B.push({lb:LANG==='en'?MON[i][0]:'T'+(i+1),name:monthName(y,i),l:tl.filter(t=>t.date>=r2_.a&&t.date<=r2_.b)})}}
   else{let d=rg.a,i=0;const wk=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];while(d<=rg.b){const dd=d;B.push({lb:st.rp==='week'?wk[i]:((i+1)%5===0||i===0?i+1:''),name:fmtShort(d),l:tl.filter(t=>t.date===dd)});d=addD(d,1);i++}}
   B.forEach(b=>b.x=sum(b.l));const mx=Math.max(1,...B.map(b=>b.x.pay));
+  if(st.rp==='week')h+=`<div class="sec">${T('weekDays',days)}</div><div class="wkg">${B.map(b=>`<div class="wkd ${b.x.n?'on':''}"><b>${b.lb}</b><span>${b.x.n?money(b.x.pay):T('off')}</span></div>`).join('')}</div>`;
   h+=`<div class="chart"><h4>${T('payBy',st.rp==='year')}</h4><div class="bars">${B.map(b=>`<div><i style="height:${b.x.pay/mx*100}%;background:linear-gradient(${w.color},#2a1838)"></i><small>${b.lb}</small></div>`).join('')}</div></div>`;
   h+=`<div class="sec">${T('detailBy',st.rp==='year')}</div><div class="card">`+B.filter(b=>b.x.n).map(b=>`<div class="tot" style="align-items:center"><span>${b.name}<br><small style="color:var(--mut);font-size:12px">${T('nCust',b.x.n)} · ${cap1(T('svcL'))} ${money(b.x.svc)} · ${T('tipL')} ${money(b.x.tip)}</small></span><b>${money(b.x.pay)}</b></div>`).join('')+`</div>`;
   return h}
@@ -524,10 +554,11 @@ function vRep(){if(st.role==='staff'){st.rview='staff';st.vw=st.me}const rg=rang
   if(B.length){const mx=Math.max(1,...B.map(b=>b[1]));h+=`<div class="chart"><h4>${T('revBy',st.rp==='year')}</h4><div class="bars">${B.map(b=>`<div><i style="height:${b[1]/mx*100}%"></i><small>${b[0]}</small></div>`).join('')}</div></div>`}
   if(r.total){const c=r.cash/r.total*100,k=r.card/r.total*100,g=r.gift/r.total*100;h+=`<div class="split"><h4>${T('payMix')}</h4><div class="sbar"><i style="width:${c}%;background:var(--cash)"></i><i style="width:${k}%;background:var(--cardc)"></i><i style="width:${g}%;background:#8e24aa"></i></div><div class="sleg"><span>💵 ${Math.round(c)}%</span><span>💳 ${Math.round(k)}%</span><span>🎁 ${Math.round(g)}%</span></div></div>`}
   const rows=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
-  if(rows.length){h+=`<div class="sec">${T('staffPay')}</div><div class="card">`+rows.map(({w,x})=>`<div class="wr"><div class="wh" style="padding:0 0 6px"><i style="background:${w.color}"></i><b>${esc(w.name)}</b><span>${w.pct}%</span><em>${money(x.pay)}</em></div>
+  if(rows.length){h+=`<div class="sec">${T('staffPay')}</div><div class="card">`+rows.map(({w,x})=>`<div class="wr"><div class="wh" style="padding:0 0 6px"><i style="background:${w.color}"></i><b>${esc(w.name)}</b><span>${w.pct}% · ${T('nDays',daysOf(l,w.id))}</span><em>${money(x.pay)}</em></div>
   <div class="ws"><div><b>${x.n}</b>${T('custsL')}</div><div><b>${money(x.svc)}</b>${T('svcL')}</div><div><b>${money(x.tip)}</b>${T('tipL')}</div><div><b>${money(x.svc*w.pct/100)}</b>${T('comL')}</div></div></div>`).join('')+
   `<div class="tot"><span>${T('totalStaff')}</span><b>${money(r.pay)}</b></div><div class="tot"><span>${T('shopKeeps')}</span><b style="color:var(--acc)">${money(r.total-r.pay)}</b></div></div>
   <p class="note">${T('payNote')}</p>`}
+  if(st.rp==='week')h+=attTable(rg,l);
   h+=`<div class="sec">${T('giftSec')}</div><div class="card"><div class="tot" style="border:0"><span>${T('soldL')} (${gs.n})</span><b>${money(gs.total)}</b></div><div class="tot"><span style="color:var(--mut);font-size:13px">💵 ${money(gs.cash)} · 💳 ${money(gs.card)}</span></div><div class="tot"><span>${T('usedL')}</span><b class="c-gift">${money(r.gift)}</b></div><div class="tot"><span>${T('outL')}</span><b>${money(outstanding())}</b></div></div>`;
   return h}
 
@@ -550,6 +581,7 @@ function vWork(){const a=activeW();
   ${S.sample?`<div class="card" style="padding:14px"><b>${T('sampleOn')}</b><p class="note" style="margin:6px 0 10px">${T('sampleTxt')}</p><button class="btn del" style="margin:0" onclick="ask(T('clearSampleQ'),T('del'),()=>{S={workers:[],tickets:[],gifts:[],sample:false};save();R();toast(T('cleared'))})">${T('clearSample')}</button></div>`:''}
   <button class="btn sec2" onclick="openHelp()">${T('guide')}</button>
   <button class="btn sec2" onclick="openBk()">${T('backup')}</button>
+  <button class="btn del" onclick="openWipe()">${T('wipeBtn')}</button>
   <button class="btn sec2" onclick="showLock(getPin()?'old':'new')">${T('changePin')}</button>
   <button class="btn sec2" onclick="showLock('enter')">${T('lockNow')}</button>
   <div class="lab" style="margin-top:16px">🌐 ${T('language')}</div><div class="langsw"><button class="${LANG==='vi'?'on':''}" onclick="setLang('vi')">Tiếng Việt</button><button class="${LANG==='en'?'on':''}" onclick="setLang('en')">English</button></div>
@@ -579,7 +611,7 @@ const head=t=>`<h3>${t}<button onclick="closeS()">${T('close')}</button></h3>`;
 
 // customer ticket
 let E=null,lastW=null;
-function openT(id){if(st.role==='staff'&&!staffCan(id))return;if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
+function openT(id){if(id){const tt=S.tickets.find(x=>x.id===id);if(tt&&tt.kind==='day')return openDT(id)}if(st.role==='staff'&&!staffCan(id))return;if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
   const t=id?S.tickets.find(x=>x.id===id):null;
   E=t?{...t,amt:String(t.amt),tip:t.tip?String(t.tip):'',pay2:t.pay2||'cash'}:{id:null,date:st.day,wid:(st.tab==='day'&&st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id),amt:'',tip:'',pay:'card',pay2:'cash',gid:'',time:nowHM()};drawT()}
 function syncT(){E.amt=$('#iA').value;E.tip=$('#iT').value;E.date=$('#iD').value||E.date;E.time=$('#iH').value||E.time;const s=$('#iG');if(s)E.gid=s.value}
@@ -590,7 +622,7 @@ function giftBlock(){const opts=S.gifts.filter(g=>gBal(g,E.id)>0||g.id===E.gid);
   return`<div class="lab">${T('pickGift')}</div><select class="field" id="iG" onchange="syncT();drawT()">${opts.map(o=>`<option value="${o.id}" ${o.id===E.gid?'selected':''}>${esc(o.code)} · ${esc(o.buyer)} · ${T('left',money(gBal(o,E.id)))}</option>`).join('')}</select>`+
   (short>0&&tot>0?`<div class="warn">${T('shortBy',money(short))}</div><div class="tog" style="margin-top:8px"><button class="cash ${E.pay2==='cash'?'on':''}" onclick="syncT();E.pay2='cash';drawT()">${T('cash')}</button><button class="card ${E.pay2==='card'?'on':''}" onclick="syncT();E.pay2='card';drawT()">${T('card')}</button></div>`:'')}
 function drawT(){const ws=S.workers.filter(w=>(!w.del||w.id===E.wid)&&(st.role!=='staff'||w.id===st.me));
-  openS(head(E.id?T('editCust'):T('addCustT'))+`
+  openS(head(E.id?T('editCust'):T('addCustT'))+''+`
   <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${E.wid===w.id?'on':''}" onclick="syncT();E.wid='${w.id}';drawT()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
   <div class="lab">${T('svcAmt')}</div><div class="money"><span>$</span><input id="iA" inputmode="decimal" placeholder="0" value="${esc(E.amt)}" ${E.pay==='gift'?'onchange="syncT();drawT()"':''}></div>
   <div class="lab">${T('tipAmt')}</div><div class="money"><span>$</span><input id="iT" inputmode="decimal" placeholder="0" value="${esc(E.tip)}" ${E.pay==='gift'?'onchange="syncT();drawT()"':''}></div>
@@ -682,12 +714,12 @@ function pdfHTML(rg,l,r,gs){
   <div class="pk p4 brk">${[[T('total'),money(r.total),1],[T('svcL').replace(/^./,c=>c.toUpperCase()),money(r.svc)],[T('tips'),money(r.tip)],[T('custs'),r.n],[T('cashW'),money(r.cash)],[T('cardW'),money(r.card)],[T('giftUsedP'),money(r.gift)],[T('giftSoldP'),money(gs.total)]].map(k=>`<div class="${k[2]?'hi':''}"><span>${k[0]}</span><b>${k[1]}</b></div>`).join('')}</div>`;
   const rows=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
   const cap=s=>s.replace(/^./,c=>c.toUpperCase());
-  h+=`<h2 class="brk">${T('staffPay')}</h2><div class="tr th brk w7"><span>${T('staff')}</span><span>%</span><span>${cap(T('custsL'))}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${cap(T('comL'))}</span><span>${cap(T('staffGets','').trim())}</span></div>`+
-  rows.map(({w,x})=>`<div class="tr brk w7"><span><i style="background:${w.color}"></i>${esc(w.name)}</span><span>${w.pct}%</span><span>${x.n}</span><span>${money(x.svc)}</span><span>${money(x.tip)}</span><span>${money(x.svc*w.pct/100)}</span><span><b>${money(x.pay)}</b></span></div>`).join('')+
-  `${stfMode()?'':`<div class="tr tf brk w7"><span>${T('totalStaff')}</span><span></span><span>${r.n}</span><span>${money(r.svc)}</span><span>${money(r.tip)}</span><span>${money(r.pay-r.tip)}</span><span><b>${money(r.pay)}</b></span></div>`}
+  h+=`<h2 class="brk">${T('staffPay')}</h2><div class="tr th brk w7"><span>${T('staff')}</span><span>%</span><span>${T('daysCol')}</span><span>${cap(T('custsL'))}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${cap(T('comL'))}</span><span>${cap(T('staffGets','').trim())}</span></div>`+
+  rows.map(({w,x})=>`<div class="tr brk w7"><span><i style="background:${w.color}"></i>${esc(w.name)}</span><span>${w.pct}%</span><span>${daysOf(l,w.id)}</span><span>${x.n}</span><span>${money(x.svc)}</span><span>${money(x.tip)}</span><span>${money(x.svc*w.pct/100)}</span><span><b>${money(x.pay)}</b></span></div>`).join('')+
+  `${stfMode()?'':`<div class="tr tf brk w7"><span>${T('totalStaff')}</span><span></span><span></span><span>${r.n}</span><span>${money(r.svc)}</span><span>${money(r.tip)}</span><span>${money(r.pay-r.tip)}</span><span><b>${money(r.pay)}</b></span></div>`}
   ${stfMode()?'':`<div class="keep brk"><span>${T('shopKeeps')}</span><b>${money(r.total-r.pay)}</b></div>`}`;
   if(st.rp==='day'){h+=`<h2 class="brk">${T('custDetail')}</h2><div class="tr th brk w6"><span>${T('time')}</span><span>${T('staff')}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${T('paidBy')}</span><span>${T('tot')}</span></div>`+
-    [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tr brk w6"><span>${t.time}</span><span>${esc(W(t.wid).name)}</span><span>${money(t.amt)}</span><span>${money(t.tip)}</span><span>${payLabel(t)}${t.pay==='gift'?' '+esc((G(t.gid)||{}).code||''):''}</span><span><b>${money(t.amt+t.tip)}</b></span></div>`).join('')}
+    [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tr brk w6"><span>${t.kind==='day'?T('dayTotalT')+(t.n?' ('+t.n+')':''):t.time}</span><span>${esc(W(t.wid).name)}</span><span>${money(t.amt)}</span><span>${money(t.tip)}</span><span>${payLabel(t)}${t.pay==='gift'?' '+esc((G(t.gid)||{}).code||''):''}</span><span><b>${money(t.amt+t.tip)}</b></span></div>`).join('')}
   else{const B=[];if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',y+'-'+pad(i+1)+'-01');B.push([monthName(y,i),rptIn(x.a,x.b)])}}
     else{let d=rg.a;while(d<=rg.b){B.push([fmtShort(d),rptIn(d,d)]);d=addD(d,1)}}
     h+=`<h2 class="brk">${T('detailBy',st.rp==='year')}</h2><div class="tr th brk w8"><span>${st.rp==='year'?T('pmonth'):T('pday')}</span><span>${cap(T('custsL'))}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${T('cashW')}</span><span>${T('cardW')}</span><span>Gift</span><span>${T('tot')}</span></div>`+
@@ -798,12 +830,12 @@ function reportCanvases(){
       y+=RH;g.fillStyle='#f0eaf2';g.fillRect(M,y-2,CW,2)});
     y+=26}
   const ws=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
-  table(T('staffPay'),[{t:T('staff'),w:.22},{t:'%',w:.08,a:'r'},{t:cap(T('custsL')),w:.11,a:'r'},{t:cap(T('svcL')),w:.15,a:'r'},{t:cap(T('tipL')),w:.12,a:'r'},{t:cap(T('comL')),w:.15,a:'r'},{t:cap(T('staffGets','').trim()),w:.17,a:'r'}],
-    ws.map(({w,x})=>({dot:w.color,cells:[w.name,w.pct+'%',x.n,money(x.svc),money(x.tip),money(x.svc*w.pct/100),money(x.pay)]})).concat(stfMode()?[]:[{bold:1,bg:'#fdf6f9',cells:[T('totalStaff'),'',r.n,money(r.svc),money(r.tip),money(r.pay-r.tip),money(r.pay)]}]));
+  table(T('staffPay'),[{t:T('staff'),w:.18},{t:'%',w:.07,a:'r'},{t:T('daysCol'),w:.1,a:'r'},{t:cap(T('custsL')),w:.09,a:'r'},{t:cap(T('svcL')),w:.14,a:'r'},{t:cap(T('tipL')),w:.12,a:'r'},{t:cap(T('comL')),w:.13,a:'r'},{t:cap(T('staffGets','').trim()),w:.17,a:'r'}],
+    ws.map(({w,x})=>({dot:w.color,cells:[w.name,w.pct+'%',daysOf(l,w.id),x.n,money(x.svc),money(x.tip),money(x.svc*w.pct/100),money(x.pay)]})).concat(stfMode()?[]:[{bold:1,bg:'#fdf6f9',cells:[T('totalStaff'),'','',r.n,money(r.svc),money(r.tip),money(r.pay-r.tip),money(r.pay)]}]));
   if(!stfMode()){if(y+60>BOT)newPage();y-=10;text(T('shopKeeps'),M+14,y+30,24,400);text(money(r.total-r.pay),WD-M-14,y+30,26,700,'#c2185b','right');y+=74;}
   if(st.rp==='day'){
     table(T('custDetail'),[{t:T('time'),w:.11},{t:T('staff'),w:.2},{t:cap(T('svcL')),w:.16,a:'r'},{t:cap(T('tipL')),w:.14,a:'r'},{t:T('paidBy'),w:.21},{t:T('tot'),w:.18,a:'r'}],
-      [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>({cells:[t.time,W(t.wid).name,money(t.amt),money(t.tip),payLabel(t)+(t.pay==='gift'?' '+((G(t.gid)||{}).code||''):''),money(t.amt+t.tip)]})));
+      [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>({cells:[t.kind==='day'?T('dayTotalT')+(t.n?' ('+t.n+')':''):t.time,W(t.wid).name,money(t.amt),money(t.tip),payLabel(t)+(t.pay==='gift'?' '+((G(t.gid)||{}).code||''):''),money(t.amt+t.tip)]})));
   }else{const B=[];
     if(st.rp==='year'){const yr=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',yr+'-'+pad(i+1)+'-01');B.push([monthName(yr,i),rptIn(x.a,x.b)])}}
     else{let d=rg.a;while(d<=rg.b){B.push([fmtShort(d),rptIn(d,d)]);d=addD(d,1)}}
@@ -968,6 +1000,214 @@ async function key(k){if(busy)return;if(k==='del'){L.buf=L.buf.slice(0,-1);drawL
     else if(S.workers.some(w=>!w.del&&w.pin===hb)){L={mode:'new',buf:'',first:'',msg:'!pinUsed',who:''};drawLock();shake()}
     else{try{localStorage.setItem(PK,hb)}catch(e){}st.role='owner';st.me='';hideLock();R();toast(T('pinSet'))}}
   busy=false}
+
+
+// ================= Day total entry + days worked =================
+Object.assign(D,{
+  modeOne:['👤 Từng khách','👤 One customer'],modeDay:['📋 Tổng cả ngày','📋 Day total'],
+  dayTotalT:['Tổng cả ngày','Day total'],numCust:['Số khách trong ngày','Customers today'],
+  svcTotal:['Tổng tiền dịch vụ','Total services'],tipTotal:['Tổng tiền bo','Total tips'],
+  cashPart:['Phần khách trả tiền mặt (gồm bo)','Paid in cash (incl. tips)'],
+  cardAuto:[(m,t)=>`💳 Thẻ: <b>${m}</b> · Tổng: <b>${t}</b>`,(m,t)=>`💳 Card: <b>${m}</b> · Total: <b>${t}</b>`],
+  cashTooBig:['Tiền mặt lớn hơn tổng','Cash is more than the total'],needN:['Nhập số khách','Enter number of customers'],
+  dayTotalL:['Mặt + Thẻ','Cash + Card'],dayHint:['Nhập một lần cho cả ngày của thợ: số khách, tổng tiền, tổng bo và phần tiền mặt. Phần còn lại tự tính là thẻ.','Enter one total for the staff member’s whole day: customers, total services, total tips and the cash part. The rest is counted as card.'],
+  saveDay:['Lưu tổng ngày','Save day total'],delDay:['Xoá tổng ngày này','Delete this day total'],
+  nDays:[n=>`${n} ngày làm`,n=>`${n} day${n==1?'':'s'} worked`],
+  weekDays:[n=>`Ngày làm trong tuần: ${n}/7`,n=>`Days worked this week: ${n}/7`],off:['nghỉ','off'],daysCol:['Ngày làm','Days'],
+});
+HELP.vi[2][1]+='<br>Hoặc bấm nút <b>📋 Tổng kết ngày</b> (bên trái) để nhập tổng tiền dịch vụ và tổng tiền bo của cả ngày. Nhân viên tự nhập được tổng ngày của mình.';
+HELP.en[2][1]+='<br>Or tap <b>📋 Day total</b> (on the left) to enter the whole day’s total services and total tips. Staff can enter their own day total.';
+const daysOf=(l,wid)=>new Set(l.filter(t=>!wid||t.wid===wid).map(t=>t.date)).size;
+function modeSeg(m){return`<div class="seg" style="margin-bottom:4px"><button class="${m==='one'?'on':''}" onclick="openT()">${T('modeOne')}</button><button class="${m==='day'?'on':''}" onclick="openDT()">${T('modeDay')}</button></div>`}
+let DE=null;
+function openDT(id){
+  if(st.role==='staff'&&!staffCan(id))return;
+  if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
+  const t=id?S.tickets.find(x=>x.id===id):null;
+  const defW=st.role==='staff'?st.me:(st.tab==='day'&&st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id);
+  DE=t?{id:t.id,date:t.date,wid:t.wid,n:String(t.n||''),amt:String(t.amt),tip:t.tip?String(t.tip):'',cash:t.cash?String(t.cash):''}:{id:null,date:st.day,wid:defW,n:'',amt:'',tip:'',cash:''};
+  drawDT()}
+function syncDT(){DE.n=$('#dN').value;DE.amt=$('#dA').value;DE.tip=$('#dT').value;DE.cash=$('#dC').value;const d=$('#dD');if(d)DE.date=d.value||DE.date}
+function dtCalc(){const tot=num($('#dA').value)+num($('#dT').value),c=num($('#dC').value);
+  $('#dtCard').innerHTML=T('cardAuto',money(Math.max(0,tot-c)),money(tot));$('#dtCard').style.color=c>tot?'#c62828':''}
+function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role!=='staff'||w.id===st.me));
+  openS(head(DE.id?T('dayTotalT'):T('addCustT'))+(DE.id?'':modeSeg('day'))+`
+  <p class="note" style="margin:6px 2px 2px">${T('dayHint')}</p>
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${DE.wid===w.id?'on':''}" onclick="syncDT();DE.wid='${w.id}';drawDT()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('numCust')}</div><input class="field" id="dN" inputmode="numeric" pattern="[0-9]*" placeholder="0" value="${esc(DE.n)}" style="font-size:22px!important;font-weight:700">
+  <div class="lab">${T('svcTotal')}</div><div class="money"><span>$</span><input id="dA" inputmode="decimal" placeholder="0" value="${esc(DE.amt)}" oninput="dtCalc()"></div>
+  <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtCalc()"></div>
+  <div class="lab">${T('cashPart')}</div><div class="money"><span>$</span><input id="dC" inputmode="decimal" placeholder="0" value="${esc(DE.cash)}" oninput="dtCalc()"></div>
+  <div id="dtCard" style="margin-top:10px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
+  ${st.role==='staff'?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}">`}
+  <div id="dErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" onclick="saveDT()">${T('saveDay')}</button>
+  ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
+  dtCalc();if(!DE.id&&!DE.n)setTimeout(()=>$('#dN')&&$('#dN').focus(),280)}
+function saveDT(){syncDT();const n=parseInt(DE.n,10),amt=num(DE.amt),tip=num(DE.tip),cash=num(DE.cash),tot=r2(amt+tip);
+  if(!(n>0)){$('#dErr').textContent=T('needN');return}
+  if(!amt){$('#dErr').textContent=T('needAmt');return}
+  if(cash>tot){$('#dErr').textContent=T('cashTooBig');return}
+  const t={id:DE.id||uid(),kind:'day',date:st.role==='staff'?today():DE.date,wid:st.role==='staff'?st.me:DE.wid,n,amt,tip,cash,card:r2(tot-cash),pay:'mix',time:'23:59'};
+  const isEdit=!!DE.id;if(isEdit)S.tickets=S.tickets.map(x=>x.id===DE.id?t:x);else S.tickets.push(t);
+  lastW=t.wid;save();closeS();st.day=t.date;R();toast(isEdit?T('updated'):T('saved'))}
+
+
+// ================= Day total v2: own button, services + tips only, staff can enter =================
+Object.assign(D,{
+  fabDay:['📋 Tổng kết ngày','📋 Day total'],
+  dayHint:['Nhập tổng cả ngày của thợ: tổng tiền dịch vụ và tổng tiền bo.','Enter the staff member’s total for the whole day: total services and total tips.'],
+  dayTotalL:['Tổng ngày','Day total'],
+  dayPreview:[(t,p)=>`Tổng: <b>${t}</b> · Thợ nhận: <b>${p}</b>`,(t,p)=>`Total: <b>${t}</b> · Staff gets: <b>${p}</b>`],
+  dayLoaded:['Thợ này đã có tổng ngày — đang sửa tổng cũ.','This staff member already has a day total — editing it.'],
+});
+function findDay(wid,date){return S.tickets.find(t=>t.kind==='day'&&t.wid===wid&&t.date===date)}
+function openDT(id){
+  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||t.date!==today()){toast(T('noEdit'));return}}
+  if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
+  let t=id?S.tickets.find(x=>x.id===id):null;
+  const date=st.role==='staff'?today():(t?t.date:st.day);
+  const wid=t?t.wid:(st.role==='staff'?st.me:(st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id));
+  if(!t){t=findDay(wid,date)||null}
+  DE=t?{id:t.id,date:t.date,wid:t.wid,amt:String(t.amt),tip:t.tip?String(t.tip):''}:{id:null,date,wid,amt:'',tip:''};
+  drawDT()}
+function pickDW(wid){syncDT();const ex=findDay(wid,DE.date);
+  if(ex&&ex.id!==DE.id){DE={id:ex.id,date:ex.date,wid,amt:String(ex.amt),tip:ex.tip?String(ex.tip):''};toast(T('dayLoaded'))}
+  else{DE.wid=wid;if(!ex&&DE.id){const cur=S.tickets.find(x=>x.id===DE.id);if(cur&&cur.wid!==wid)DE.id=null}}
+  drawDT()}
+function syncDT(){DE.amt=$('#dA').value;DE.tip=$('#dT').value;const d=$('#dD');if(d)DE.date=d.value||DE.date}
+function dtCalc(){const a=num($('#dA').value),tp=num($('#dT').value);
+  $('#dtCard').innerHTML=T('dayPreview',money(a+tp),money(a*W(DE.wid).pct/100+tp))}
+function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role!=='staff'||w.id===st.me));
+  openS(head(T('dayTotalT'))+`
+  <p class="note" style="margin:0 2px 4px">${T('dayHint')}</p>
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${DE.wid===w.id?'on':''}" onclick="pickDW('${w.id}')"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('svcTotal')}</div><div class="money"><span>$</span><input id="dA" inputmode="decimal" placeholder="0" value="${esc(DE.amt)}" oninput="dtCalc()"></div>
+  <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtCalc()"></div>
+  <div class="quick">${[10,20,30,50].map(v=>`<button onclick="$('#dT').value=${v};dtCalc()">$${v}</button>`).join('')}<button style="color:var(--mut)" onclick="$('#dT').value='';dtCalc()">${T('noTip')}</button></div>
+  <div id="dtCard" style="margin-top:12px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
+  ${st.role==='staff'?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE={id:ex.id,date:ex.date,wid:ex.wid,amt:String(ex.amt),tip:ex.tip?String(ex.tip):''};toast(T('dayLoaded'));drawDT()}">`}
+  <div id="dErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" style="background:var(--ink)" onclick="saveDT()">${T('saveDay')}</button>
+  ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
+  dtCalc();if(!DE.id&&!DE.amt)setTimeout(()=>$('#dA')&&$('#dA').focus(),280)}
+function saveDT(){syncDT();const amt=num(DE.amt),tip=num(DE.tip);
+  if(!amt){$('#dErr').textContent=T('needAmt');return}
+  const date=st.role==='staff'?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
+  const dup=findDay(wid,date);const id=DE.id||(dup&&dup.id)||uid();
+  const t={id,kind:'day',date,wid,n:0,amt,tip,cash:0,card:0,pay:'mix',time:'23:59'};
+  const isEdit=S.tickets.some(x=>x.id===id);
+  if(isEdit)S.tickets=S.tickets.map(x=>x.id===id?t:x);else S.tickets.push(t);
+  lastW=wid;save();closeS();st.day=date;R();toast(isEdit?T('updated'):T('saved'))}
+// second floating button (left of "+ Add customer")
+(function(){const b=document.createElement('button');b.className='fab fab2';b.id='fab2';b.onclick=()=>openDT();document.body.appendChild(b)})();
+const _R3=R;R=function(){_R3();const b=$('#fab2');if(b){b.textContent=T('fabDay');b.style.display=st.tab==='day'?'':'none'}};
+
+
+// ================= Day total v3: cash / card split + weekly attendance =================
+Object.assign(D,{
+  payMethod:['Khách trả bằng','Paid with'],allCash:['Tất cả tiền mặt','All cash'],allCard:['Tất cả thẻ','All card'],
+  cashAmt:['💵 Tiền mặt','💵 Cash'],cardAmt:['💳 Thẻ','💳 Card'],
+  splitBad:[m=>`Tiền mặt + thẻ phải bằng tổng ${m}`,m=>`Cash + card must equal the total ${m}`],
+  attT:['Ngày làm trong tuần','Days worked this week'],attNote:['Ngày không có số là ngày nghỉ (—). Số trong ô là tiền thợ nhận.','Days with no entry are days off (—). Each cell shows what the staff member earned.'],
+  dayHint:['Nhập tổng cả ngày của thợ: tổng tiền dịch vụ, tổng tiền bo, và phần trả tiền mặt / thẻ.','Enter the staff member’s total for the day: services, tips, and how much was cash / card.'],
+});
+function openDT(id){
+  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||t.date!==today()){toast(T('noEdit'));return}}
+  if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
+  let t=id?S.tickets.find(x=>x.id===id):null;
+  const date=st.role==='staff'?today():(t?t.date:st.day);
+  const wid=t?t.wid:(st.role==='staff'?st.me:(st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id));
+  if(!t)t=findDay(wid,date)||null;
+  DE=t?dayToDE(t):{id:null,date,wid,amt:'',tip:'',cash:'',card:''};
+  drawDT()}
+function dayToDE(t){const tot=r2(t.amt+t.tip),none=!(t.cash||t.card);return{id:t.id,date:t.date,wid:t.wid,amt:String(t.amt),tip:t.tip?String(t.tip):'',cash:none?'':String(t.cash||0),card:none?String(tot):String(t.card||0)}}
+function pickDW(wid){syncDT();const ex=findDay(wid,DE.date);
+  if(ex&&ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'))}
+  else{DE.wid=wid;if(!ex&&DE.id){const cur=S.tickets.find(x=>x.id===DE.id);if(cur&&cur.wid!==wid)DE.id=null}}
+  drawDT()}
+function syncDT(){DE.amt=$('#dA').value;DE.tip=$('#dT').value;DE.cash=$('#dC').value;DE.card=$('#dK').value;const d=$('#dD');if(d)DE.date=d.value||DE.date}
+const dTot=()=>r2(num($('#dA').value)+num($('#dT').value));
+function dtFrom(src){const tot=dTot();
+  if(src==='cash'){$('#dK').value=String(r2(Math.max(0,tot-num($('#dC').value))))}
+  else if(src==='card'){$('#dC').value=String(r2(Math.max(0,tot-num($('#dK').value))))}
+  else if(src==='all-cash'){$('#dC').value=String(tot);$('#dK').value='0'}
+  else if(src==='all-card'){$('#dK').value=String(tot);$('#dC').value='0'}
+  else{$('#dK').value=String(r2(Math.max(0,tot-num($('#dC').value))))}
+  dtCalc()}
+function dtCalc(){const a=num($('#dA').value),tp=num($('#dT').value),c=num($('#dC').value),k=num($('#dK').value),ok=Math.abs(c+k-(a+tp))<0.01;
+  $('#dtCard').innerHTML=T('dayPreview',money(a+tp),money(a*W(DE.wid).pct/100+tp))+(ok||!(a+tp)?'':`<div style="color:#c62828;font-size:14px;margin-top:4px">${T('splitBad',money(a+tp))}</div>`)}
+function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role!=='staff'||w.id===st.me));
+  openS(head(T('dayTotalT'))+`
+  <p class="note" style="margin:0 2px 4px">${T('dayHint')}</p>
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${DE.wid===w.id?'on':''}" onclick="pickDW('${w.id}')"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('svcTotal')}</div><div class="money"><span>$</span><input id="dA" inputmode="decimal" placeholder="0" value="${esc(DE.amt)}" oninput="dtFrom('total')"></div>
+  <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtFrom('total')"></div>
+  <div class="lab">${T('payMethod')}</div>
+  <div class="tog"><button class="cash" onclick="dtFrom('all-cash')">${T('allCash')}</button><button class="card" onclick="dtFrom('all-card')">${T('allCard')}</button></div>
+  <div class="row2" style="margin-top:8px">
+    <div><div class="lab" style="margin-top:4px">${T('cashAmt')}</div><div class="money" style="border-color:#c8e6c9"><span>$</span><input id="dC" inputmode="decimal" placeholder="0" value="${esc(DE.cash)}" oninput="dtFrom('cash')" style="font-size:22px!important"></div></div>
+    <div><div class="lab" style="margin-top:4px">${T('cardAmt')}</div><div class="money" style="border-color:#bbdefb"><span>$</span><input id="dK" inputmode="decimal" placeholder="0" value="${esc(DE.card)}" oninput="dtFrom('card')" style="font-size:22px!important"></div></div>
+  </div>
+  <div id="dtCard" style="margin-top:12px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
+  ${st.role==='staff'?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'));drawDT()}">`}
+  <div id="dErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" style="background:var(--ink)" onclick="saveDT()">${T('saveDay')}</button>
+  ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
+  if(!DE.card&&!DE.cash)dtFrom('total');else dtCalc();
+  if(!DE.id&&!DE.amt)setTimeout(()=>$('#dA')&&$('#dA').focus(),280)}
+function saveDT(){syncDT();const amt=num(DE.amt),tip=num(DE.tip),tot=r2(amt+tip),cash=num(DE.cash),card=num(DE.card);
+  if(!amt){$('#dErr').textContent=T('needAmt');return}
+  if(Math.abs(cash+card-tot)>=0.01){$('#dErr').textContent=T('splitBad',money(tot));return}
+  const date=st.role==='staff'?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
+  const dup=findDay(wid,date);const id=DE.id||(dup&&dup.id)||uid();
+  const t={id,kind:'day',date,wid,n:0,amt,tip,cash,card,pay:'mix',time:'23:59'};
+  const isEdit=S.tickets.some(x=>x.id===id);
+  if(isEdit)S.tickets=S.tickets.map(x=>x.id===id?t:x);else S.tickets.push(t);
+  lastW=wid;save();closeS();st.day=date;R();toast(isEdit?T('updated'):T('saved'))}
+// pay label for a day total shows the split
+const dayPill=t=>t.cash&&t.card?T('dayTotalL'):t.cash?T('cashW'):t.card?T('cardW'):T('dayTotalL');
+// weekly attendance table (whole salon, week view)
+function attTable(rg,l){const ds=[];for(let i=0;i<7;i++)ds.push(addD(rg.a,i));
+  const lb=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];
+  const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w.id));if(!ws.length)return'';
+  return`<div class="sec">${T('attT')}</div><div class="card att"><div class="atr ah"><span></span>${lb.map(x=>`<span>${x}</span>`).join('')}<span>∑</span></div>`+
+  ws.map(w=>{const cells=ds.map(d=>{const x=sum(l.filter(t=>t.wid===w.id&&t.date===d));return x.n||x.total?`<span class="on">${short(x.pay)}</span>`:'<span class="off">—</span>'}).join('');
+    return`<div class="atr"><span class="nm"><i style="background:${w.color}"></i>${esc(w.name)}</span>${cells}<b>${daysOf(l,w.id)}</b></div>`}).join('')+
+  `</div><p class="note">${T('attNote')}</p>`}
+
+
+// ================= Delete data (owner) =================
+Object.assign(D,{
+  wipeBtn:['🗑️ Xoá dữ liệu','🗑️ Delete data'],wipeT:['Xoá dữ liệu','Delete data'],
+  wipeNote:['Nên bấm <b>Sao lưu → Lưu file sao lưu</b> trước khi xoá. Nhập <b>mã chủ tiệm</b> rồi chọn cách xoá.','Use <b>Backup → Save backup file</b> first. Enter the <b>owner code</b>, then choose what to delete.'],
+  ownerCode:['Mã chủ tiệm','Owner code'],
+  wipeTickets:['Xoá khách & tổng ngày<br><small>Giữ lại thợ và gift card</small>','Delete customers & day totals<br><small>Keep staff and gift cards</small>'],
+  wipeAll:['Xoá hết<br><small>Thợ, khách, tổng ngày, gift card</small>','Delete everything<br><small>Staff, customers, day totals, gift cards</small>'],
+  wipeQ1:['Xoá toàn bộ khách và tổng ngày? Không lấy lại được, trừ khi có file sao lưu.','Delete all customers and day totals? This can’t be undone unless you have a backup file.'],
+  wipeQ2:['Xoá HẾT thợ, khách, tổng ngày và gift card? Không lấy lại được, trừ khi có file sao lưu.','Delete ALL staff, customers, day totals and gift cards? This can’t be undone unless you have a backup file.'],
+  wipeDone:['Đã xoá dữ liệu','Data deleted'],
+});
+function openWipe(){openS(head(T('wipeT'))+`<p class="note" style="margin:0 2px 8px">${T('wipeNote')}</p>
+  <div class="lab">🔒 ${T('ownerCode')}</div><input class="field" id="wPinC" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="-webkit-text-security:disc;letter-spacing:8px;font-size:22px!important">
+  <div id="wpErr" class="err-t"></div>
+  <button class="btn del" style="margin-top:14px;line-height:1.35" onclick="doWipe('t')">${T('wipeTickets')}</button>
+  <button class="btn del" style="margin-top:10px;line-height:1.35;background:#c62828;color:#fff" onclick="doWipe('all')">${T('wipeAll')}</button>
+  <button class="btn sec2" onclick="openBk()">${T('backup')}</button>`)}
+async function doWipe(kind){const v=$('#wPinC').value.trim();
+  if(!/^\d{4}$/.test(v)||await hash(v)!==getPin()){$('#wpErr').textContent=T('wrongPin');$('#wPinC').value='';return}
+  ask(T(kind==='all'?'wipeQ2':'wipeQ1'),T('del'),()=>{
+    if(kind==='all')S={workers:[],tickets:[],gifts:[],sample:false,staffAdd:S.staffAdd};
+    else{S.tickets=[];S.sample=false}
+    save();closeS();st.open.clear();st.vw='';R();toast(T('wipeDone'))})}
+
+
+// ---------- no rubber-band bounce at the top/bottom ----------
+(function(){let tx=0,ty=0;
+document.addEventListener('touchstart',e=>{if(e.touches.length===1){tx=e.touches[0].clientX;ty=e.touches[0].clientY}},{passive:true});
+document.addEventListener('touchmove',e=>{if(e.touches.length!==1)return;const dx=e.touches[0].clientX-tx,dy=e.touches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy))return;
+  const sc=(e.target.closest&&e.target.closest('.sheet.on'))||document.scrollingElement;const top=sc.scrollTop<=0,bot=sc.scrollTop+sc.clientHeight>=sc.scrollHeight-1;
+  if((top&&dy>0)||(bot&&dy<0))e.preventDefault()},{passive:false});})();
 
 R();showLock();
 </script>

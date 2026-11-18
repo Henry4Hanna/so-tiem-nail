@@ -282,6 +282,8 @@ main{padding-bottom:104px!important}
 .wkd.offd{background:#ffebee!important;color:#c62828!important}
 .atr .on{background:#e8f5e9!important;color:#2e7d32!important}
 .atr .off{background:#ffebee!important;color:#c62828!important;border-radius:7px;padding:5px 0;font-weight:700}
+
+#wPin::placeholder,#wPinC::placeholder{letter-spacing:0;font-size:15px}
 </style>
 </head>
 <body>
@@ -579,7 +581,7 @@ function drawGL(){const q=st.q.trim().toLowerCase();let l=S.gifts.filter(g=>!q||
 
 function vWork(){const a=activeW();
   return`<div class="sec" style="margin-top:4px">${T('activeStaff',a.length)}</div><div class="card">`+
-  (a.length?a.map(w=>`<div class="wl" onclick="openW('${w.id}')"><div class="av" style="background:${w.color}">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div class="nm"><b>${esc(w.name)}</b><small>${T('commission',w.pct)}${w.pin?' · 🔑 '+T('hasLogin'):''}</small></div><span style="color:var(--mut)">›</span></div>`).join(''):`<div class="note" style="padding:10px 0">${T('noStaff')}</div>`)+
+  (a.length?a.map(w=>`<div class="wl" onclick="openW('${w.id}')"><div class="av" style="background:${w.color}">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div class="nm"><b>${esc(w.name)}</b><small>${T('commission',w.pct)}${w.pin?' · 🔑 '+T('hasLogin'):''}${w.anyDay?' · 📅 '+T('anyDayTag'):''}</small></div><span style="color:var(--mut)">›</span></div>`).join(''):`<div class="note" style="padding:10px 0">${T('noStaff')}</div>`)+
   `</div><button class="btn pri" onclick="openW()">${T('addStaff')}</button>
   <div class="sec">🔑 ${T('loginSec')}</div><div class="card" style="padding:14px"><p class="note" style="margin:0 0 12px">${T('loginNote')}</p><label style="display:flex;align-items:center;gap:12px;cursor:pointer"><span style="flex:1"><b>${T('staffAddT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('staffAddD')}</small></span><input type="checkbox" class="sw" ${S.staffAdd?'checked':''} onchange="S.staffAdd=this.checked;save()"></label></div>
   <div class="sec">${T('data')}</div>
@@ -641,7 +643,7 @@ function drawT(){const ws=S.workers.filter(w=>(!w.del||w.id===E.wid)&&(st.role!=
   if(!E.id&&!E.amt)setTimeout(()=>$('#iA')&&$('#iA').focus(),280)}
 function tipQ(){if(E.pay==='gift'){syncT();drawT()}}
 function saveT(){syncT();const amt=num(E.amt);if(!amt){$('#iA').parentNode.style.borderColor='#c62828';$('#tErr').textContent=T('needAmt');return}
-  const t={id:E.id||uid(),date:st.role==='staff'?today():E.date,wid:st.role==='staff'?st.me:E.wid,amt,tip:num(E.tip),pay:E.pay,time:E.time};
+  const t={id:E.id||uid(),date:staffLock()?today():E.date,wid:st.role==='staff'?st.me:E.wid,amt,tip:num(E.tip),pay:E.pay,time:E.time};
   if(E.pay==='gift'){const g=G(E.gid);if(!g){$('#tErr').textContent=T('noGiftBal');return}
     const bal=gBal(g,E.id);t.gid=g.id;t.gamt=r2(Math.min(bal,amt+t.tip));t.pay2=E.pay2}
   const isEdit=!!E.id;
@@ -927,7 +929,7 @@ st.role='owner';st.me='';
 const isStaff=()=>st.role==='staff';
 function loginAs(id){st.role=id?'staff':'owner';st.me=id||'';st.tab='day';st.day=today();st.cal=today();st.rd=today();st.view='shop';st.rview='shop';st.vw=id||'';st.open.clear();closeS();hideLock();R();scrollTo(0,0);if(id)toast(T('hello',W(id).name))}
 function staffCan(id){if(!S.staffAdd){if(!id)return false;toast(T('viewOnly'));return false}
-  if(id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||t.date!==today()){toast(T('noEdit'));return false}}return true}
+  if(id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||(staffLock()&&t.date!==today())){toast(T('noEdit'));return false}}return true}
 
 // staff edit sheet with login code
 function drawW(){openS(head(F.id?T('editStaff'):T('addStaffT'))+`
@@ -936,17 +938,18 @@ function drawW(){openS(head(F.id?T('editStaff'):T('addStaffT'))+`
   <div class="lab">${T('color')}</div><div class="colors">${COLORS.map(c=>`<button class="${F.color===c?'on':''}" style="background:${c}" onclick="keepW();F.color='${c}';drawW()"></button>`).join('')}</div>
   <div class="lab">🔑 ${T('staffPin')}</div><input class="field" id="wPin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="-webkit-text-security:disc;letter-spacing:6px" value="${esc(F.pinIn||'')}" placeholder="${F.pin&&!F.rmPin?T('pinKeep'):T('pinNone')}">
   ${F.pin&&!F.rmPin?`<button class="btn sec2" style="padding:10px;font-size:14px" onclick="keepW();F.rmPin=true;drawW()">${T('pinRemove')}</button>`:''}
+  <label style="display:flex;align-items:center;gap:12px;cursor:pointer;margin-top:14px;background:var(--card);border-radius:14px;padding:12px 14px"><span style="flex:1"><b>📅 ${T('anyDayT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('anyDayD')}</small></span><input type="checkbox" class="sw" id="wAny" ${F.anyDay?'checked':''}></label>
   <div id="wErr" class="err-t"></div>
   <div style="margin-top:20px"><button class="btn pri" onclick="saveW()">${T('save')}</button>
   ${F.id?`<button class="btn del" onclick="ask(T('delStaffQ',esc(F.name)),T('del'),()=>{const w=S.workers.find(x=>x.id==='${F.id}');w.del=true;delete w.pin;save();closeS();R();toast(T('staffDeleted'))})">${T('delStaff')}</button>`:''}</div>`)}
-function keepW(){F.name=$('#wN').value;F.pct=$('#wP').value;F.pinIn=$('#wPin').value}
+function keepW(){F.name=$('#wN').value;F.pct=$('#wP').value;F.pinIn=$('#wPin').value;F.anyDay=$('#wAny').checked}
 async function saveW(){const name=$('#wN').value.trim();if(!name){$('#wN').style.borderColor='#c62828';return}
   const pct=Math.min(100,Math.max(0,parseFloat($('#wP').value)||0)),pin=$('#wPin').value.trim();
   let ph=F.rmPin?undefined:F.pin;
   if(pin){if(!/^\d{4}$/.test(pin)){$('#wErr').textContent=T('pinBad');return}
     ph=await hash(pin);if(ph===getPin()||S.workers.some(w=>w.id!==F.id&&!w.del&&w.pin===ph)){$('#wErr').textContent=T('pinUsed');return}}
   let w;if(F.id){w=S.workers.find(x=>x.id===F.id);Object.assign(w,{name,pct,color:F.color})}else{w={id:uid(),name,pct,color:F.color,del:false};S.workers.push(w)}
-  if(ph)w.pin=ph;else delete w.pin;
+  if(ph)w.pin=ph;else delete w.pin;w.anyDay=!!$('#wAny').checked;
   save();closeS();R();toast(T('staffSaved'))}
 
 
@@ -1044,7 +1047,7 @@ function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role
   <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtCalc()"></div>
   <div class="lab">${T('cashPart')}</div><div class="money"><span>$</span><input id="dC" inputmode="decimal" placeholder="0" value="${esc(DE.cash)}" oninput="dtCalc()"></div>
   <div id="dtCard" style="margin-top:10px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
-  ${st.role==='staff'?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}">`}
+  ${staffLock()?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}">`}
   <div id="dErr" class="err-t"></div>
   <div style="margin-top:18px"><button class="btn pri" onclick="saveDT()">${T('saveDay')}</button>
   ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
@@ -1068,10 +1071,10 @@ Object.assign(D,{
 });
 function findDay(wid,date){return S.tickets.find(t=>t.kind==='day'&&t.wid===wid&&t.date===date)}
 function openDT(id){
-  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||t.date!==today()){toast(T('noEdit'));return}}
+  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||(staffLock()&&t.date!==today())){toast(T('noEdit'));return}}
   if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
   let t=id?S.tickets.find(x=>x.id===id):null;
-  const date=st.role==='staff'?today():(t?t.date:st.day);
+  const date=staffLock()?today():(t?t.date:st.day);
   const wid=t?t.wid:(st.role==='staff'?st.me:(st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id));
   if(!t){t=findDay(wid,date)||null}
   DE=t?{id:t.id,date:t.date,wid:t.wid,amt:String(t.amt),tip:t.tip?String(t.tip):''}:{id:null,date,wid,amt:'',tip:''};
@@ -1091,14 +1094,14 @@ function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role
   <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtCalc()"></div>
   <div class="quick">${[10,20,30,50].map(v=>`<button onclick="$('#dT').value=${v};dtCalc()">$${v}</button>`).join('')}<button style="color:var(--mut)" onclick="$('#dT').value='';dtCalc()">${T('noTip')}</button></div>
   <div id="dtCard" style="margin-top:12px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
-  ${st.role==='staff'?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE={id:ex.id,date:ex.date,wid:ex.wid,amt:String(ex.amt),tip:ex.tip?String(ex.tip):''};toast(T('dayLoaded'));drawDT()}">`}
+  ${staffLock()?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE={id:ex.id,date:ex.date,wid:ex.wid,amt:String(ex.amt),tip:ex.tip?String(ex.tip):''};toast(T('dayLoaded'));drawDT()}">`}
   <div id="dErr" class="err-t"></div>
   <div style="margin-top:18px"><button class="btn pri" style="background:var(--ink)" onclick="saveDT()">${T('saveDay')}</button>
   ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
   dtCalc();if(!DE.id&&!DE.amt)setTimeout(()=>$('#dA')&&$('#dA').focus(),280)}
 function saveDT(){syncDT();const amt=num(DE.amt),tip=num(DE.tip);
   if(!amt){$('#dErr').textContent=T('needAmt');return}
-  const date=st.role==='staff'?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
+  const date=staffLock()?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
   const dup=findDay(wid,date);const id=DE.id||(dup&&dup.id)||uid();
   const t={id,kind:'day',date,wid,n:0,amt,tip,cash:0,card:0,pay:'mix',time:'23:59'};
   const isEdit=S.tickets.some(x=>x.id===id);
@@ -1118,10 +1121,10 @@ Object.assign(D,{
   dayHint:['Nhập tổng cả ngày của thợ: tổng tiền dịch vụ, tổng tiền bo, và phần trả tiền mặt / thẻ.','Enter the staff member’s total for the day: services, tips, and how much was cash / card.'],
 });
 function openDT(id){
-  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||t.date!==today()){toast(T('noEdit'));return}}
+  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||(staffLock()&&t.date!==today())){toast(T('noEdit'));return}}
   if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{go('work');openW()});return}
   let t=id?S.tickets.find(x=>x.id===id):null;
-  const date=st.role==='staff'?today():(t?t.date:st.day);
+  const date=staffLock()?today():(t?t.date:st.day);
   const wid=t?t.wid:(st.role==='staff'?st.me:(st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id));
   if(!t)t=findDay(wid,date)||null;
   DE=t?dayToDE(t):{id:null,date,wid,amt:'',tip:'',cash:'',card:''};
@@ -1155,7 +1158,7 @@ function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role
     <div><div class="lab" style="margin-top:4px">${T('cardAmt')}</div><div class="money" style="border-color:#bbdefb"><span>$</span><input id="dK" inputmode="decimal" placeholder="0" value="${esc(DE.card)}" oninput="dtFrom('card')" style="font-size:22px!important"></div></div>
   </div>
   <div id="dtCard" style="margin-top:12px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
-  ${st.role==='staff'?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'));drawDT()}">`}
+  ${staffLock()?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'));drawDT()}">`}
   <div id="dErr" class="err-t"></div>
   <div style="margin-top:18px"><button class="btn pri" style="background:var(--ink)" onclick="saveDT()">${T('saveDay')}</button>
   ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
@@ -1164,7 +1167,7 @@ function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role
 function saveDT(){syncDT();const amt=num(DE.amt),tip=num(DE.tip),tot=r2(amt+tip),cash=num(DE.cash),card=num(DE.card);
   if(!amt){$('#dErr').textContent=T('needAmt');return}
   if(Math.abs(cash+card-tot)>=0.01){$('#dErr').textContent=T('splitBad',money(tot));return}
-  const date=st.role==='staff'?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
+  const date=staffLock()?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
   const dup=findDay(wid,date);const id=DE.id||(dup&&dup.id)||uid();
   const t={id,kind:'day',date,wid,n:0,amt,tip,cash,card,pay:'mix',time:'23:59'};
   const isEdit=S.tickets.some(x=>x.id===id);
@@ -1213,6 +1216,17 @@ document.addEventListener('touchstart',e=>{if(e.touches.length===1){tx=e.touches
 document.addEventListener('touchmove',e=>{if(e.touches.length!==1)return;const dx=e.touches[0].clientX-tx,dy=e.touches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy))return;
   const sc=(e.target.closest&&e.target.closest('.sheet.on'))||document.scrollingElement;const top=sc.scrollTop<=0,bot=sc.scrollTop+sc.clientHeight>=sc.scrollHeight-1;
   if((top&&dy>0)||(bot&&dy<0))e.preventDefault()},{passive:false});})();
+
+
+// ================= Per-staff permission: edit other days =================
+Object.assign(D,{
+  anyDayT:['Cho sửa / xoá ngày trước, ngày sau','Allow editing other days'],
+  anyDayD:['Thợ này được nhập, sửa, xoá số của mình ở ngày khác, không chỉ hôm nay.','This staff member can add, edit and delete their own entries on other days, not just today.'],
+  anyDayTag:['sửa ngày khác','edits other days'],
+});
+const staffLock=()=>st.role==='staff'&&!W(st.me).anyDay;
+HELP.vi[5][1]+=' Muốn cho thợ nào sửa hoặc xoá số của ngày trước, ngày sau: bấm tên thợ → bật <b>Cho sửa / xoá ngày trước, ngày sau</b>.';
+HELP.en[5][1]+=' To let a staff member edit or delete entries on other days: tap their name → turn on <b>Allow editing other days</b>.';
 
 R();showLock();
 </script>

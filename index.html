@@ -277,6 +277,11 @@ main{padding-bottom:104px!important}
 .fab{left:auto;right:14px;width:calc(50% - 21px);max-width:260px;padding:14px 8px;text-align:center;white-space:nowrap;font-size:15px}
 .fab2{right:auto;left:14px}
 @media (min-width:600px){.fab{right:calc(50% - 266px)}.fab2{right:auto;left:calc(50% - 266px)}}
+
+.wkd.on{background:#2e7d32!important;color:#fff!important}
+.wkd.offd{background:#ffebee!important;color:#c62828!important}
+.atr .on{background:#e8f5e9!important;color:#2e7d32!important}
+.atr .off{background:#ffebee!important;color:#c62828!important;border-radius:7px;padding:5px 0;font-weight:700}
 </style>
 </head>
 <body>
@@ -524,9 +529,9 @@ function vStaffRep(rg,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===
   if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const r2_=range('month',y+'-'+pad(i+1)+'-01');B.push({lb:LANG==='en'?MON[i][0]:'T'+(i+1),name:monthName(y,i),l:tl.filter(t=>t.date>=r2_.a&&t.date<=r2_.b)})}}
   else{let d=rg.a,i=0;const wk=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];while(d<=rg.b){const dd=d;B.push({lb:st.rp==='week'?wk[i]:((i+1)%5===0||i===0?i+1:''),name:fmtShort(d),l:tl.filter(t=>t.date===dd)});d=addD(d,1);i++}}
   B.forEach(b=>b.x=sum(b.l));const mx=Math.max(1,...B.map(b=>b.x.pay));
-  if(st.rp==='week')h+=`<div class="sec">${T('weekDays',days)}</div><div class="wkg">${B.map(b=>`<div class="wkd ${b.x.n?'on':''}"><b>${b.lb}</b><span>${b.x.n?money(b.x.pay):T('off')}</span></div>`).join('')}</div>`;
+  if(st.rp==='week')h+=`<div class="sec">${T('weekDays',days)}</div><div class="wkg">${B.map(b=>`<div class="wkd ${b.l.length?'on':'offd'}"><b>${b.lb}</b><span>${b.l.length?money(b.x.pay):T('off')}</span></div>`).join('')}</div>`;
   h+=`<div class="chart"><h4>${T('payBy',st.rp==='year')}</h4><div class="bars">${B.map(b=>`<div><i style="height:${b.x.pay/mx*100}%;background:linear-gradient(${w.color},#2a1838)"></i><small>${b.lb}</small></div>`).join('')}</div></div>`;
-  h+=`<div class="sec">${T('detailBy',st.rp==='year')}</div><div class="card">`+B.filter(b=>b.x.n).map(b=>`<div class="tot" style="align-items:center"><span>${b.name}<br><small style="color:var(--mut);font-size:12px">${T('nCust',b.x.n)} · ${cap1(T('svcL'))} ${money(b.x.svc)} · ${T('tipL')} ${money(b.x.tip)}</small></span><b>${money(b.x.pay)}</b></div>`).join('')+`</div>`;
+  h+=`<div class="sec">${T('detailBy',st.rp==='year')}</div><div class="card">`+B.filter(b=>b.l.length).map(b=>`<div class="tot" style="align-items:center"><span>${b.name}<br><small style="color:var(--mut);font-size:12px">${b.x.n?T('nCust',b.x.n)+' · ':''}${cap1(T('svcL'))} ${money(b.x.svc)} · ${T('tipL')} ${money(b.x.tip)}</small></span><b>${money(b.x.pay)}</b></div>`).join('')+`</div>`;
   return h}
 D.slipTitle=[p=>`PHIẾU LƯƠNG THỢ · ${p}`,p=>`STAFF PAY SLIP · ${p}`];
 D.exportSlip=['Xuất phiếu lương PDF','Export pay slip PDF'];

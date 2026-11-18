@@ -284,12 +284,18 @@ main{padding-bottom:104px!important}
 .atr .off{background:#ffebee!important;color:#c62828!important;border-radius:7px;padding:5px 0;font-weight:700}
 
 #wPin::placeholder,#wPinC::placeholder{letter-spacing:0;font-size:15px}
+
+.dtrow{display:flex;align-items:center;gap:8px}
+.dtrow>button{width:48px;height:56px;border-radius:14px;background:var(--card);font-size:24px;flex:none;box-shadow:0 1px 2px #0000000d}
+.dtmid{flex:1;background:var(--card);border-radius:14px;padding:6px 12px;text-align:center;box-shadow:0 1px 2px #0000000d}
+.dtmid input{border:0;outline:0;background:none;font-size:18px!important;font-weight:700;text-align:center;width:100%;color:var(--ink)}
+.dtmid small{display:block;color:var(--acc);font-size:12.5px;font-weight:600}
 </style>
 </head>
 <body>
 <div id="rot"><div><div style="font-size:52px;margin-bottom:10px">📱</div>Vui lòng xoay dọc điện thoại<small>Please rotate your phone to portrait</small></div></div>
 <header><div class="logo">💅</div><div><h1>Sổ Tiệm Nail</h1><small id="sub"></small></div>
-<div class="hb"><button onclick="showLock('enter')" aria-label="Lock">🔒</button><button onclick="setLang(LANG==='vi'?'en':'vi')" id="lb">EN</button><button onclick="openHelp()" aria-label="Help">?</button></div></header>
+<div class="hb"><button onclick="showLock('switch')" aria-label="Lock">🔑</button><button onclick="setLang(LANG==='vi'?'en':'vi')" id="lb">EN</button><button onclick="openHelp()" aria-label="Help">?</button></div></header>
 <main id="main"></main>
 <button class="fab" id="fab"></button>
 <nav class="tabs" id="tabs"></nav>
@@ -994,7 +1000,7 @@ function drawLock(){
     body=`<p class="${err?'err':''}">${L.msg?T(L.msg.replace('!','')):t}</p>
       <div class="dots" id="dots">${[0,1,2,3].map(i=>`<i class="${i<L.buf.length?'f':''}"></i>`).join('')}</div>
       <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="key('${n}')">${n}</button>`).join('')}<button class="sm" onclick="${left[0]}">${left[1]}</button><button onclick="key('0')">0</button><button class="sm" onclick="key('del')">⌫</button></div>`+
-      (L.mode==='enter'?`<button class="lback" onclick="lockGo('pick')">${T('back')}</button>`:'');
+      (L.mode==='enter'?`<button class="lback" style="background:#ffffff1f;border-radius:24px;padding:12px 22px;color:#fff" onclick="lockGo('pick')">${T('switchUser')}</button>`:'');
   }
   $('#lock').innerHTML=lang+`<div class="lk">${top}${body}<small class="by">${T('by')} Ryan Nguyen</small></div>`}
 async function key(k){if(busy)return;if(k==='del'){L.buf=L.buf.slice(0,-1);drawLock();return}if(L.buf.length>=4)return;L.buf+=k;drawLock();if(L.buf.length<4)return;
@@ -1227,6 +1233,36 @@ Object.assign(D,{
 const staffLock=()=>st.role==='staff'&&!W(st.me).anyDay;
 HELP.vi[5][1]+=' Muốn cho thợ nào sửa hoặc xoá số của ngày trước, ngày sau: bấm tên thợ → bật <b>Cho sửa / xoá ngày trước, ngày sau</b>.';
 HELP.en[5][1]+=' To let a staff member edit or delete entries on other days: tap their name → turn on <b>Allow editing other days</b>.';
+
+
+// ================= Day total: date picker at the top (owner, or staff who are allowed) =================
+function dtSetDate(d){if(!d)return;syncDT();const ex=findDay(DE.wid,d);
+  if(ex){if(ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'))}}
+  else if(DE.id){DE={id:null,date:d,wid:DE.wid,amt:'',tip:'',cash:'',card:''}}
+  else DE.date=d;
+  DE.date=d;drawDT()}
+const _drawDT0=drawDT;
+drawDT=function(){_drawDT0();const old=$('#dD');if(!old)return;
+  const lab=old.previousElementSibling;if(lab&&lab.classList.contains('lab'))lab.remove();old.remove();
+  const box=document.createElement('div');
+  box.innerHTML=`<div class="lab">📅 ${T('date')}</div><div class="dtrow"><button type="button" onclick="dtSetDate(addD(DE.date,-1))" aria-label="prev">‹</button><div class="dtmid"><input type="date" id="dD" value="${DE.date}" onchange="dtSetDate(this.value)"><small>${fmtDay(DE.date)}${DE.date===today()?' · '+T('today'):''}</small></div><button type="button" onclick="dtSetDate(addD(DE.date,1))" aria-label="next">›</button></div>`;
+  const note=$('#sheet .note');if(note)note.after(box);else $('#sheet').appendChild(box)};
+
+
+// ================= Remember who logged in last; 🔑 to switch user =================
+D.switchUser=['🔑 Đổi người đăng nhập','🔑 Switch user'];
+HELP.vi[0][1]+=' Lần sau mở app sẽ vào thẳng màn hình nhập mã của người đăng nhập lần trước. Muốn vào bằng chủ tiệm hay nhân viên khác, bấm <b>🔑</b>.';
+HELP.en[0][1]+=' Next time, the app opens straight to the code screen of whoever logged in last. To sign in as the owner or another staff member, tap <b>🔑</b>.';
+const LASTK='so-tiem-nail.last';
+function getLast(){try{return localStorage.getItem(LASTK)||''}catch(e){return''}}
+function setLast(v){try{localStorage.setItem(LASTK,v)}catch(e){}}
+const _loginAs0=loginAs;loginAs=function(id){setLast(id||'owner');_loginAs0(id)};
+function showLock(mode){closeS();
+  if(!getPin())mode='new';
+  else if(!mode||mode==='enter'){const l=getLast(),ok=l==='owner'||S.workers.some(w=>w.id===l&&!w.del&&w.pin);
+    L={mode:ok?'enter':'pick',buf:'',first:'',msg:'',who:ok?l:''};drawLock();$('#lock').classList.add('on');return}
+  else if(mode==='switch')mode='pick';
+  L={mode,buf:'',first:'',msg:'',who:''};drawLock();$('#lock').classList.add('on')}
 
 R();showLock();
 </script>

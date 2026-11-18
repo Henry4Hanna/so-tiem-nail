@@ -290,6 +290,8 @@ main{padding-bottom:104px!important}
 .dtmid{flex:1;background:var(--card);border-radius:14px;padding:6px 12px;text-align:center;box-shadow:0 1px 2px #0000000d}
 .dtmid input{border:0;outline:0;background:none;font-size:18px!important;font-weight:700;text-align:center;width:100%;color:var(--ink)}
 .dtmid small{display:block;color:var(--acc);font-size:12.5px;font-weight:600}
+
+.pay.split{background:#ede7f6;color:#4527a0}
 </style>
 </head>
 <body>
@@ -457,7 +459,7 @@ const gUsed=(gid,exceptId)=>S.tickets.filter(t=>t.pay==='gift'&&t.gid===gid&&t.i
 const gBal=(g,exceptId)=>r2(g.amount-gUsed(g.id,exceptId));
 function sum(l){const r={svc:0,tip:0,cash:0,card:0,gift:0,n:l.reduce((a,t)=>a+(t.kind==='day'?(t.n||0):1),0),pay:0};
   l.forEach(t=>{r.svc+=t.amt;r.tip+=t.tip;const x=t.amt+t.tip;
-    if(t.kind==='day'){r.cash+=t.cash||0;r.card+=t.card||0}else if(t.pay==='gift'){const g=Math.min(t.gamt||0,x);r.gift+=g;const rem=x-g;if(rem>0)t.pay2==='cash'?r.cash+=rem:r.card+=rem}
+    if(t.kind==='day'||t.pay==='split'){r.cash+=t.cash||0;r.card+=t.card||0;r.gift+=t.gift||0}else if(t.pay==='gift'){const g=Math.min(t.gamt||0,x);r.gift+=g;const rem=x-g;if(rem>0)t.pay2==='cash'?r.cash+=rem:r.card+=rem}
     else t.pay==='cash'?r.cash+=x:r.card+=x;
     r.pay+=t.amt*W(t.wid).pct/100+t.tip});
   r.total=r.svc+r.tip;r.days=new Set(l.map(t=>t.date)).size;return r}
@@ -473,7 +475,7 @@ function range(p,s){const d=pd(s);let a,b,label;
   else{a=d.getFullYear()+'-01-01';b=d.getFullYear()+'-12-31';label=(LANG==='en'?'Year ':'Năm ')+d.getFullYear()}
   return{a,b,label}}
 function shift(p,s,dir){const d=pd(s);if(p==='day')d.setDate(d.getDate()+dir);else if(p==='week')d.setDate(d.getDate()+7*dir);else if(p==='month'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else d.setFullYear(d.getFullYear()+dir);return ymd(d)}
-const payLabel=t=>t.kind==='day'?dayPill(t):t.pay==='cash'?T('cashW'):t.pay==='card'?T('cardW'):T('giftW');
+const payLabel=t=>t.pay==='split'?T('splitL'):t.kind==='day'?dayPill(t):t.pay==='cash'?T('cashW'):t.pay==='card'?T('cardW'):T('giftW');
 
 // ---------- views ----------
 function kpis(r,gs){return`<div class="kpi big"><span>${T('total')}</span><b>${money(r.total)}</b><small>${T('svcTip',money(r.svc),money(r.tip))}${r.days&&st.tab!=='day'&&!(st.tab==='rep'&&st.rp==='day')?' · <span style="color:#fff;font-weight:700">'+T('nDays',r.days)+'</span>':''}</small>${st.role==='staff'?'':`<div class="keepRow"><div><span>🏠 ${T('shopKeeps')}</span><em>${money(r.total-r.pay)}</em></div><div><span>👩 ${T('totalStaff')}</span><em>${money(r.pay)}</em></div></div>`}</div>
@@ -525,6 +527,7 @@ function vStaffRep(rg,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===
   let h=st.role==='staff'?'':`<div class="schips">${ws.map(w=>{const n=l.filter(t=>t.wid===w.id).length;return`<button class="chip ${st.vw===w.id?'on':''}" onclick="st.vw='${w.id}';R()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}<span class="cnt">${n}</span></button>`}).join('')}</div>`;
   const w=W(st.vw),tl=l.filter(t=>t.wid===w.id),x=sum(tl),com=x.svc*w.pct/100,days=new Set(tl.map(t=>t.date)).size;
   h+=`<button class="btn pdfb" onclick="exportPDF(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${T('exportSlip')}</button>
+  <button class="btn sec2 csvb" style="margin:-4px 0 12px;padding:12px" onclick="csvExport()">${T('csvBtn')}</button>
   <div class="shero" style="background:linear-gradient(135deg,${w.color},#2a1838 85%)"><div class="top"><div class="av">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div><b>${esc(w.name)}</b><small>${rg.label} · ${T('commission',w.pct)}</small></div></div>
   <span>${T('earn')}</span><b class="big">${money(x.pay)}</b><div class="sub">${T('comPlusTip',money(com),money(x.tip))}${st.rp!=='day'?' · '+T('daysWorked',days):''}</div></div>
   <div class="kgrid"><div class="kpi"><span>${T('custs')}</span><b>${x.n}</b></div><div class="kpi"><span>${T('total')}</span><b>${money(x.total)}</b></div>
@@ -559,7 +562,7 @@ function vCal(){const d=pd(st.cal),y=d.getFullYear(),m=d.getMonth(),days=new Dat
 function vRep(){if(st.role==='staff'){st.rview='staff';st.vw=st.me}const rg=range(st.rp,st.rd),l=inRange(rg.a,rg.b),r=sum(l),gl=giftsIn(rg.a,rg.b),gs=gsum(gl);
   let h=`<div class="seg">${['day','week','month','year'].map(p=>`<button class="${st.rp===p?'on':''}" onclick="st.rp='${p}';R()">${T('p'+p)}</button>`).join('')}</div>
   <div class="nav"><button onclick="st.rd=shift(st.rp,st.rd,-1);R()">‹</button><div class="nl"><b>${rg.label}</b><small>${l.length?T('daysWorked',new Set(l.map(t=>t.date)).size):T('noData')}</small></div><button onclick="st.rd=shift(st.rp,st.rd,1);R()">›</button></div>
-  ${st.role==='staff'?'':rsegHTML()}<button class="btn pdfb" onclick="exportPDF(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${T('exportPdf')}</button>`;if(stfMode()||st.rview==='staff')return h.replace(/<button class="btn pdfb"[\s\S]*?<\/button>/,'')+vStaffRep(rg,l);h+=kpis(r,gs);
+  ${st.role==='staff'?'':rsegHTML()}<button class="btn pdfb" onclick="exportPDF(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${T('exportPdf')}</button><button class="btn sec2 csvb" style="margin:-4px 0 12px;padding:12px" onclick="csvExport()">${T('csvBtn')}</button>`;if(stfMode()||st.rview==='staff')return h.replace(/<button class="btn pdfb"[\s\S]*?<\/button>/,'').replace(/<button class="btn sec2 csvb"[\s\S]*?<\/button>/,'')+vStaffRep(rg,l);h+=kpis(r,gs);
   let B=[];
   if(st.rp==='week'){const lb=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];for(let i=0;i<7;i++){const ds=addD(rg.a,i);B.push([lb[i],sum(inRange(ds,ds)).total])}}
   else if(st.rp==='month'){const n=pd(rg.b).getDate();for(let i=0;i<n;i++){const ds=addD(rg.a,i);B.push([(i+1)%5===0||i===0?i+1:'',sum(inRange(ds,ds)).total])}}
@@ -594,6 +597,7 @@ function vWork(){const a=activeW();
   ${S.sample?`<div class="card" style="padding:14px"><b>${T('sampleOn')}</b><p class="note" style="margin:6px 0 10px">${T('sampleTxt')}</p><button class="btn del" style="margin:0" onclick="ask(T('clearSampleQ'),T('del'),()=>{S={workers:[],tickets:[],gifts:[],sample:false};save();R();toast(T('cleared'))})">${T('clearSample')}</button></div>`:''}
   <button class="btn sec2" onclick="openHelp()">${T('guide')}</button>
   <button class="btn sec2" onclick="openBk()">${T('backup')}</button>
+  <button class="btn sec2" onclick="openImp()">${T('impBtn')}</button>
   <button class="btn del" onclick="openWipe()">${T('wipeBtn')}</button>
   <button class="btn sec2" onclick="showLock(getPin()?'old':'new')">${T('changePin')}</button>
   <button class="btn sec2" onclick="showLock('enter')">${T('lockNow')}</button>
@@ -714,7 +718,7 @@ function restore(){try{const d=JSON.parse($('#bk').value);if(!Array.isArray(d.wo
 
 // ---------- file saving ----------
 async function getDL(){try{return window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){return null}}
-async function saveFile(name,data,okMsg){if(window.Android){Android.saveFile(name,name.endsWith('.json')?'application/json':'text/plain',String(data));return true}const dl=await getDL();if(!dl){toast(T('noFile'));return false}
+async function saveFile(name,data,okMsg){if(window.Android){Android.saveFile(name,name.endsWith('.json')?'application/json':name.endsWith('.csv')?'text/csv':'text/plain',String(data));return true}const dl=await getDL();if(!dl){toast(T('noFile'));return false}
   try{await dl.save({filename:name,data});toast(okMsg);return true}catch(e){if(!e||e.code!=='declined')toast(T('fileFail'));return false}}
 function fileBk(){saveFile('So-Tiem-Nail-backup-'+today()+'.json',JSON.stringify({...S,sample:false}),T('fileSaved'))}
 
@@ -803,7 +807,7 @@ function dlBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createEl
 function shareBlob(blob,name,okMsg){let f=null;try{f=new File([blob],name,{type:blob.type})}catch(e){}
   if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).then(()=>{if(okMsg)toast(okMsg)}).catch(e=>{if(e&&e.name!=='AbortError'){dlBlob(blob,name)}});return}
   dlBlob(blob,name);if(okMsg)toast(okMsg)}
-function saveFile(name,data,okMsg){shareBlob(new Blob([data],{type:name.endsWith('.json')?'application/json':'text/plain'}),name,okMsg);return true}
+function saveFile(name,data,okMsg){shareBlob(new Blob([data],{type:name.endsWith('.json')?'application/json':name.endsWith('.csv')?'text/csv':'text/plain'}),name,okMsg);return true}
 
 // ---- report drawn on canvas (works offline, keeps Vietnamese text) ----
 function reportCanvases(){
@@ -1263,6 +1267,104 @@ function showLock(mode){closeS();
     L={mode:ok?'enter':'pick',buf:'',first:'',msg:'',who:ok?l:''};drawLock();$('#lock').classList.add('on');return}
   else if(mode==='switch')mode='pick';
   L={mode,buf:'',first:'',msg:'',who:''};drawLock();$('#lock').classList.add('on')}
+
+
+// ================= Download sheet (CSV for Excel / Numbers) =================
+Object.assign(D,{
+  csvBtn:['📊 Tải bảng số (Excel)','📊 Download sheet (Excel)'],csvDone:['Đã tải bảng số ✓','Sheet saved ✓'],
+  csvH:[['Ngày','Thứ','Thợ','Loại','Giờ','Số khách','Tiền dịch vụ','Tiền bo','Tổng','Tiền mặt','Thẻ','Gift card','% hoa hồng','Thợ nhận'],['Date','Day','Staff','Type','Time','Customers','Services','Tips','Total','Cash','Card','Gift card','Commission %','Staff gets']],
+  csvCust:['Khách','Customer'],csvDay:['Tổng ngày','Day total'],csvSum:['TỔNG CỘNG','TOTAL'],csvDays:['Số ngày làm','Days worked'],
+  csvPeriod:['Thời gian','Period'],csvMade:['Xuất lúc','Exported'],csvBy:['Sổ Tiệm Nail · App viết bởi Ryan Nguyen','Sổ Tiệm Nail · App by Ryan Nguyen'],
+});
+const dowShort=s=>{const d=pd(s);return LANG==='en'?DOWE[d.getDay()]:(d.getDay()?'T'+(d.getDay()+1):'CN')};
+function csvText(){const rg=range(st.rp,st.rd),l=[...rptL(rg)].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.time<b.time?-1:1));
+  const q=v=>{v=String(v==null?'':v);return /[",\n;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v},n2=v=>String(r2(v));
+  const rows=[[T('csvPeriod'),rptLabel(rg)],[T('csvMade'),fmtDate(today())+' '+nowHM()],[],T('csvH')];
+  l.forEach(t=>{const x=sum([t]),w=W(t.wid);rows.push([fmtDate(t.date),dowShort(t.date),w.name,t.kind==='day'?T('csvDay'):T('csvCust'),t.kind==='day'?'':t.time,x.n,n2(t.amt),n2(t.tip),n2(x.total),n2(x.cash),n2(x.card),n2(x.gift),w.pct,n2(x.pay)])});
+  const r=sum(l);rows.push([]);rows.push([T('csvSum'),'','','','',r.n,n2(r.svc),n2(r.tip),n2(r.total),n2(r.cash),n2(r.card),n2(r.gift),'',n2(r.pay)]);
+  rows.push([T('csvDays'),r.days]);rows.push([]);rows.push([T('csvBy')]);
+  return{name:(LANG==='en'?'Sheet-':'Bang-so-')+rptFileTag(rg)+'.csv',csv:'﻿'+rows.map(rw=>rw.map(q).join(',')).join('\r\n')}}
+function csvExport(){const c=csvText();saveFile(c.name,c.csv,T('csvDone'))}
+
+
+// ================= Import from Excel (.csv) =================
+Object.assign(D,{
+  impBtn:['📥 Nhập từ Excel (.csv)','📥 Import from Excel (.csv)'],impT:['Nhập từ Excel','Import from Excel'],
+  impNote:['Chọn file <b>.csv</b> do app xuất ra (nút <b>Tải bảng số</b>). Nếu đã sửa trong Excel, nhớ <b>lưu lại dạng CSV</b>. App sẽ cho xem trước rồi mới nhập.','Choose a <b>.csv</b> file exported by the app (<b>Download sheet</b>). If you edited it in Excel, <b>save it as CSV</b>. You’ll see a preview before anything is added.'],
+  impPick:['📂 Chọn file CSV','📂 Choose CSV file'],
+  impBad:['Không đọc được file. Hãy chọn file .csv do app xuất ra.','Could not read the file. Choose a .csv exported by the app.'],
+  impXlsx:['Đây là file Excel (.xlsx). Trong Excel chọn <b>Lưu dưới dạng → CSV UTF-8</b> rồi chọn lại file đó.','This is an Excel (.xlsx) file. In Excel use <b>Save As → CSV UTF-8</b>, then choose that file.'],
+  impFile:['File','File'],
+  impSum:[(a,b)=>`Tìm thấy <b>${a}</b> dòng khách và <b>${b}</b> dòng tổng ngày.`,(a,b)=>`Found <b>${a}</b> customer rows and <b>${b}</b> day-total rows.`],
+  impNew:[n=>`✅ Sẽ thêm mới: <b>${n}</b> dòng`,n=>`✅ New rows to add: <b>${n}</b>`],
+  impUpd:[n=>`✏️ Tổng ngày sẽ cập nhật: <b>${n}</b>`,n=>`✏️ Day totals to update: <b>${n}</b>`],
+  impDup:[n=>`⏭️ Đã có sẵn, bỏ qua: <b>${n}</b>`,n=>`⏭️ Already in the app, skipped: <b>${n}</b>`],
+  impStaff:[s=>`👩 Thợ mới sẽ được tạo: <b>${s}</b>`,s=>`👩 New staff to create: <b>${s}</b>`],
+  impGo:['Nhập vào app','Import now'],impDone:[n=>`Đã nhập ${n} dòng ✓`,n=>`Imported ${n} rows ✓`],impNothing:['Không có gì mới để nhập.','Nothing new to import.'],
+  splitL:['Mặt + Thẻ','Cash + Card'],
+});
+HELP.vi[HELP.vi.length-2][1]+='<br>Có file bảng số (.csv) do app xuất? Tab <b>Thợ</b> → <b>Nhập từ Excel</b> để đưa số vào lại; dòng nào đã có sẵn sẽ tự bỏ qua.';
+HELP.en[HELP.en.length-2][1]+='<br>Have a sheet (.csv) exported by the app? <b>Staff</b> tab → <b>Import from Excel</b> to bring the numbers back in; rows already in the app are skipped.';
+let IMP=null;
+function openImp(){IMP=null;drawImp()}
+function drawImp(){openS(head(T('impT'))+`<p class="note" style="margin:0 2px 10px">${T('impNote')}</p>
+  <label class="btn pri" style="cursor:pointer">${T('impPick')}<input type="file" accept=".csv,text/csv,text/plain,.txt" style="display:none" onchange="readImp(this)"></label>
+  <div id="impErr" class="err-t"></div>
+  ${IMP?`<div class="card" style="padding:14px 16px;margin-top:12px;font-size:15px;line-height:1.8">
+    <div style="color:var(--mut);font-size:13px">${T('impFile')}: ${esc(IMP.file)}</div>
+    <div>${T('impSum',IMP.cust,IMP.day)}</div><div>${T('impNew',IMP.add)}</div>${IMP.upd?`<div>${T('impUpd',IMP.upd)}</div>`:''}<div>${T('impDup',IMP.dup)}</div>
+    ${IMP.newStaff.length?`<div>${T('impStaff',esc(IMP.newStaff.join(', ')))}</div>`:''}</div>
+    <button class="btn pri" style="background:var(--ink);margin-top:10px" onclick="doImp()" ${IMP.add+IMP.upd?'':'disabled'}>${IMP.add+IMP.upd?T('impGo'):T('impNothing')}</button>`:''}`)}
+function readImp(inp){const f=inp.files&&inp.files[0];if(!f)return;
+  if(/\.xls[xm]?$/i.test(f.name)){$('#impErr').innerHTML=T('impXlsx');return}
+  const rd=new FileReader();rd.onload=()=>{try{IMP=parseImp(String(rd.result));IMP.file=f.name;drawImp()}catch(e){$('#impErr').textContent=T('impBad')}};rd.readAsText(f)}
+function csvRows(text,delim){const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
+    else if(c==='"')q=true;else if(c===delim){row.push(cur);cur=''}else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur=''}else if(c!=='\r')cur+=c}
+  if(cur||row.length){row.push(cur);rows.push(row)}return rows}
+function parseDateAny(s,vi){s=String(s||'').trim();let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/),y,mo,d;
+  if(m){y=+m[1];mo=+m[2];d=+m[3]}else{m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(!m)return'';
+    let a=+m[1],b=+m[2];y=+m[3];if(y<100)y+=2000;
+    if(a>12){d=a;mo=b}else if(b>12){mo=a;d=b}else if(vi){d=a;mo=b}else{mo=a;d=b}}
+  if(!(mo>=1&&mo<=12&&d>=1&&d<=31&&y>2000&&y<2100))return'';return y+'-'+pad(mo)+'-'+pad(d)}
+const normTime=s=>{const m=String(s||'').trim().match(/^(\d{1,2}):(\d{2})/);return m?pad(+m[1])+':'+m[2]:'12:00'};
+const numAny=v=>{let s=String(v==null?'':v).replace(/[$\s ]/g,'');if(/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s))s=s.replace(/\./g,'').replace(',','.');else if(/^\d+,\d{1,2}$/.test(s))s=s.replace(',','.');else s=s.replace(/,/g,'');const x=parseFloat(s);return isFinite(x)?r2(x):0};
+const findStaff=n=>{n=n.trim().toLowerCase();return S.workers.find(w=>!w.del&&w.name.trim().toLowerCase()===n)||S.workers.find(w=>w.name.trim().toLowerCase()===n)};
+function parseImp(text){text=text.replace(/^﻿/,'');
+  const hl=text.split(/\r?\n/).find(l=>/^"?(Ngày|Date)"?\s*[,;\t]/.test(l.trim()));if(!hl)throw 0;
+  const delim=hl.includes('\t')?'\t':(hl.split(';').length>hl.split(',').length?';':',');
+  const rows=csvRows(text,delim),hi=rows.findIndex(r=>r[0]&&/^(Ngày|Date)$/.test(r[0].trim()));if(hi<0)throw 0;
+  const H=rows[hi].map(x=>x.trim()),vi=H[0]==='Ngày',N=D.csvH[vi?0:1],ix=k=>H.indexOf(N[k]);
+  const c={date:0,staff:ix(2),type:ix(3),time:ix(4),svc:ix(6),tip:ix(7),cash:ix(9),card:ix(10),gift:ix(11),pct:ix(12)};
+  if(c.staff<0||c.svc<0)throw 0;
+  const out={rows:[],cust:0,day:0,add:0,upd:0,dup:0,newStaff:[]};
+  for(const r of rows.slice(hi+1)){const date=parseDateAny(r[c.date],vi),name=(r[c.staff]||'').trim();if(!date||!name)continue;
+    const it={date,name,isDay:/^(Tổng ngày|Day total)$/i.test((r[c.type]||'').trim()),time:normTime(c.time>=0?r[c.time]:''),
+      amt:numAny(r[c.svc]),tip:c.tip>=0?numAny(r[c.tip]):0,cash:c.cash>=0?numAny(r[c.cash]):0,card:c.card>=0?numAny(r[c.card]):0,gift:c.gift>=0?numAny(r[c.gift]):0,pct:c.pct>=0?parseFloat(r[c.pct]):NaN};
+    if(!it.amt&&!it.tip)continue;out.rows.push(it)}
+  if(!out.rows.length)throw 0;
+  out.rows.forEach(it=>{it.isDay?out.day++:out.cust++;const w=findStaff(it.name);
+    if(!w){if(!out.newStaff.includes(it.name))out.newStaff.push(it.name);it.st='add';out.add++;return}
+    if(it.isDay){const ex=findDay(w.id,it.date);
+      if(!ex){it.st='add';out.add++}
+      else if(ex.amt===it.amt&&ex.tip===it.tip&&(ex.cash||0)===it.cash&&(ex.card||0)===it.card){it.st='dup';out.dup++}
+      else{it.st='upd';it.exId=ex.id;out.upd++}}
+    else{const ex=S.tickets.find(t=>t.kind!=='day'&&t.wid===w.id&&t.date===it.date&&t.time===it.time&&t.amt===it.amt&&t.tip===it.tip);
+      if(ex){it.st='dup';out.dup++}else{it.st='add';out.add++}}});
+  return out}
+function doImp(){if(!IMP)return;let n=0;
+  IMP.rows.forEach(it=>{if(it.st==='dup')return;let w=findStaff(it.name);
+    if(!w){w={id:uid(),name:it.name,pct:isFinite(it.pct)?Math.min(100,Math.max(0,it.pct)):60,color:COLORS[S.workers.length%COLORS.length],del:false};S.workers.push(w)}
+    const tot=r2(it.amt+it.tip);
+    if(it.isDay){let cash=it.cash,card=it.card;if(Math.abs(cash+card-tot)>=0.01)card=r2(Math.max(0,tot-cash));
+      const ex=findDay(w.id,it.date),t={id:ex?ex.id:uid(),kind:'day',date:it.date,wid:w.id,n:0,amt:it.amt,tip:it.tip,cash,card,pay:'mix',time:'23:59'};
+      if(ex)S.tickets=S.tickets.map(x=>x.id===ex.id?t:x);else S.tickets.push(t)}
+    else{const c=it.cash,k=it.card,g=it.gift;let t={id:uid(),date:it.date,wid:w.id,amt:it.amt,tip:it.tip,time:it.time};
+      if(c>0&&!k&&!g)t.pay='cash';else if(!c&&!g)t.pay='card';else t={...t,pay:'split',cash:c,card:k,gift:g};
+      S.tickets.push(t)}
+    n++});
+  S.sample=false;save();closeS();IMP=null;R();toast(n?T('impDone',n):T('impNothing'))}
 
 R();showLock();
 </script>

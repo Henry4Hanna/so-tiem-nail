@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sổ Thợ Nail">
+<meta name="theme-color" content="#1c1424">
+<title>Sổ Thợ Nail</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{--bg:#f5f2f7;--card:#fff;--ink:#1c1424;--mut:#7d7286;--line:#ebe5ef;--acc:#c2185b;--acc-soft:#fce4ec;--cash:#2e7d32;--cardc:#1565c0;--tip:#e65100}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg)}
+body{font-family:'Be Vietnam Pro',-apple-system,system-ui,sans-serif;color:var(--ink);font-size:15px;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 18px 14px;display:flex;align-items:center;gap:10px}
+header .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#ec407a,#8e24aa);display:grid;place-items:center;font-size:18px}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+header small{display:block;font-size:11.5px;color:#bfb3c8;font-weight:400}
+main{padding:14px 14px 20px;max-width:560px;margin:0 auto}
+.nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.nav>button{width:42px;height:42px;border-radius:12px;background:var(--card);font-size:22px;box-shadow:0 1px 2px #0000000d}
+.nl{flex:1;text-align:center;line-height:1.25}
+.nl b{display:block;font-size:15.5px}
+.nl small,.nl a{font-size:12px;color:var(--mut)}
+.nl a{color:var(--acc);font-weight:600;cursor:pointer}
+.kpi{background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:0 1px 2px #0000000d}
+.kpi span{font-size:12px;color:var(--mut);display:block}
+.kpi b{font-size:19px;font-weight:700;display:block;margin-top:2px}
+.kpi.big{background:linear-gradient(135deg,#2a1838,#4a1c4f 60%,#7b1f5b);color:#fff;padding:16px 16px 14px;margin-bottom:10px}
+.kpi.big span{color:#e5d3ea}.kpi.big b{font-size:30px}
+.kpi.big small{font-size:12.5px;color:#e5d3ea}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.c-cash{color:var(--cash)}.c-card{color:var(--cardc)}.c-tip{color:var(--tip)}
+.card{background:var(--card);border-radius:16px;padding:6px 14px;margin-bottom:10px;box-shadow:0 1px 2px #0000000d}
+.wh{display:flex;align-items:center;gap:9px;padding:9px 0}
+.wh i,.dot{width:11px;height:11px;border-radius:50%;flex:none;display:inline-block}
+.wh b{font-weight:600}
+.wh span{font-size:12.5px;color:var(--mut)}
+.wh em{margin-left:auto;font-style:normal;font-weight:700}
+.tk{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.tm{font-size:12.5px;color:var(--mut);width:42px}
+.am{flex:1;font-weight:600}
+.am small{font-weight:500;color:var(--tip);font-size:12.5px}
+.pay{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:20px}
+.pay.cash{background:#e8f5e9;color:var(--cash)}.pay.card{background:#e3f2fd;color:var(--cardc)}
+.empty{text-align:center;color:var(--mut);padding:30px 10px;background:var(--card);border-radius:16px;line-height:1.6}
+.sec{font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin:18px 4px 8px}
+.fab{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:6;background:var(--acc);color:#fff;font-weight:700;padding:14px 20px;border-radius:30px;box-shadow:0 6px 18px #c2185b55;font-size:15px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:7;background:#fffffff2;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;color:var(--mut);font-weight:500}
+.tabs button svg{width:24px;height:24px}
+.tabs button.on{color:var(--acc);font-weight:700}
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--card);border-radius:16px;padding:10px;margin-bottom:14px;box-shadow:0 1px 2px #0000000d}
+.cal .h{font-size:11px;color:var(--mut);text-align:center;font-weight:600;padding-bottom:4px}
+.cd{aspect-ratio:1/1.15;border-radius:10px;padding:4px 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;cursor:pointer;position:relative;background:#faf8fb}
+.cd span{font-size:13px;font-weight:600}
+.cd b{font-size:10px;font-weight:600;color:var(--acc)}
+.cd.td{outline:2px solid var(--acc)}
+.cd.hot b,.cd.hot span{color:#fff}
+/* report */
+.seg{display:flex;background:#e9e3ee;border-radius:12px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;padding:8px 0;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--mut)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #0000001a}
+.chart{background:var(--card);border-radius:16px;padding:14px 12px 8px;margin-bottom:10px;box-shadow:0 1px 2px #0000000d}
+.chart h4,.split h4{margin:0 0 10px;font-size:13px;color:var(--mut);font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:3px;height:130px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bars i{width:100%;max-width:28px;border-radius:5px 5px 2px 2px;background:linear-gradient(#ec407a,#8e24aa);min-height:2px}
+.bars small{font-size:9.5px;color:var(--mut);margin-top:4px;height:12px}
+.split{background:var(--card);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 1px 2px #0000000d}
+.sbar{display:flex;height:12px;border-radius:8px;overflow:hidden;background:var(--line)}
+.sbar i{display:block}
+.sleg{display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px;color:var(--mut)}
+.wr{padding:10px 0;border-top:1px solid var(--line)}
+.wr:first-child{border-top:0}
+.ws{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:12px;color:var(--mut);padding-left:20px}
+.ws b{display:block;color:var(--ink);font-size:13.5px}
+.tot{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+/* workers */
+.wl{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line);cursor:pointer}
+.wl:first-child{border-top:0}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none}
+.wl .nm{flex:1}.wl .nm small{display:block;color:var(--mut);font-size:12.5px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-weight:700;text-align:center;font-size:15px}
+.btn.pri{background:var(--acc);color:#fff}
+.btn.sec2{background:var(--card);color:var(--ink);box-shadow:0 1px 2px #0000000d;margin-top:8px}
+.btn.del{color:#c62828;background:#ffebee;margin-top:8px}
+/* sheet */
+.ov{position:fixed;inset:0;background:#1c142466;z-index:20;opacity:0;pointer-events:none;transition:.2s}
+.ov.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:22px 22px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;transform:translateY(105%);transition:.25s cubic-bezier(.3,.8,.3,1);max-width:560px;margin:0 auto}
+.sheet.on{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:#d5ccdb;margin:0 auto 10px}
+.sheet h3{margin:0 0 14px;font-size:18px;display:flex;justify-content:space-between;align-items:center}
+.sheet h3 button{font-size:14px;color:var(--mut);font-weight:500}
+.lab{font-size:12.5px;color:var(--mut);font-weight:600;margin:12px 2px 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:22px;background:var(--card);font-weight:600;font-size:14px;display:flex;align-items:center;gap:7px;border:2px solid transparent}
+.chip.on{border-color:var(--acc);background:var(--acc-soft)}
+.money{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:0 14px;border:2px solid transparent}
+.money:focus-within{border-color:var(--acc)}
+.money span{font-size:22px;color:var(--mut);font-weight:600}
+.money input{flex:1;border:0;outline:0;background:none;font-size:26px;font-weight:700;padding:12px 8px;width:100%}
+.quick{display:flex;gap:6px;margin-top:8px}
+.quick button{flex:1;padding:8px 0;border-radius:10px;background:var(--card);font-size:13px;font-weight:600;color:var(--tip)}
+.tog{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tog button{padding:13px;border-radius:14px;background:var(--card);font-weight:700;border:2px solid transparent}
+.tog button.on.cash{border-color:var(--cash);background:#e8f5e9;color:var(--cash)}
+.tog button.on.card{border-color:var(--cardc);background:#e3f2fd;color:var(--cardc)}
+.field{width:100%;background:var(--card);border:2px solid transparent;border-radius:14px;padding:13px 14px;outline:0;font-size:16px}
+.field:focus{border-color:var(--acc)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.colors{display:flex;gap:10px;flex-wrap:wrap}
+.colors button{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.colors button.on{box-shadow:0 0 0 2px var(--ink)}
+.dlg{position:fixed;left:24px;right:24px;top:50%;transform:translateY(-50%) scale(.95);z-index:31;background:#fff;border-radius:18px;padding:20px;opacity:0;pointer-events:none;transition:.18s;max-width:360px;margin:0 auto}
+.dlg.on{opacity:1;pointer-events:auto;transform:translateY(-50%)}
+.dlg p{margin:0 0 16px;line-height:1.5}
+.dlg .row2 .btn{padding:12px}
+.ov2{position:fixed;inset:0;background:#0006;z-index:30;display:none}
+.ov2.on{display:block}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%) translateY(-20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:24px;font-size:14px;font-weight:600;z-index:40;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+textarea.field{min-height:110px;font-size:12px;font-family:ui-monospace,monospace}
+.note{font-size:12.5px;color:var(--mut);line-height:1.5;margin:8px 4px}
+.wh.tap{cursor:pointer;user-select:none;-webkit-user-select:none;padding:12px 0}
+.wn{flex:1;min-width:0}.wn b{display:block;font-size:16px}.wn span{font-size:12px!important}
+.wt{text-align:right}.wt em{display:block;font-style:normal;font-weight:700;font-size:17px}.wt span{font-size:11.5px;color:var(--mut)}
+.chev{width:20px;height:20px;color:var(--mut);flex:none;transition:transform .2s}.chev.up{transform:rotate(180deg)}
+.btn.pdfb{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:#fff;margin-bottom:12px;padding:12px}
+.btn.pdfb svg{width:20px;height:20px}.btn:disabled{opacity:.6}
+/* lock */
+.lock{position:fixed;inset:0;z-index:28;background:linear-gradient(160deg,#1c1424,#3a1840 60%,#6d1b4f);color:#fff;display:none;align-items:center;justify-content:center;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.lock.on{display:flex}
+.lk{text-align:center;width:100%;max-width:340px}
+.lgo{width:64px;height:64px;border-radius:18px;font-size:32px;margin:0 auto 12px;background:linear-gradient(135deg,#ec407a,#8e24aa);display:grid;place-items:center}
+.lk h2{margin:0 0 6px;font-size:21px}
+.lk p{margin:0 0 20px;color:#e5d3ea;font-size:14.5px;min-height:20px}.lk p.err{color:#ff8a80;font-weight:600}
+.dots{display:flex;justify-content:center;gap:18px;margin-bottom:34px}.dots i{width:14px;height:14px;border-radius:50%;border:2px solid #fff}.dots i.f{background:#fff}
+.pad{display:grid;grid-template-columns:repeat(3,76px);gap:16px 26px;justify-content:center}
+.pad button{width:76px;height:76px;border-radius:50%;background:#ffffff1f;font-size:30px;color:#fff;font-weight:500}
+.pad button.sm{background:none;font-size:14.5px}
+.pad button:active{background:#ffffff45}
+.by{display:block;margin-top:30px;color:#bfb3c8;font-size:12px}
+.shake{animation:sh .4s}@keyframes sh{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.busy{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;align-items:center;justify-content:center;text-align:center;font-weight:600;color:var(--mut)}.busy.on{display:flex}
+.spin{width:36px;height:36px;border:4px solid var(--line);border-top-color:var(--acc);border-radius:50%;margin:0 auto 12px;animation:rot .8s linear infinite}@keyframes rot{to{transform:rotate(360deg)}}
+/* pdf */
+.pdf{position:absolute;left:0;top:0;z-index:50;width:794px;background:#fff;color:#1c1424;padding:0 40px;font-size:12.5px}
+.pdh{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #c2185b;padding:8px 0 14px}
+.pdh .pt{font-size:11px;letter-spacing:1.2px;color:#c2185b;font-weight:700}.pdh h1{margin:4px 0 2px;font-size:24px}.pdh p{margin:0;color:#7d7286}
+.pl{font-weight:700;font-size:14px;color:#4a1c4f;padding:8px 12px;border:1.5px solid #e6d6ea;border-radius:10px}
+.pk{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 6px}
+.pk div{border:1px solid #ebe5ef;border-radius:10px;padding:10px 12px}.pk span{display:block;color:#7d7286;font-size:11px}.pk b{font-size:18px}
+.pk .hi{background:#2a1838;color:#fff;border-color:#2a1838}.pk .hi span{color:#e5d3ea}
+.pdf h2{font-size:14px;margin:20px 0 6px;color:#4a1c4f}
+.tr{display:grid;padding:7px 8px;border-bottom:1px solid #f0eaf2;align-items:center}
+.tr.w7{grid-template-columns:1.5fr .55fr .65fr .65fr .95fr .85fr .95fr 1.05fr}.tr.w6{grid-template-columns:1.5fr .7fr 1fr .9fr 1fr 1.6fr}
+.tr span:not(:first-child){text-align:right}
+.tr i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.tr.th{background:#f5f2f7;font-weight:700;font-size:11px;color:#7d7286;border-radius:6px;border:0}
+.tr.tf{font-weight:700;background:#fdf6f9}
+.keep{display:flex;justify-content:space-between;padding:10px 8px;font-size:14px}.keep b{color:#c2185b}
+.pf{display:flex;justify-content:space-between;margin-top:26px;padding-top:10px;border-top:1px solid #ebe5ef;color:#9a90a2;font-size:10.5px}
+header .hb{margin-left:auto;display:flex;gap:8px}
+header .hb button{height:34px;min-width:34px;padding:0 10px;border-radius:10px;background:#ffffff1f;color:#fff;font-weight:700;font-size:13px}
+.kgrid.k6{grid-template-columns:1fr 1fr}
+.c-gift{color:#8e24aa}
+.pay.gift{background:#f3e5f5;color:#8e24aa}
+.tog.t3{grid-template-columns:1fr 1fr 1fr}
+.tog.t3 button{padding:12px 4px;font-size:14px}
+.tog button.on.gift{border-color:#8e24aa;background:#f3e5f5;color:#8e24aa}
+select.field{appearance:none;-webkit-appearance:none;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237d7286' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center}
+.warn{background:#fff3e0;color:#e65100;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-top:10px;font-weight:500}
+.err-t{color:#c62828;font-size:13px;font-weight:600;margin-top:8px}
+.gsum{background:linear-gradient(135deg,#4a148c,#8e24aa 55%,#d81b60);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden}
+.gsum:after{content:"🎁";position:absolute;right:-6px;bottom:-14px;font-size:84px;opacity:.18}
+.gsum span{font-size:12.5px;color:#f3d9f7;display:block}.gsum b{font-size:30px;display:block;margin:2px 0}
+.gsum small{font-size:12.5px;color:#f3d9f7}
+.search{width:100%;background:var(--card);border:2px solid transparent;border-radius:14px;padding:12px 14px;outline:0;font-size:16px;margin-bottom:10px}
+.search:focus{border-color:var(--acc)}
+.gl{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.gl:first-child{border-top:0}
+.gico{width:42px;height:30px;border-radius:7px;background:linear-gradient(135deg,#8e24aa,#ec407a);flex:none;position:relative}
+.gico.used{background:#d9d2de}
+.gico:after{content:"";position:absolute;left:0;right:0;top:11px;height:4px;background:#ffffff66}
+.gm{flex:1;min-width:0}.gm b{display:block;font-size:15px}.gm small{display:block;color:var(--mut);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gb{text-align:right}.gb b{display:block;font-size:16px}.gb small{font-size:11.5px;color:var(--mut)}
+.prog{height:5px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}.prog i{display:block;height:100%;background:#8e24aa}
+.ghist{padding:9px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:13.5px}
+.ghist span{color:var(--mut)}
+.help h4{margin:16px 0 4px;font-size:15.5px}
+.help p{margin:0;line-height:1.55;font-size:14.5px;color:#3d3346}
+.langsw{display:flex;gap:8px}
+.langsw button{flex:1;padding:12px;border-radius:14px;background:var(--card);font-weight:700;border:2px solid transparent}
+.langsw button.on{border-color:var(--acc);background:var(--acc-soft);color:var(--acc)}
+.lk .lsw{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;background:#ffffff1f;border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px;color:#fff}
+.tabs button{font-size:10.5px}
+.tr.w8{grid-template-columns:1.4fr .6fr .9fr .8fr .9fr .9fr .8fr 1fr;font-size:11.5px}
+.pk.p4{grid-template-columns:repeat(4,1fr)}
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}
+input,select,textarea{font-size:16px!important}
+.money input{font-size:26px!important}
+textarea.field{font-size:16px!important}
+#rot{display:none;position:fixed;inset:0;z-index:100;background:#1c1424;color:#fff;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:18px;padding:30px;line-height:1.5}
+#rot small{display:block;color:#bfb3c8;font-weight:400;font-size:14px}
+@media (orientation:landscape) and (max-height:520px){#rot{display:flex}}
+
+.schips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;margin:0 -2px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.schips::-webkit-scrollbar{display:none}
+.schips .chip{flex:none}
+.chip .cnt{font-size:11.5px;background:#00000012;border-radius:10px;padding:1px 7px;font-weight:700}
+.chip.on .cnt{background:var(--acc);color:#fff}
+.shero{border-radius:18px;padding:16px;color:#fff;margin-bottom:10px;position:relative;overflow:hidden}
+.shero .top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.shero .av{width:44px;height:44px;font-size:19px;background:#ffffff33!important;border:2px solid #ffffff66}
+.shero .top b{font-size:18px;display:block}.shero .top small{color:#ffffffcc;font-size:12.5px}
+.shero span{font-size:12.5px;color:#ffffffd9;display:block}.shero .big{font-size:34px;font-weight:700;display:block;margin:2px 0}
+.shero .sub{font-size:13px;color:#ffffffd9}
+.hshot{display:block;width:100%;max-width:280px;margin:12px auto 6px;border-radius:18px;box-shadow:0 4px 18px #1c142433;border:1px solid var(--line)}
+
+.sw{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:16px;background:#d9d2de;position:relative;flex:none;transition:.2s;cursor:pointer;margin:0}
+.sw:after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:.2s}
+.sw:checked{background:var(--acc)}.sw:checked:after{left:23px}
+
+.lsw{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;background:#ffffff1f;border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px;color:#fff;z-index:2}
+.lk{padding:0 24px}
+.roles{display:flex;flex-direction:column;gap:12px;margin:6px 0 4px;text-align:left}
+.rolebtn{display:flex;align-items:center;gap:14px;width:100%;background:#ffffff17;border:1.5px solid #ffffff30;border-radius:20px;padding:18px 16px;color:#fff;font-size:19px;font-weight:700}
+.rolebtn:active{background:#ffffff30}
+.rolebtn .ic{font-size:32px;width:44px;text-align:center}
+.rolebtn small{display:block;font-weight:400;font-size:13px;color:#e5d3ea;margin-top:2px}
+.rolebtn>span:nth-child(2){flex:1;text-align:left}
+.rolebtn .ar{margin-left:auto;font-size:26px;color:#ffffff99;font-weight:400}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 6px}
+.names button{display:flex;align-items:center;gap:10px;background:#ffffff17;border:1.5px solid #ffffff30;border-radius:16px;padding:12px;color:#fff;font-weight:600;font-size:16px;text-align:left;min-width:0}
+.names button:active{background:#ffffff30}
+.names .av{width:36px;height:36px;font-size:16px;flex:none}
+.names .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nost{background:#ffffff14;border-radius:14px;padding:16px;line-height:1.6}
+.lback{margin-top:18px;color:#e5d3ea;font-weight:600;font-size:15px;padding:8px 14px}
+
+.pay.mix{background:#ede7f6;color:#4527a0}
+.wkg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.wkd{background:var(--card);border-radius:12px;padding:8px 2px;text-align:center;box-shadow:0 1px 2px #0000000d;color:var(--mut)}
+.wkd b{display:block;font-size:13px}.wkd span{display:block;font-size:11px;margin-top:3px}
+.wkd.on{background:var(--acc);color:#fff}.wkd.on span{font-weight:700}
+
+.fab2{right:auto;left:18px;background:var(--ink);box-shadow:0 6px 18px #1c142455}
+
+.att{padding:8px 10px}
+.atr{display:grid;grid-template-columns:72px repeat(7,minmax(0,1fr)) 24px;gap:3px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:11.5px;text-align:center}
+.atr.ah{border-top:0;color:var(--mut);font-weight:700;font-size:12px}
+.atr .nm{text-align:left;font-weight:700;font-size:13px;display:flex;align-items:center;gap:5px;overflow:hidden;white-space:nowrap}
+.atr .nm i{width:8px;height:8px;border-radius:50%;flex:none}
+.atr .on{background:var(--acc-soft);color:var(--acc);border-radius:7px;padding:5px 0;font-weight:700}
+.atr .off{color:#c9bfd0}
+.atr b{font-size:14px}
+
+.keepRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #ffffff2e}
+.keepRow span{font-size:12.5px!important;color:#e5d3ea!important;display:block}
+.keepRow em{font-style:normal;font-size:22px;font-weight:700;display:block;margin-top:2px;color:#fff}
+.keepRow div:first-child em{color:#ffd6e7}
+html,body{overscroll-behavior:none;overscroll-behavior-y:none}
+.sheet{overscroll-behavior:contain}
+
+main{padding-bottom:104px!important}
+.fab{left:auto;right:14px;width:calc(50% - 21px);max-width:260px;padding:14px 8px;text-align:center;white-space:nowrap;font-size:15px}
+.fab2{right:auto;left:14px}
+@media (min-width:600px){.fab{right:calc(50% - 266px)}.fab2{right:auto;left:calc(50% - 266px)}}
+
+.wkd.on{background:#2e7d32!important;color:#fff!important}
+.wkd.offd{background:#ffebee!important;color:#c62828!important}
+.atr .on{background:#e8f5e9!important;color:#2e7d32!important}
+.atr .off{background:#ffebee!important;color:#c62828!important;border-radius:7px;padding:5px 0;font-weight:700}
+
+#wPin::placeholder,#wPinC::placeholder{letter-spacing:0;font-size:15px}
+
+.dtrow{display:flex;align-items:center;gap:8px}
+.dtrow>button{width:48px;height:56px;border-radius:14px;background:var(--card);font-size:24px;flex:none;box-shadow:0 1px 2px #0000000d}
+.dtmid{flex:1;background:var(--card);border-radius:14px;padding:6px 12px;text-align:center;box-shadow:0 1px 2px #0000000d}
+.dtmid input{border:0;outline:0;background:none;font-size:18px!important;font-weight:700;text-align:center;width:100%;color:var(--ink)}
+.dtmid small{display:block;color:var(--acc);font-size:12.5px;font-weight:600}
+
+.pay.split{background:#ede7f6;color:#4527a0}
+
+.seg button{padding:8px 0;font-size:13px}
+.ckbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-4px 0 10px}
+.ckbar button{color:var(--acc);font-weight:700;font-size:14px;padding:6px 2px}
+.ckbar span{color:var(--mut);font-size:12.5px;text-align:center;flex:1}
+.ckcard{display:block;width:100%;text-align:left;background:var(--card);border-radius:18px;padding:14px 40px 14px 16px;margin-bottom:10px;position:relative;box-shadow:0 1px 2px #0000000d}
+.ckh b{display:block;font-size:20px}.ckh span{font-size:13px;color:var(--mut)}
+.ckn{font-size:13px;color:var(--ink);margin-top:4px}
+.ckv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.ckv small{display:block;font-size:11px;color:var(--mut)}.ckv b{font-size:15.5px}
+.cka{position:absolute;right:14px;top:18px;font-size:26px;color:var(--mut)}
+
+.solo .tog.t3{grid-template-columns:1fr 1fr}.solo .tog.t3 button.gift{display:none}.solo .lback{display:none}
+</style>
+</head>
+<body>
+<div id="rot"><div><div style="font-size:52px;margin-bottom:10px">📱</div>Vui lòng xoay dọc điện thoại<small>Please rotate your phone to portrait</small></div></div>
+<header><div class="logo">💅</div><div><h1>Sổ Thợ Nail</h1><small id="sub"></small></div>
+<div class="hb"><button onclick="showLock('enter')" aria-label="Lock">🔒</button><button onclick="setLang(LANG==='vi'?'en':'vi')" id="lb">EN</button><button onclick="openHelp()" aria-label="Help">?</button></div></header>
+<main id="main"></main>
+<button class="fab" id="fab"></button>
+<nav class="tabs" id="tabs"></nav>
+<div class="ov" id="ov" onclick="closeS()"></div>
+<div class="sheet" id="sheet"></div>
+<div class="ov2" id="ov2"></div>
+<div class="dlg" id="dlg"></div>
+<div class="toast" id="toast"></div>
+<div class="lock on" id="lock"></div>
+<div class="busy" id="busy"><div><div class="spin"></div><span id="busyT"></span></div></div>
+
+<script>
+// ---------- i18n ----------
+const LK='so-tho-nail.lang';
+let LANG=(()=>{try{return localStorage.getItem(LK)||'vi'}catch(e){return'vi'}})();
+const D={
+sub:['Quản lý thợ · doanh thu','Staff & revenue manager'],
+tabDay:['Hôm nay','Today'],tabCal:['Lịch','Calendar'],tabRep:['Báo cáo','Reports'],tabGift:['Gift card','Gift cards'],tabWork:['Thợ','Staff'],
+addCust:['＋ Thêm khách','＋ Add customer'],sellGift:['＋ Bán gift card','＋ Sell gift card'],
+total:['Tổng thu','Total revenue'],svcTip:[(a,b)=>`Dịch vụ ${a} · Bo ${b}`,(a,b)=>`Services ${a} · Tips ${b}`],
+cash:['💵 Tiền mặt','💵 Cash'],card:['💳 Thẻ','💳 Card'],gift:['🎁 Gift card','🎁 Gift card'],tips:['Tiền bo','Tips'],custs:['Số khách','Customers'],giftSold:['Bán gift card','Gift cards sold'],
+cashW:['Tiền mặt','Cash'],cardW:['Thẻ','Card'],giftW:['Gift card','Gift card'],
+today:['Hôm nay','Today'],backToday:['Về hôm nay','Back to today'],
+emptyDay:['Chưa có khách nào ngày này.<br>Bấm <b>＋ Thêm khách</b> để bắt đầu.','No customers on this day yet.<br>Tap <b>＋ Add customer</b> to start.'],
+byStaff:['Theo thợ','By staff'],openAll:['Mở hết','Expand all'],closeAll:['Thu gọn hết','Collapse all'],
+nCust:[n=>`${n} khách`,n=>`${n} customer${n==1?'':'s'}`],staffGets:[m=>`thợ nhận ${m}`,m=>`staff gets ${m}`],tipPlus:[m=>`+ bo ${m}`,m=>`+ tip ${m}`],
+giftToday:['Gift card bán trong ngày','Gift cards sold this day'],
+calHint:['Bấm vào ngày để xem chi tiết','Tap a day to see details'],monthSum:['Tổng kết tháng','Month summary'],
+pday:['Ngày','Day'],pweek:['Tuần','Week'],pmonth:['Tháng','Month'],pyear:['Năm','Year'],
+daysWorked:[n=>`${n} ngày có làm`,n=>`${n} working days`],noData:['Chưa có dữ liệu','No data yet'],
+exportPdf:['Xuất báo cáo PDF','Export PDF report'],makingPdf:['Đang tạo PDF…','Creating PDF…'],
+revBy:[y=>'Doanh thu theo '+(y?'tháng':'ngày'),y=>'Revenue by '+(y?'month':'day')],payMix:['Cách khách trả','Payment mix'],
+staffPay:['Tiền thợ','Staff pay'],custsL:['khách','customers'],svcL:['dịch vụ','services'],tipL:['bo','tips'],comL:['hoa hồng','commission'],
+totalStaff:['Tổng trả thợ','Total staff pay'],shopKeeps:['Tiệm giữ lại','Salon keeps'],
+payNote:['Thợ nhận = dịch vụ × % hoa hồng + toàn bộ tiền bo. Đổi % trong tab Thợ.','Staff pay = services × commission % + all tips. Change % in the Staff tab.'],
+giftSec:['Gift card','Gift cards'],soldL:['Bán ra','Sold'],usedL:['Đã dùng','Redeemed'],outL:['Còn lưu hành (tất cả thẻ)','Outstanding (all cards)'],
+activeStaff:[n=>`Thợ đang làm (${n})`,n=>`Active staff (${n})`],commission:[p=>`Hoa hồng ${p}%`,p=>`Commission ${p}%`],
+noStaff:['Chưa có thợ.','No staff yet.'],addStaff:['＋ Thêm thợ','＋ Add staff'],data:['Dữ liệu & cài đặt','Data & settings'],
+sampleOn:['Đang dùng dữ liệu mẫu','Using sample data'],sampleTxt:['Số liệu hiện tại là giả để bạn xem thử. Xoá đi khi bắt đầu dùng thật.','These numbers are fake so you can try the app. Clear them when you start for real.'],
+clearSample:['Xoá dữ liệu mẫu','Clear sample data'],clearSampleQ:['Xoá toàn bộ dữ liệu mẫu và bắt đầu từ đầu?','Delete all sample data and start fresh?'],cleared:['Đã xoá – sẵn sàng dùng thật','Cleared – ready for real use'],
+del:['Xoá','Delete'],cancel:['Huỷ','Cancel'],close:['Đóng','Close'],save:['Lưu','Save'],
+backup:['💾 Sao lưu / Khôi phục','💾 Backup / Restore'],changePin:['🔒 Đổi mã số vào app','🔒 Change passcode'],lockNow:['Khoá app ngay','Lock app now'],
+guide:['📖 Hướng dẫn cách dùng','📖 How to use'],language:['Ngôn ngữ','Language'],
+localOnly:['Mọi số liệu chỉ lưu trên điện thoại này, không gửi lên mạng.','All data stays on this phone only and is never sent online.'],by:['App viết bởi','App by'],
+editCust:['Sửa khách','Edit customer'],addCustT:['Thêm khách','Add customer'],staffDid:['Thợ làm','Staff'],
+svcAmt:['Tiền dịch vụ','Service amount'],tipAmt:['Tiền bo','Tip'],noTip:['Không','None'],paidBy:['Khách trả bằng','Paid with'],
+date:['Ngày','Date'],time:['Giờ','Time'],saveChanges:['Lưu thay đổi','Save changes'],saveCust:['Lưu khách','Save customer'],
+delCust:['Xoá khách này','Delete this customer'],delCustQ:['Xoá khách này?','Delete this customer?'],
+deleted:['Đã xoá','Deleted'],updated:['Đã cập nhật','Updated'],saved:['Đã lưu ✓','Saved ✓'],
+needStaff:['Bạn cần thêm thợ trước khi nhập khách.','Please add a staff member first.'],
+pickGift:['Chọn gift card','Choose gift card'],noGiftBal:['Không có gift card nào còn tiền. Bán gift card trong tab Gift card.','No gift cards with a balance. Sell one in the Gift cards tab.'],
+left:[m=>`còn ${m}`,m=>`${m} left`],shortBy:[m=>`Gift card thiếu ${m}. Phần còn lại khách trả bằng:`,m=>`Gift card is short ${m}. Customer pays the rest with:`],
+editStaff:['Sửa thợ','Edit staff'],addStaffT:['Thêm thợ','Add staff'],staffName:['Tên thợ','Name'],namePh:['VD: Lan','e.g. Lan'],
+comPct:['Hoa hồng thợ nhận (%)','Staff commission (%)'],color:['Màu','Color'],delStaff:['Xoá thợ','Delete staff'],
+delStaffQ:[n=>`Xoá thợ <b>${n}</b>? Lịch sử tiền cũ vẫn được giữ trong báo cáo.`,n=>`Delete <b>${n}</b>? Past records stay in reports.`],
+staffSaved:['Đã lưu thợ','Staff saved'],staffDeleted:['Đã xoá thợ','Staff deleted'],deletedW:['(đã xoá)','(deleted)'],
+bkTxt:['Bấm <b>Lưu file sao lưu</b> để lưu toàn bộ số liệu ra file (nên làm mỗi tuần). Hoặc <b>Chép dữ liệu</b> rồi dán vào Ghi chú. Khi cần khôi phục, dán lại vào ô dưới.','Tap <b>Save backup file</b> to save all data to a file (do it weekly). Or <b>Copy data</b> and paste it into Notes. To restore, paste it into the box below.'],
+saveBkFile:['Lưu file sao lưu','Save backup file'],copyData:['Chép dữ liệu','Copy data'],pasteRestore:['Dán dữ liệu để khôi phục','Paste data to restore'],restore:['Khôi phục','Restore'],
+restoreQ:['Thay toàn bộ dữ liệu hiện tại bằng bản sao lưu?','Replace all current data with this backup?'],restored:['Đã khôi phục','Restored'],badData:['Dữ liệu không hợp lệ','Invalid data'],
+copied:['Đã chép ✓','Copied ✓'],selectCopy:['Chọn & chép đoạn bên dưới','Select & copy the text below'],
+fileSaved:['Đã lưu file ✓','File saved ✓'],noFile:['Máy này chưa cho lưu file','Saving files isn’t available here'],fileFail:['Không lưu được file','Could not save the file'],
+pdfDone:['Đã xuất PDF ✓','PDF exported ✓'],pdfFail:['Không tạo được PDF','Could not create PDF'],
+enterPin:['Nhập mã số để vào app','Enter your passcode'],newPin:['Tạo mã số 4 số để bảo vệ app','Create a 4-digit passcode'],confirmPin:['Nhập lại mã số để xác nhận','Re-enter to confirm'],
+oldPin:['Nhập mã số hiện tại','Enter current passcode'],wrongPin:['Sai mã số, thử lại','Wrong passcode, try again'],newPin2:['Nhập mã số mới','Enter new passcode'],
+mismatch:['Không khớp, tạo lại','Didn’t match, try again'],forgot:['Quên mã?','Forgot?'],pinSet:['Đã đặt mã số ✓','Passcode set ✓'],delAll:['Xoá hết','Delete all'],
+forgotQ:['Quên mã số thì phải <b>xoá hết dữ liệu</b> trên máy này và tạo mã mới. Bạn có thể khôi phục lại từ file sao lưu. Xoá?','If you forgot the passcode, you must <b>delete all data</b> on this phone and create a new one. You can restore from a backup file afterwards. Delete?'],
+giftOutT:['Số dư gift card còn lưu hành','Outstanding gift card balance'],activeCards:[(n,m)=>`${n} thẻ còn tiền · tháng này bán ${m}`,(n,m)=>`${n} cards with balance · sold ${m} this month`],
+search:['Tìm mã thẻ hoặc tên…','Search code or name…'],noGifts:['Chưa có gift card nào.<br>Bấm <b>＋ Bán gift card</b> để bắt đầu.','No gift cards yet.<br>Tap <b>＋ Sell gift card</b> to start.'],
+usedUp:['Đã dùng hết','Used up'],soldOn:[d=>`Bán ${d}`,d=>`Sold ${d}`],ofV:[m=>`/ ${m}`,m=>`of ${m}`],
+sellGiftT:['Bán gift card','Sell gift card'],editGift:['Gift card','Gift card'],code:['Mã thẻ','Card code'],giftAmt:['Giá trị thẻ','Card value'],
+buyerPaid:['Người mua trả bằng','Buyer paid with'],buyer:['Người mua','Buyer'],recipient:['Tặng cho (không bắt buộc)','For (optional)'],note:['Ghi chú','Note'],
+balance:['Số dư','Balance'],history:['Lịch sử dùng','Usage history'],noUse:['Chưa dùng lần nào','Not used yet'],delGift:['Xoá gift card','Delete gift card'],
+delGiftQ:['Xoá gift card này?','Delete this gift card?'],cantDelGift:['Thẻ này đã được dùng nên không xoá được. Hãy sửa hoặc xoá các lần dùng trước.','This card has been used and can’t be deleted. Edit or delete those visits first.'],
+codeExists:['Mã thẻ này đã có','This code already exists'],giftSaved:['Đã lưu gift card ✓','Gift card saved ✓'],needAmt:['Nhập số tiền','Enter an amount'],
+rptTitle:[p=>`BÁO CÁO DOANH THU · ${p}`,p=>`REVENUE REPORT · ${p}`],detailBy:[y=>y?'Chi tiết theo tháng':'Chi tiết theo ngày',y=>y?'Breakdown by month':'Breakdown by day'],
+custDetail:['Chi tiết khách','Customer details'],staff:['Thợ','Staff'],tot:['Tổng','Total'],exported:[(d,t)=>`Xuất ngày ${d} lúc ${t}`,(d,t)=>`Exported ${d} at ${t}`],
+giftSoldP:['Gift card bán ra','Gift cards sold'],giftUsedP:['Gift card đã dùng','Gift cards redeemed'],giftCodeL:['Gift card','Gift card'],
+helpT:['Hướng dẫn cách dùng','How to use'],helpTip:['Ô <b style="color:#ff1744">viền đỏ</b> trong hình là chỗ cần bấm.','The <b style="color:#ff1744">red box</b> in each picture shows where to tap.'],
+};
+const T=(k,...a)=>{const v=D[k];if(!v)return k;const s=v[LANG==='en'?1:0];return typeof s==='function'?s(...a):s};
+const HELP={vi:[
+['🔒 Đăng nhập & mã số','Trang đăng nhập có 2 nút: <b>Chủ tiệm</b> và <b>Nhân viên</b>. Lần đầu mở app, chủ tiệm tạo mã 4 số rồi nhập lại để xác nhận. App tự khoá khi bạn rời app hơn 1 phút. Đổi mã hoặc khoá ngay trong tab <b>Thợ</b>. Quên mã thì phải xoá dữ liệu rồi khôi phục từ file sao lưu.','lock'],
+['👩 Thêm thợ','Tab <b>Thợ</b> → bấm <b>＋ Thêm thợ</b>. Nhập tên, % hoa hồng thợ nhận (VD 60%) và chọn màu. Bấm vào tên thợ để sửa hoặc xoá. Thợ đã xoá vẫn còn trong báo cáo cũ.','staff'],
+['💅 Nhập khách','Tab <b>Hôm nay</b> → <b>＋ Thêm khách</b>. Chọn thợ, nhập tiền dịch vụ và tiền bo (nút nhanh $5, $10, 15%, 20%), chọn <b>Tiền mặt / Thẻ / Gift</b>, rồi bấm <b>Lưu khách</b>. Mỗi lần lưu là 1 khách.','addcust'],
+['✏️ Xem & sửa khách','Ở <b>Cả tiệm</b>, bấm vào tên thợ để mở danh sách khách (bấm lần nữa để thu gọn). Bấm vào dòng khách để sửa số tiền, đổi thợ, đổi cách trả hoặc xoá.','edit'],
+['👩 Xem riêng từng thợ trong ngày','Tab <b>Hôm nay</b> → bấm <b>Từng thợ</b> → chọn tên. Màn hình chỉ hiện thợ đó: thợ nhận bao nhiêu, số khách, tiền mặt, thẻ, bo và từng khách. Thợ khác không hiện, nên đưa máy cho thợ xem được. Bấm <b>Cả tiệm</b> để xem tất cả.','staffday'],
+['📅 Lịch','Xem cả tháng; ô càng đậm là ngày càng nhiều tiền. Bấm vào một ngày để xem chi tiết ngày đó.','cal'],
+['📊 Báo cáo cả tiệm & PDF','Tab <b>Báo cáo</b> → chọn <b>Ngày / Tuần / Tháng / Năm</b>, dùng ‹ › để đổi thời gian. Xem tổng thu, tiền mặt, thẻ, gift card, bo, tiền trả từng thợ và tiệm giữ lại. Bấm <b>Xuất báo cáo PDF</b> để lưu, gửi hoặc in.','rep'],
+['🧾 Báo cáo từng thợ & phiếu lương','Tab <b>Báo cáo</b> → chọn Tuần hoặc Tháng → bấm <b>Từng thợ</b> → chọn tên. Xem thợ nhận, số ngày làm, biểu đồ và từng ngày. Bấm <b>Xuất phiếu lương PDF</b> để gửi cho thợ; phiếu chỉ có số của thợ đó.','slip'],
+['🎁 Bán gift card','Tab <b>Gift card</b> → <b>＋ Bán gift card</b>. Nhập mã thẻ (app tự gợi ý), giá trị, người mua và cách trả. Bấm vào một thẻ để xem số dư và lịch sử dùng.','gift'],
+['💳 Khách dùng gift card','Khi thêm khách, chọn <b>🎁 Gift</b> rồi chọn thẻ, app tự trừ số dư. Thợ vẫn được tính tiền như bình thường. Nếu thẻ không đủ, app hỏi phần còn lại trả tiền mặt hay thẻ.','giftpay'],
+['💰 Cách tính tiền','<b>Tổng thu</b> = tiền dịch vụ + tiền bo.<br><b>Thợ nhận</b> = dịch vụ × % hoa hồng + toàn bộ tiền bo.<br><b>Tiệm giữ lại</b> = tổng thu − tiền trả thợ.<br>Tiền <b>bán</b> gift card được tính riêng; khi khách <b>dùng</b> gift card thì mới tính vào doanh thu.'],
+['💾 Sao lưu','Số liệu chỉ nằm trên điện thoại này. Tab <b>Thợ</b> → <b>Sao lưu / Khôi phục</b> → <b>Lưu file sao lưu</b>, cất vào Tệp hoặc iCloud. Nên làm mỗi tuần. Khi đổi máy hoặc mất số liệu, dùng <b>Mở file sao lưu</b> hoặc dán dữ liệu rồi bấm <b>Khôi phục</b>.','backup'],
+['🌐 Ngôn ngữ & màn hình','Bấm <b>EN / VI</b> ở góc trên để đổi tiếng Anh hoặc tiếng Việt. App chỉ dùng màn hình dọc; nếu xoay ngang, app nhắc bạn xoay lại.']],
+en:[
+['🔒 Login & passcode','The login page has 2 buttons: <b>Owner</b> and <b>Staff</b>. The first time you open the app, the owner creates a 4-digit code and enters it again to confirm. The app locks itself when you leave it for more than 1 minute. Change it or lock now in the <b>Staff</b> tab. If you forget it, you must delete the data and restore from a backup file.','lock'],
+['👩 Add staff','<b>Staff</b> tab → tap <b>＋ Add staff</b>. Enter the name, the commission % they keep (e.g. 60%) and pick a color. Tap a name to edit or delete. Deleted staff stay in past reports.','staff'],
+['💅 Add a customer','<b>Today</b> tab → <b>＋ Add customer</b>. Pick the staff member, enter the service amount and tip (quick buttons $5, $10, 15%, 20%), choose <b>Cash / Card / Gift</b>, then tap <b>Save customer</b>. Each save counts as 1 customer.','addcust'],
+['✏️ View & edit customers','In <b>Whole salon</b>, tap a staff name to open their customer list (tap again to collapse). Tap a customer line to change the amount, staff, payment, or delete it.','edit'],
+['👩 One staff member for the day','<b>Today</b> tab → tap <b>One staff</b> → pick a name. Only that person is shown: earnings, customers, cash, card, tips and each visit. Nobody else appears, so you can hand the phone to them. Tap <b>Whole salon</b> to see everyone.','staffday'],
+['📅 Calendar','See the whole month; darker days earned more. Tap a day to see its details.','cal'],
+['📊 Salon report & PDF','<b>Reports</b> tab → choose <b>Day / Week / Month / Year</b> and use ‹ › to move in time. See revenue, cash, card, gift cards, tips, pay for each staff member and what the salon keeps. Tap <b>Export PDF report</b> to save, send or print.','rep'],
+['🧾 Staff report & pay slip','<b>Reports</b> tab → choose Week or Month → tap <b>One staff</b> → pick a name. See earnings, days worked, a chart and each day. Tap <b>Export pay slip PDF</b> to send to them; it only contains that person’s numbers.','slip'],
+['🎁 Sell a gift card','<b>Gift cards</b> tab → <b>＋ Sell gift card</b>. Enter the code (suggested automatically), value, buyer and how they paid. Tap a card to see its balance and history.','gift'],
+['💳 Customer pays with a gift card','When adding a customer, choose <b>🎁 Gift</b> and pick the card; the balance is deducted automatically. Staff still get credit as usual. If the card doesn’t cover it all, the app asks whether the rest is cash or card.','giftpay'],
+['💰 How money is counted','<b>Total revenue</b> = services + tips.<br><b>Staff pay</b> = services × commission % + all tips.<br><b>Salon keeps</b> = total revenue − staff pay.<br>Money from <b>selling</b> gift cards is tracked separately; it counts as revenue when the card is <b>used</b>.'],
+['💾 Backup','Data lives only on this phone. <b>Staff</b> tab → <b>Backup / Restore</b> → <b>Save backup file</b> and keep it in Files or iCloud. Do it every week. If you change phones or lose data, use <b>Open backup file</b> or paste the data and tap <b>Restore</b>.','backup'],
+['🌐 Language & screen','Tap <b>EN / VI</b> at the top to switch between English and Vietnamese. The app is portrait only; if you turn the phone sideways, it asks you to turn it back.']]};
+
+// ---------- helpers ----------
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pd=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)};
+const today=()=>ymd(new Date());
+const nowHM=()=>{const d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())};
+const r2=n=>Math.round(n*100)/100;
+const money=n=>{const v=r2(n);return'$'+v.toLocaleString('en-US',{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2})};
+const short=n=>n>=1000?'$'+(n/1000).toFixed(1).replace('.0','')+'k':'$'+Math.round(n);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOWE=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const vDow=d=>d.getDay()?'Thứ '+(d.getDay()+1):'Chủ nhật';
+const fmtDay=s=>{const d=pd(s);return LANG==='en'?`${DOWE[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`:`${vDow(d)}, ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`};
+const fmtShort=s=>{const d=pd(s);return LANG==='en'?`${DOWE[d.getDay()]} ${d.getMonth()+1}/${d.getDate()}`:`${d.getDay()?'T'+(d.getDay()+1):'CN'}, ${d.getDate()}/${d.getMonth()+1}`};
+const fmtDate=s=>{const d=pd(s);return LANG==='en'?`${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`:`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`};
+const monthName=(y,m)=>LANG==='en'?`${MONL[m]} ${y}`:`Tháng ${m+1}/${y}`;
+const COLORS=['#ec407a','#8e24aa','#5c6bc0','#26a69a','#ffa726','#ef5350','#29b6f6','#7cb342','#8d6e63','#546e7a'];
+const KEY='so-tho-nail.v1';
+
+// ---------- data ----------
+function seed(){
+  const ws=[['Lan',60],['Vy',60],['Tâm',55],['Kim',60]].map((x,i)=>({id:uid(),name:x[0],pct:x[1],color:COLORS[i],del:false}));
+  const names=['Linda','Jessica','Mai Anh','Sarah','Thu Hà','Emily','Ngọc','Ashley'];
+  const gifts=[];for(let i=0;i<8;i++)gifts.push({id:uid(),code:'GC-'+(1001+i),amount:[50,100,75,50,100,150,50,25][i],date:addD(today(),-75+i*9),pay:i%3?'card':'cash',buyer:names[i],to:i%2?names[(i+3)%8]:'',note:''});
+  const bal={};gifts.forEach(g=>bal[g.id]=g.amount);
+  const prices=[25,30,35,40,45,50,55,60,65,70,85];const tickets=[];
+  for(let k=80;k>=0;k--){const ds=addD(today(),-k);if(pd(ds).getDay()===0&&Math.random()<.6)continue;
+    ws.forEach(w=>{if(Math.random()<.12)return;const n=3+Math.floor(Math.random()*6);
+      for(let j=0;j<n;j++){const amt=prices[Math.floor(Math.random()*prices.length)];
+        const tip=Math.random()<.85?Math.round(amt*(.12+Math.random()*.1)):0;
+        const t={id:uid(),date:ds,wid:w.id,amt,tip,pay:Math.random()<.62?'card':'cash',time:pad(9+Math.floor(j*1.4))+':'+pad(Math.floor(Math.random()*4)*15)};
+        if(Math.random()<.012){const c=gifts.filter(g=>g.date<=ds&&addD(g.date,25)>=ds&&bal[g.id]>0),g=c[Math.floor(Math.random()*c.length)];if(g){const ga=Math.min(bal[g.id],amt+tip);bal[g.id]-=ga;t.pay2=t.pay;t.pay='gift';t.gid=g.id;t.gamt=ga}}
+        tickets.push(t)}})}
+  return{workers:ws,tickets,gifts,sample:true};
+}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);d.gifts=d.gifts||[];return d}}catch(e){}return{workers:[],tickets:[],gifts:[],checks:[],sample:false,solo:true}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let S=load();save();
+const W=id=>S.workers.find(w=>w.id===id)||{id,name:T('deletedW'),color:'#999',pct:60};
+const G=id=>S.gifts.find(g=>g.id===id);
+const activeW=()=>S.workers.filter(w=>!w.del);
+const inRange=(a,b)=>S.tickets.filter(t=>t.date>=a&&t.date<=b&&(st.role!=='staff'||t.wid===st.me));
+const giftsIn=(a,b)=>st.role==='staff'?[]:S.gifts.filter(g=>g.date>=a&&g.date<=b);
+const gUsed=(gid,exceptId)=>S.tickets.filter(t=>t.pay==='gift'&&t.gid===gid&&t.id!==exceptId).reduce((s,t)=>s+(t.gamt||0),0);
+const gBal=(g,exceptId)=>r2(g.amount-gUsed(g.id,exceptId));
+function sum(l){const r={svc:0,tip:0,cash:0,card:0,gift:0,n:l.reduce((a,t)=>a+(t.kind==='day'?(t.n||0):1),0),pay:0};
+  l.forEach(t=>{r.svc+=t.amt;r.tip+=t.tip;const x=t.amt+t.tip;
+    if(t.kind==='day'||t.pay==='split'){r.cash+=t.cash||0;r.card+=t.card||0;r.gift+=t.gift||0}else if(t.pay==='gift'){const g=Math.min(t.gamt||0,x);r.gift+=g;const rem=x-g;if(rem>0)t.pay2==='cash'?r.cash+=rem:r.card+=rem}
+    else t.pay==='cash'?r.cash+=x:r.card+=x;
+    r.pay+=t.amt*W(t.wid).pct/100+t.tip});
+  r.total=r.svc+r.tip;r.days=new Set(l.map(t=>t.date)).size;return r}
+function gsum(l){const r={n:l.length,total:0,cash:0,card:0};l.forEach(g=>{r.total+=g.amount;g.pay==='cash'?r.cash+=g.amount:r.card+=g.amount});return r}
+const outstanding=()=>S.gifts.reduce((s,g)=>s+Math.max(0,gBal(g)),0);
+
+// ---------- state ----------
+const st={tab:'day',day:today(),cal:today(),rp:'week',rd:today(),open:new Set(),q:'',view:'shop',vw:'',rview:'shop'};
+function range(p,s){const d=pd(s);let a,b,label;
+  if(p==='day'){a=b=s;label=fmtDay(s)}
+  else if(p==='week'){a=addD(s,-((d.getDay()+6)%7));b=addD(a,6);const A=pd(a),B=pd(b);label=LANG==='en'?`Week ${MON[A.getMonth()]} ${A.getDate()} – ${MON[B.getMonth()]} ${B.getDate()}`:`Tuần ${A.getDate()}/${A.getMonth()+1} – ${B.getDate()}/${B.getMonth()+1}`}
+  else if(p==='month'){a=ymd(new Date(d.getFullYear(),d.getMonth(),1));b=ymd(new Date(d.getFullYear(),d.getMonth()+1,0));label=monthName(d.getFullYear(),d.getMonth())}
+  else{a=d.getFullYear()+'-01-01';b=d.getFullYear()+'-12-31';label=(LANG==='en'?'Year ':'Năm ')+d.getFullYear()}
+  return{a,b,label}}
+function shift(p,s,dir){const d=pd(s);if(p==='day')d.setDate(d.getDate()+dir);else if(p==='week')d.setDate(d.getDate()+7*dir);else if(p==='month'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else d.setFullYear(d.getFullYear()+dir);return ymd(d)}
+const payLabel=t=>t.pay==='split'?T('splitL'):t.kind==='day'?dayPill(t):t.pay==='cash'?T('cashW'):t.pay==='card'?T('cardW'):T('giftW');
+
+// ---------- views ----------
+function kpis(r,gs){return`<div class="kpi big"><span>${T('total')}</span><b>${money(r.total)}</b><small>${T('svcTip',money(r.svc),money(r.tip))}${r.days&&st.tab!=='day'&&!(st.tab==='rep'&&st.rp==='day')?' · <span style="color:#fff;font-weight:700">'+T('nDays',r.days)+'</span>':''}</small>${st.role==='staff'?'':`<div class="keepRow"><div><span>🏠 ${T('shopKeeps')}</span><em>${money(r.total-r.pay)}</em></div><div><span>👩 ${T('totalStaff')}</span><em>${money(r.pay)}</em></div></div>`}</div>
+<div class="kgrid"><div class="kpi"><span>${T('cash')}</span><b class="c-cash">${money(r.cash)}</b></div><div class="kpi"><span>${T('card')}</span><b class="c-card">${money(r.card)}</b></div>
+<div class="kpi"><span>${T('gift')}</span><b class="c-gift">${money(r.gift)}</b></div><div class="kpi"><span>${T('tips')}</span><b class="c-tip">${money(r.tip)}</b></div>
+<div class="kpi"><span>${T('custs')}</span><b>${r.n}</b></div>${st.role==='staff'?'':`<div class="kpi"><span>${T('giftSold')}</span><b>${money(gs?gs.total:0)}</b></div>`}</div>`}
+
+function vDay(){const s=st.day,l=inRange(s,s),r=sum(l),gl=giftsIn(s,s);
+  let h=`<div class="nav"><button onclick="st.day=addD(st.day,-1);R()">‹</button><div class="nl"><b>${fmtDay(s)}</b>${s!==today()?`<a onclick="st.day=today();R()">${T('backToday')}</a>`:`<small>${T('today')}</small>`}</div><button onclick="st.day=addD(st.day,1);R()">›</button></div>`+(st.role==='staff'?'':segHTML());if(st.role==='staff'){st.vw=st.me;return h+vStaffDay(s,l)}if(st.view==='staff')return h+vStaffDay(s,l);h+=kpis(r,gsum(gl));
+  if(!l.length)h+=`<div class="empty">${T('emptyDay')}</div>`;
+  else{const ids=S.workers.filter(w=>l.some(t=>t.wid===w.id)).map(w=>w.id),allOpen=ids.every(i=>st.open.has(i));
+  h+=`<div class="sec" style="display:flex;justify-content:space-between"><span>${T('byStaff')}</span><a style="color:var(--acc);text-transform:none;letter-spacing:0;cursor:pointer" onclick="${allOpen?'st.open.clear()':`[${ids.map(i=>`'${i}'`)}].forEach(i=>st.open.add(i))`};R()">${allOpen?T('closeAll'):T('openAll')}</a></div>`;
+  S.workers.forEach(w=>{const tl=l.filter(t=>t.wid===w.id);if(!tl.length)return;const x=sum(tl),op=st.open.has(w.id);
+    h+=`<div class="card"><div class="wh tap" onclick="tog('${w.id}')"><i style="background:${w.color}"></i><div class="wn"><b>${esc(w.name)}</b><span>${T('nCust',x.n)} · 💵 ${money(x.cash)} · 💳 ${money(x.card)}${x.gift?` · 🎁 ${money(x.gift)}`:''}</span></div><div class="wt"><em>${money(x.total)}</em><span>${T('staffGets',money(x.pay))}</span></div><svg class="chev${op?' up':''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>`+
+    (!op?'':tl.sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.kind==='day'?'📋':t.time}</span><span class="am">${t.kind==='day'&&t.n?`<small style="color:var(--mut);font-weight:600">${T('nCust',t.n)} · </small>`:''}${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.kind==='day'?(t.cash&&!t.card?'cash':t.card&&!t.cash?'card':'mix'):t.pay}">${payLabel(t)}</span></div>`).join(''))+`</div>`})}
+  if(gl.length)h+=`<div class="sec">${T('giftToday')}</div><div class="card">`+gl.map(giftRow).join('')+`</div>`;
+  return h}
+
+function segHTML(){return`<div class="seg"><button class="${st.view!=='staff'?'on':''}" onclick="st.view='shop';R()">🏠 ${T('wholeShop')}</button><button class="${st.view==='staff'?'on':''}" onclick="st.view='staff';R()">👩 ${T('oneStaff')}</button></div>`}
+function vStaffDay(s,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w.id));
+  if(!ws.length)return`<div class="empty">${T('noStaff')}</div>`;
+  if(!st.vw||!ws.some(w=>w.id===st.vw))st.vw=ws[0].id;
+  let h=st.role==='staff'?'':`<div class="schips">${ws.map(w=>{const n=l.filter(t=>t.wid===w.id).length;return`<button class="chip ${st.vw===w.id?'on':''}" onclick="st.vw='${w.id}';R()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}<span class="cnt">${n}</span></button>`}).join('')}</div>`;
+  const w=W(st.vw),tl=l.filter(t=>t.wid===w.id).sort((a,b)=>a.time<b.time?-1:1),x=sum(tl),com=x.svc*w.pct/100;
+  h+=`<div class="shero" style="background:linear-gradient(135deg,${w.color},#2a1838 85%)"><div class="top"><div class="av">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div><b>${esc(w.name)}</b><small>${fmtDay(s)} · ${T('commission',w.pct)}</small></div></div>
+  <span>${T('earn')}</span><b class="big">${money(x.pay)}</b><div class="sub">${T('comPlusTip',money(com),money(x.tip))}</div></div>
+  <div class="kgrid"><div class="kpi"><span>${T('custs')}</span><b>${x.n}</b></div><div class="kpi"><span>${T('total')}</span><b>${money(x.total)}</b></div>
+  <div class="kpi"><span>${cap1(T('svcL'))}</span><b>${money(x.svc)}</b></div><div class="kpi"><span>${T('tips')}</span><b class="c-tip">${money(x.tip)}</b></div>
+  <div class="kpi"><span>${T('cash')}</span><b class="c-cash">${money(x.cash)}</b></div><div class="kpi"><span>${T('card')}</span><b class="c-card">${money(x.card)}</b></div></div>`;
+  if(x.gift)h+=`<div class="kpi" style="margin:-4px 0 14px"><span>${T('gift')}</span><b class="c-gift">${money(x.gift)}</b></div>`;
+  if(!tl.length)return h+`<div class="empty">${T('noCustStaff')}</div>`;
+  return h+`<div class="sec">${T('custDetail')}</div><div class="card">`+tl.map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.kind==='day'?'📋':t.time}</span><span class="am">${t.kind==='day'&&t.n?`<small style="color:var(--mut);font-weight:600">${T('nCust',t.n)} · </small>`:''}${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.kind==='day'?(t.cash&&!t.card?'cash':t.card&&!t.cash?'card':'mix'):t.pay}">${payLabel(t)}</span></div>`).join('')+`</div>`}
+const cap1=s=>s.replace(/^./,c=>c.toUpperCase());
+D.wholeShop=['Cả tiệm','Whole salon'];D.oneStaff=['Từng thợ','One staff'];D.earn=['Thợ nhận','Earnings'];
+D.comPlusTip=[(a,b)=>`Hoa hồng ${a} + Bo ${b}`,(a,b)=>`Commission ${a} + Tips ${b}`];
+D.noCustStaff=['Thợ này chưa có khách ngày này.','No customers for this staff member on this day.'];
+
+const stfMode=()=>st.rview==='staff'&&!!st.vw;
+const rptIn=(a,b)=>inRange(a,b).filter(t=>!stfMode()||t.wid===st.vw);
+const rptL=rg=>inRange(rg.a,rg.b).filter(t=>!stfMode()||t.wid===st.vw);
+const rptTitleX=()=>T(stfMode()?'slipTitle':'rptTitle',T('p'+st.rp).toUpperCase());
+const rptLabel=rg=>stfMode()?W(st.vw).name+' · '+rg.label:rg.label;
+const slug=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const rptFileTag=rg=>(stfMode()?slug(W(st.vw).name)+'-':'')+(st.rp==='day'?rg.a:rg.a+'_'+rg.b);
+function rsegHTML(){return`<div class="seg"><button class="${st.rview!=='staff'?'on':''}" onclick="st.rview='shop';R()">🏠 ${T('wholeShop')}</button><button class="${st.rview==='staff'?'on':''}" onclick="st.rview='staff';R()">👩 ${T('oneStaff')}</button></div>`}
+function vStaffRep(rg,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w.id));
+  if(!ws.length)return`<div class="empty">${T('noStaff')}</div>`;
+  if(!st.vw||!ws.some(w=>w.id===st.vw))st.vw=ws[0].id;
+  let h=st.role==='staff'?'':`<div class="schips">${ws.map(w=>{const n=l.filter(t=>t.wid===w.id).length;return`<button class="chip ${st.vw===w.id?'on':''}" onclick="st.vw='${w.id}';R()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}<span class="cnt">${n}</span></button>`}).join('')}</div>`;
+  const w=W(st.vw),tl=l.filter(t=>t.wid===w.id),x=sum(tl),com=x.svc*w.pct/100,days=new Set(tl.map(t=>t.date)).size;
+  h+=`<button class="btn pdfb" onclick="exportPDF(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${T('exportSlip')}</button>
+  <button class="btn sec2 csvb" style="margin:-4px 0 12px;padding:12px" onclick="csvExport()">${T('csvBtn')}</button>
+  <div class="shero" style="background:linear-gradient(135deg,${w.color},#2a1838 85%)"><div class="top"><div class="av">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div><b>${esc(w.name)}</b><small>${rg.label} · ${T('commission',w.pct)}</small></div></div>
+  <span>${T('earn')}</span><b class="big">${money(x.pay)}</b><div class="sub">${T('comPlusTip',money(com),money(x.tip))}${st.rp!=='day'?' · '+T('daysWorked',days):''}</div></div>
+  <div class="kgrid"><div class="kpi"><span>${T('custs')}</span><b>${x.n}</b></div><div class="kpi"><span>${T('total')}</span><b>${money(x.total)}</b></div>
+  <div class="kpi"><span>${cap1(T('svcL'))}</span><b>${money(x.svc)}</b></div><div class="kpi"><span>${T('tips')}</span><b class="c-tip">${money(x.tip)}</b></div>
+  <div class="kpi"><span>${T('cash')}</span><b class="c-cash">${money(x.cash)}</b></div><div class="kpi"><span>${T('card')}</span><b class="c-card">${money(x.card)}</b></div></div>`;
+  if(x.gift)h+=`<div class="kpi" style="margin:-4px 0 14px"><span>${T('gift')}</span><b class="c-gift">${money(x.gift)}</b></div>`;
+  if(!tl.length)return h+`<div class="empty">${T('noData')}</div>`;
+  if(st.rp==='day')return h+`<div class="sec">${T('custDetail')}</div><div class="card">`+[...tl].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.kind==='day'?'📋':t.time}</span><span class="am">${t.kind==='day'&&t.n?`<small style="color:var(--mut);font-weight:600">${T('nCust',t.n)} · </small>`:''}${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.kind==='day'?(t.cash&&!t.card?'cash':t.card&&!t.cash?'card':'mix'):t.pay}">${payLabel(t)}</span></div>`).join('')+`</div>`;
+  const B=[];
+  if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const r2_=range('month',y+'-'+pad(i+1)+'-01');B.push({lb:LANG==='en'?MON[i][0]:'T'+(i+1),name:monthName(y,i),l:tl.filter(t=>t.date>=r2_.a&&t.date<=r2_.b)})}}
+  else{let d=rg.a,i=0;const wk=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];while(d<=rg.b){const dd=d;B.push({lb:st.rp==='week'?wk[i]:((i+1)%5===0||i===0?i+1:''),name:fmtShort(d),d:dd,l:tl.filter(t=>t.date===dd)});d=addD(d,1);i++}}
+  B.forEach(b=>b.x=sum(b.l));const mx=Math.max(1,...B.map(b=>b.x.pay));
+  if(st.rp==='week')h+=`<div class="sec">${T('weekDays',days)}</div><div class="wkg">${B.map(b=>`<div class="wkd ${b.l.length?'on':b.d>today()?'':'offd'}"><b>${b.lb}</b><span>${b.l.length?money(b.x.pay):b.d>today()?'·':T('off')}</span></div>`).join('')}</div>`;
+  h+=`<div class="chart"><h4>${T('payBy',st.rp==='year')}</h4><div class="bars">${B.map(b=>`<div><i style="height:${b.x.pay/mx*100}%;background:linear-gradient(${w.color},#2a1838)"></i><small>${b.lb}</small></div>`).join('')}</div></div>`;
+  h+=`<div class="sec">${T('detailBy',st.rp==='year')}</div><div class="card">`+B.filter(b=>b.l.length).map(b=>`<div class="tot" style="align-items:center"><span>${b.name}<br><small style="color:var(--mut);font-size:12px">${b.x.n?T('nCust',b.x.n)+' · ':''}${cap1(T('svcL'))} ${money(b.x.svc)} · ${T('tipL')} ${money(b.x.tip)}</small></span><b>${money(b.x.pay)}</b></div>`).join('')+`</div>`;
+  return h}
+D.slipTitle=[p=>`PHIẾU LƯƠNG THỢ · ${p}`,p=>`STAFF PAY SLIP · ${p}`];
+D.exportSlip=['Xuất phiếu lương PDF','Export pay slip PDF'];
+D.payBy=[y=>'Thợ nhận theo '+(y?'tháng':'ngày'),y=>'Earnings by '+(y?'month':'day')];
+function tog(id){st.open.has(id)?st.open.delete(id):st.open.add(id);R()}
+
+function vCal(){const d=pd(st.cal),y=d.getFullYear(),m=d.getMonth(),days=new Date(y,m+1,0).getDate(),off=(new Date(y,m,1).getDay()+6)%7;
+  const rg=range('month',st.cal),l=inRange(rg.a,rg.b),by={};l.forEach(t=>(by[t.date]=by[t.date]||[]).push(t));
+  const tots={};Object.keys(by).forEach(k=>tots[k]=sum(by[k]).total);const max=Math.max(1,...Object.values(tots));
+  let h=`<div class="nav"><button onclick="st.cal=shift('month',st.cal,-1);R()">‹</button><div class="nl"><b>${monthName(y,m)}</b><small>${T('calHint')}</small></div><button onclick="st.cal=shift('month',st.cal,1);R()">›</button></div><div class="cal">`;
+  (LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN']).forEach(x=>h+=`<div class="h">${x}</div>`);
+  for(let i=0;i<off;i++)h+='<div></div>';
+  for(let i=1;i<=days;i++){const ds=y+'-'+pad(m+1)+'-'+pad(i),t=tots[ds]||0,a=t?.12+.88*t/max:0;
+    h+=`<div class="cd${ds===today()?' td':''}${a>.55?' hot':''}" style="${t?`background:rgba(194,24,91,${a.toFixed(2)})`:''}" onclick="st.day='${ds}';go('day')"><span>${i}</span><b>${t?short(t):''}</b></div>`}
+  return h+`</div><div class="sec">${T('monthSum')}</div>`+kpis(sum(l),gsum(giftsIn(rg.a,rg.b)))}
+
+function vRep(){if(st.role==='staff'){st.rview='staff';st.vw=st.me}const rg=range(st.rp,st.rd),l=inRange(rg.a,rg.b),r=sum(l),gl=giftsIn(rg.a,rg.b),gs=gsum(gl);
+  let h=`<div class="seg">${['day','week','month','year','check'].map(p=>`<button class="${st.rp===p?'on':''}" onclick="st.rp='${p}';${p==='check'?'st.ck=null;':''}R()">${T('p'+p)}</button>`).join('')}</div>
+  <div class="nav"><button onclick="st.rd=shift(st.rp,st.rd,-1);R()">‹</button><div class="nl"><b>${rg.label}</b><small>${l.length?T('daysWorked',new Set(l.map(t=>t.date)).size):T('noData')}</small></div><button onclick="st.rd=shift(st.rp,st.rd,1);R()">›</button></div>
+  ${st.role==='staff'?'':rsegHTML()}<button class="btn pdfb" onclick="exportPDF(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${T('exportPdf')}</button><button class="btn sec2 csvb" style="margin:-4px 0 12px;padding:12px" onclick="csvExport()">${T('csvBtn')}</button>`;if(stfMode()||st.rview==='staff')return h.replace(/<button class="btn pdfb"[\s\S]*?<\/button>/,'').replace(/<button class="btn sec2 csvb"[\s\S]*?<\/button>/,'')+vStaffRep(rg,l);h+=kpis(r,gs);
+  let B=[];
+  if(st.rp==='week'){const lb=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];for(let i=0;i<7;i++){const ds=addD(rg.a,i);B.push([lb[i],sum(inRange(ds,ds)).total])}}
+  else if(st.rp==='month'){const n=pd(rg.b).getDate();for(let i=0;i<n;i++){const ds=addD(rg.a,i);B.push([(i+1)%5===0||i===0?i+1:'',sum(inRange(ds,ds)).total])}}
+  else if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',y+'-'+pad(i+1)+'-01');B.push([LANG==='en'?MON[i][0]:'T'+(i+1),sum(inRange(x.a,x.b)).total])}}
+  if(B.length){const mx=Math.max(1,...B.map(b=>b[1]));h+=`<div class="chart"><h4>${T('revBy',st.rp==='year')}</h4><div class="bars">${B.map(b=>`<div><i style="height:${b[1]/mx*100}%"></i><small>${b[0]}</small></div>`).join('')}</div></div>`}
+  if(r.total){const c=r.cash/r.total*100,k=r.card/r.total*100,g=r.gift/r.total*100;h+=`<div class="split"><h4>${T('payMix')}</h4><div class="sbar"><i style="width:${c}%;background:var(--cash)"></i><i style="width:${k}%;background:var(--cardc)"></i><i style="width:${g}%;background:#8e24aa"></i></div><div class="sleg"><span>💵 ${Math.round(c)}%</span><span>💳 ${Math.round(k)}%</span><span>🎁 ${Math.round(g)}%</span></div></div>`}
+  const rows=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
+  if(rows.length){h+=`<div class="sec">${T('staffPay')}</div><div class="card">`+rows.map(({w,x})=>`<div class="wr"><div class="wh" style="padding:0 0 6px"><i style="background:${w.color}"></i><b>${esc(w.name)}</b><span>${w.pct}% · ${T('nDays',daysOf(l,w.id))}</span><em>${money(x.pay)}</em></div>
+  <div class="ws"><div><b>${x.n}</b>${T('custsL')}</div><div><b>${money(x.svc)}</b>${T('svcL')}</div><div><b>${money(x.tip)}</b>${T('tipL')}</div><div><b>${money(x.svc*w.pct/100)}</b>${T('comL')}</div></div></div>`).join('')+
+  `<div class="tot"><span>${T('totalStaff')}</span><b>${money(r.pay)}</b></div><div class="tot"><span>${T('shopKeeps')}</span><b style="color:var(--acc)">${money(r.total-r.pay)}</b></div></div>
+  <p class="note">${T('payNote')}</p>`}
+  if(st.rp==='week')h+=attTable(rg,l);
+  h+=`<div class="sec">${T('giftSec')}</div><div class="card"><div class="tot" style="border:0"><span>${T('soldL')} (${gs.n})</span><b>${money(gs.total)}</b></div><div class="tot"><span style="color:var(--mut);font-size:13px">💵 ${money(gs.cash)} · 💳 ${money(gs.card)}</span></div><div class="tot"><span>${T('usedL')}</span><b class="c-gift">${money(r.gift)}</b></div><div class="tot"><span>${T('outL')}</span><b>${money(outstanding())}</b></div></div>`;
+  return h}
+
+function giftRow(g){const b=gBal(g),p=g.amount?Math.max(0,b)/g.amount*100:0;
+  return`<div class="gl" onclick="openG('${g.id}')"><div class="gico${b<=0?' used':''}"></div><div class="gm"><b>${esc(g.code)}</b><small>${esc(g.buyer)}${g.to?' → '+esc(g.to):''} · ${T('soldOn',fmtDate(g.date))}</small><div class="prog"><i style="width:${p}%"></i></div></div><div class="gb"><b>${b<=0?`<span style="color:var(--mut);font-size:13px">${T('usedUp')}</span>`:money(b)}</b><small>${T('ofV',money(g.amount))}</small></div></div>`}
+function vGift(){const rg=range('month',today()),act=S.gifts.filter(g=>gBal(g)>0);
+  let h=`<div class="gsum"><span>${T('giftOutT')}</span><b>${money(outstanding())}</b><small>${T('activeCards',act.length,money(gsum(giftsIn(rg.a,rg.b)).total))}</small></div>
+  <input class="search" id="gq" placeholder="${T('search')}" value="${esc(st.q)}" oninput="st.q=this.value;drawGL()">
+  <div id="glist"></div>`;return h}
+function drawGL(){const q=st.q.trim().toLowerCase();let l=S.gifts.filter(g=>!q||[g.code,g.buyer,g.to].join(' ').toLowerCase().includes(q));
+  l.sort((a,b)=>{const x=gBal(a)>0,y=gBal(b)>0;return x!==y?(x?-1:1):(a.date<b.date?1:-1)});
+  $('#glist').innerHTML=l.length?`<div class="card">${l.map(giftRow).join('')}</div>`:`<div class="empty">${T('noGifts')}</div>`}
+
+function vWork(){const a=activeW();
+  return`<div class="sec" style="margin-top:4px">${T('activeStaff',a.length)}</div><div class="card">`+
+  (a.length?a.map(w=>`<div class="wl" onclick="openW('${w.id}')"><div class="av" style="background:${w.color}">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div class="nm"><b>${esc(w.name)}</b><small>${T('commission',w.pct)}${w.pin?' · 🔑 '+T('hasLogin'):''}${w.anyDay?' · 📅 '+T('anyDayTag'):''}${w.ckEdit?' · 🧾 '+T('ckPermTag'):''}</small></div><span style="color:var(--mut)">›</span></div>`).join(''):`<div class="note" style="padding:10px 0">${T('noStaff')}</div>`)+
+  `</div><button class="btn pri" onclick="openW()">${T('addStaff')}</button>
+  <div class="sec">🔑 ${T('loginSec')}</div><div class="card" style="padding:14px"><p class="note" style="margin:0 0 12px">${T('loginNote')}</p><label style="display:flex;align-items:center;gap:12px;cursor:pointer"><span style="flex:1"><b>${T('staffAddT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('staffAddD')}</small></span><input type="checkbox" class="sw" ${S.staffAdd?'checked':''} onchange="S.staffAdd=this.checked;save()"></label></div>
+  <div class="sec">${T('data')}</div>
+  ${S.sample?`<div class="card" style="padding:14px"><b>${T('sampleOn')}</b><p class="note" style="margin:6px 0 10px">${T('sampleTxt')}</p><button class="btn del" style="margin:0" onclick="ask(T('clearSampleQ'),T('del'),()=>{S={workers:[],tickets:[],gifts:[],sample:false};save();R();toast(T('cleared'))})">${T('clearSample')}</button></div>`:''}
+  <button class="btn sec2" onclick="openHelp()">${T('guide')}</button>
+  <button class="btn sec2" onclick="openBk()">${T('backup')}</button>
+  <button class="btn sec2" onclick="openImp()">${T('impBtn')}</button>
+  <button class="btn del" onclick="openWipe()">${T('wipeBtn')}</button>
+  <button class="btn sec2" onclick="showLock(getPin()?'old':'new')">${T('changePin')}</button>
+  <button class="btn sec2" onclick="showLock('enter')">${T('lockNow')}</button>
+  <div class="lab" style="margin-top:16px">🌐 ${T('language')}</div><div class="langsw"><button class="${LANG==='vi'?'on':''}" onclick="setLang('vi')">Tiếng Việt</button><button class="${LANG==='en'?'on':''}" onclick="setLang('en')">English</button></div>
+  <p class="note">${T('localOnly')}</p>
+  <p class="note" style="text-align:center;margin-top:24px">💅 Sổ Thợ Nail<br>${T('by')} <b>Ryan Nguyen</b></p>`}
+
+// ---------- render ----------
+const TABS=[['day','tabDay','<path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/>'],['cal','tabCal','<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke-linecap="round"/>'],['rep','tabRep','<path d="M5 20V11M12 20V5M19 20v-6" stroke-linecap="round"/>'],['gift','tabGift','<rect x="3.5" y="8" width="17" height="12" rx="2"/><path d="M3.5 12h17M12 8v12M12 8c-1.5-3.5-5.5-4-5.5-1.5S12 8 12 8zm0 0c1.5-3.5 5.5-4 5.5-1.5S12 8 12 8z" stroke-linejoin="round"/>'],['work','tabWork','<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.8.8 3 2.6 3.5 5.2" stroke-linecap="round"/>']];
+function R(){document.documentElement.lang=LANG;$('#sub').textContent=st.role==='staff'&&st.me?'👩 '+W(st.me).name:T('sub');$('#lb').textContent=LANG==='vi'?'EN':'VI';
+  $('#tabs').innerHTML=TABS.filter(t=>['day','cal','rep','set'].includes(t[0])).map(t=>`<button class="${st.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${t[2]}</svg>${T(t[1])}</button>`).join('');
+  $('#main').innerHTML={day:vDay,cal:vCal,rep:vRep,gift:vGift,work:vWork,set:vSet}[st.tab]();
+  if(st.tab==='gift')drawGL();
+  const f=$('#fab');f.style.display=(st.role==='staff'?(st.tab==='day'&&S.staffAdd):(st.tab==='day'||st.tab==='gift'))?'':'none';
+  f.textContent=st.tab==='gift'?T('sellGift'):T('addCust');f.onclick=st.tab==='gift'?()=>openG():()=>openT()}
+function go(t){st.tab=t;R();scrollTo(0,0)}
+function setLang(l){LANG=l;try{localStorage.setItem(LK,l)}catch(e){}R();if($('#lock').classList.contains('on'))drawLock()}
+
+// ---------- sheets ----------
+function openS(html){$('#sheet').innerHTML='<div class="grab"></div>'+html;$('#ov').classList.add('on');$('#sheet').classList.add('on')}
+function closeS(){$('#ov').classList.remove('on');$('#sheet').classList.remove('on')}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1900)}
+function ask(msg,ok,fn,okOnly){$('#dlg').innerHTML=`<p>${msg}</p>`+(okOnly?`<button class="btn pri" style="margin:0" onclick="closeD()">OK</button>`:`<div class="row2"><button class="btn sec2" style="margin:0" onclick="closeD()">${T('cancel')}</button><button class="btn pri" style="margin:0;background:#c62828" id="dok">${ok}</button></div>`);
+  if(!okOnly)$('#dok').onclick=()=>{closeD();fn()};$('#ov2').classList.add('on');$('#dlg').classList.add('on')}
+function closeD(){$('#ov2').classList.remove('on');$('#dlg').classList.remove('on')}
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)&&n>0?r2(n):0};
+const head=t=>`<h3>${t}<button onclick="closeS()">${T('close')}</button></h3>`;
+
+// customer ticket
+let E=null,lastW=null;
+function openT(id){if(id){const tt=S.tickets.find(x=>x.id===id);if(tt&&tt.kind==='day')return openDT(id)}if(st.role==='staff'&&!staffCan(id))return;if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{openSetup()});return}
+  const t=id?S.tickets.find(x=>x.id===id):null;
+  E=t?{...t,amt:String(t.amt),tip:t.tip?String(t.tip):'',pay2:t.pay2||'cash'}:{id:null,date:st.day,wid:(st.tab==='day'&&st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id),amt:'',tip:'',pay:'card',pay2:'cash',gid:'',time:nowHM()};drawT()}
+function syncT(){E.amt=$('#iA').value;E.tip=$('#iT').value;E.date=$('#iD').value||E.date;E.time=$('#iH').value||E.time;const s=$('#iG');if(s)E.gid=s.value}
+function giftBlock(){const opts=S.gifts.filter(g=>gBal(g,E.id)>0||g.id===E.gid);
+  if(!opts.length)return`<div class="warn">${T('noGiftBal')}</div>`;
+  if(!E.gid||!opts.some(g=>g.id===E.gid))E.gid=opts[0].id;
+  const g=G(E.gid),bal=gBal(g,E.id),tot=num(E.amt)+num(E.tip),short=r2(tot-bal);
+  return`<div class="lab">${T('pickGift')}</div><select class="field" id="iG" onchange="syncT();drawT()">${opts.map(o=>`<option value="${o.id}" ${o.id===E.gid?'selected':''}>${esc(o.code)} · ${esc(o.buyer)} · ${T('left',money(gBal(o,E.id)))}</option>`).join('')}</select>`+
+  (short>0&&tot>0?`<div class="warn">${T('shortBy',money(short))}</div><div class="tog" style="margin-top:8px"><button class="cash ${E.pay2==='cash'?'on':''}" onclick="syncT();E.pay2='cash';drawT()">${T('cash')}</button><button class="card ${E.pay2==='card'?'on':''}" onclick="syncT();E.pay2='card';drawT()">${T('card')}</button></div>`:'')}
+function drawT(){const ws=S.workers.filter(w=>(!w.del||w.id===E.wid)&&(st.role!=='staff'||w.id===st.me));
+  openS(head(E.id?T('editCust'):T('addCustT'))+''+`
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${E.wid===w.id?'on':''}" onclick="syncT();E.wid='${w.id}';drawT()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('svcAmt')}</div><div class="money"><span>$</span><input id="iA" inputmode="decimal" placeholder="0" value="${esc(E.amt)}" ${E.pay==='gift'?'onchange="syncT();drawT()"':''}></div>
+  <div class="lab">${T('tipAmt')}</div><div class="money"><span>$</span><input id="iT" inputmode="decimal" placeholder="0" value="${esc(E.tip)}" ${E.pay==='gift'?'onchange="syncT();drawT()"':''}></div>
+  <div class="quick">${[5,10].map(v=>`<button onclick="$('#iT').value=${v};tipQ()">$${v}</button>`).join('')}${[15,20].map(p=>`<button onclick="$('#iT').value=Math.round(num($('#iA').value)*${p/100});tipQ()">${p}%</button>`).join('')}<button style="color:var(--mut)" onclick="$('#iT').value='';tipQ()">${T('noTip')}</button></div>
+  <div class="lab">${T('paidBy')}</div><div class="tog t3"><button class="cash ${E.pay==='cash'?'on':''}" onclick="syncT();E.pay='cash';drawT()">${T('cash')}</button><button class="card ${E.pay==='card'?'on':''}" onclick="syncT();E.pay='card';drawT()">${T('card')}</button><button class="gift ${E.pay==='gift'?'on':''}" onclick="syncT();E.pay='gift';drawT()">🎁 Gift</button></div>
+  ${E.pay==='gift'?giftBlock():''}
+  <div class="row2" style="margin-top:4px"><div><div class="lab">${T('date')}</div><input class="field" type="date" id="iD" value="${E.date}"></div><div><div class="lab">${T('time')}</div><input class="field" type="time" id="iH" value="${E.time}"></div></div>
+  <div id="tErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" onclick="saveT()">${E.id?T('saveChanges'):T('saveCust')}</button>
+  ${E.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${E.id}');save();closeS();R();toast(T('deleted'))})">${T('delCust')}</button>`:''}</div>`);
+  if(!E.id&&!E.amt)setTimeout(()=>$('#iA')&&$('#iA').focus(),280)}
+function tipQ(){if(E.pay==='gift'){syncT();drawT()}}
+function saveT(){syncT();const amt=num(E.amt);if(!amt){$('#iA').parentNode.style.borderColor='#c62828';$('#tErr').textContent=T('needAmt');return}
+  const t={id:E.id||uid(),date:staffLock()?today():E.date,wid:st.role==='staff'?st.me:E.wid,amt,tip:num(E.tip),pay:E.pay,time:E.time};
+  if(E.pay==='gift'){const g=G(E.gid);if(!g){$('#tErr').textContent=T('noGiftBal');return}
+    const bal=gBal(g,E.id);t.gid=g.id;t.gamt=r2(Math.min(bal,amt+t.tip));t.pay2=E.pay2}
+  const isEdit=!!E.id;
+  if(isEdit)S.tickets=S.tickets.map(x=>x.id===E.id?t:x);else S.tickets.push(t);
+  lastW=E.wid;save();closeS();st.day=t.date;R();toast(isEdit?T('updated'):T('saved'))}
+
+// staff
+let F=null;
+function openW(id){const w=id?S.workers.find(x=>x.id===id):null;F=w?{...w}:{id:null,name:'',pct:60,color:COLORS[S.workers.length%COLORS.length]};drawW()}
+function drawW(){openS(head(F.id?T('editStaff'):T('addStaffT'))+`
+  <div class="lab">${T('staffName')}</div><input class="field" id="wN" value="${esc(F.name)}" placeholder="${T('namePh')}">
+  <div class="lab">${T('comPct')}</div><input class="field" id="wP" inputmode="numeric" value="${F.pct}">
+  <div class="lab">${T('color')}</div><div class="colors">${COLORS.map(c=>`<button class="${F.color===c?'on':''}" style="background:${c}" onclick="F.name=$('#wN').value;F.pct=$('#wP').value;F.color='${c}';drawW()"></button>`).join('')}</div>
+  <div style="margin-top:20px"><button class="btn pri" onclick="saveW()">${T('save')}</button>
+  ${F.id?`<button class="btn del" onclick="ask(T('delStaffQ',esc(F.name)),T('del'),()=>{S.workers.find(x=>x.id==='${F.id}').del=true;save();closeS();R();toast(T('staffDeleted'))})">${T('delStaff')}</button>`:''}</div>`)}
+function saveW(){const name=$('#wN').value.trim();if(!name){$('#wN').style.borderColor='#c62828';return}
+  const pct=Math.min(100,Math.max(0,parseFloat($('#wP').value)||0));
+  if(F.id){Object.assign(S.workers.find(x=>x.id===F.id),{name,pct,color:F.color})}else S.workers.push({id:uid(),name,pct,color:F.color,del:false});
+  save();closeS();R();toast(T('staffSaved'))}
+
+// gift cards
+let GF=null;
+function nextCode(){const n=S.gifts.map(g=>parseInt(String(g.code).replace(/\D/g,''))||0);return'GC-'+(n.length?Math.max(1000,...n)+1:1001)}
+function openG(id){const g=id?G(id):null;GF=g?{...g,amount:String(g.amount)}:{id:null,code:nextCode(),amount:'',date:st.tab==='day'?st.day:today(),pay:'card',buyer:'',to:'',note:''};drawG()}
+function syncG(){GF.code=$('#gC').value;GF.amount=$('#gA').value;GF.date=$('#gD').value||GF.date;GF.buyer=$('#gB').value;GF.to=$('#gT').value;GF.note=$('#gN').value}
+function drawG(){const g=GF.id?G(GF.id):null,uses=g?S.tickets.filter(t=>t.pay==='gift'&&t.gid===g.id).sort((a,b)=>a.date<b.date?1:-1):[];
+  openS(head(GF.id?T('editGift')+' '+esc(g.code):T('sellGiftT'))+
+  (g?`<div class="gsum" style="margin-bottom:4px"><span>${T('balance')}</span><b>${money(Math.max(0,gBal(g)))}</b><small>${T('ofV',money(g.amount))}</small></div>`:'')+`
+  <div class="row2"><div><div class="lab">${T('code')}</div><input class="field" id="gC" value="${esc(GF.code)}" autocapitalize="characters"></div><div><div class="lab">${T('date')}</div><input class="field" type="date" id="gD" value="${GF.date}"></div></div>
+  <div class="lab">${T('giftAmt')}</div><div class="money"><span>$</span><input id="gA" inputmode="decimal" placeholder="0" value="${esc(GF.amount)}"></div>
+  <div class="quick">${[25,50,75,100,150].map(v=>`<button style="color:#8e24aa" onclick="$('#gA').value=${v}">$${v}</button>`).join('')}</div>
+  <div class="lab">${T('buyerPaid')}</div><div class="tog"><button class="cash ${GF.pay==='cash'?'on':''}" onclick="syncG();GF.pay='cash';drawG()">${T('cash')}</button><button class="card ${GF.pay==='card'?'on':''}" onclick="syncG();GF.pay='card';drawG()">${T('card')}</button></div>
+  <div class="lab">${T('buyer')}</div><input class="field" id="gB" value="${esc(GF.buyer)}">
+  <div class="lab">${T('recipient')}</div><input class="field" id="gT" value="${esc(GF.to)}">
+  <div class="lab">${T('note')}</div><input class="field" id="gN" value="${esc(GF.note)}">
+  <div id="gErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" style="background:#8e24aa" onclick="saveG()">${T('save')}</button>
+  ${g?`<button class="btn del" onclick="${uses.length?`ask(T('cantDelGift'),'',null,true)`:`ask(T('delGiftQ'),T('del'),()=>{S.gifts=S.gifts.filter(x=>x.id!=='${g.id}');save();closeS();R();toast(T('deleted'))})`}">${T('delGift')}</button>`:''}</div>`+
+  (g?`<div class="lab" style="margin-top:18px">${T('history')}</div><div class="card">${uses.length?uses.map(t=>`<div class="ghist" onclick="openT('${t.id}')"><span>${fmtDate(t.date)} · ${esc(W(t.wid).name)}</span><b>− ${money(t.gamt||0)}</b></div>`).join(''):`<div class="note" style="padding:8px 0">${T('noUse')}</div>`}</div>`:''))}
+function saveG(){syncG();const amount=num(GF.amount),code=GF.code.trim().toUpperCase();
+  if(!code){$('#gC').style.borderColor='#c62828';return}
+  if(S.gifts.some(g=>g.code.toUpperCase()===code&&g.id!==GF.id)){$('#gErr').textContent=T('codeExists');return}
+  if(!amount){$('#gA').parentNode.style.borderColor='#c62828';$('#gErr').textContent=T('needAmt');return}
+  const g={id:GF.id||uid(),code,amount,date:GF.date,pay:GF.pay,buyer:GF.buyer.trim(),to:GF.to.trim(),note:GF.note.trim()};
+  if(GF.id)S.gifts=S.gifts.map(x=>x.id===GF.id?g:x);else S.gifts.push(g);
+  save();closeS();R();toast(T('giftSaved'))}
+
+// help
+function openHelp(){openS(head(T('helpT'))+`<div class="help"><p class="note" style="margin:0 0 4px">${T('helpTip')}</p>${HELP[LANG].map(h=>`<h4>${h[0]}</h4><p>${h[1]}</p>${h[2]?`<img class="hshot" src="help/${LANG}-${h[2]}.jpg" loading="lazy" alt="" onerror="this.remove()">`:''}`).join('')}</div>
+  <div class="lab" style="margin-top:20px">🌐 ${T('language')}</div><div class="langsw"><button class="${LANG==='vi'?'on':''}" onclick="setLang('vi');openHelp()">Tiếng Việt</button><button class="${LANG==='en'?'on':''}" onclick="setLang('en');openHelp()">English</button></div>
+  <p class="note" style="text-align:center;margin-top:20px">💅 Sổ Thợ Nail · ${T('by')} <b>Ryan Nguyen</b></p>`)}
+
+// backup
+function openBk(){openS(head(T('backup'))+`<p class="note">${T('bkTxt')}</p>
+  <button class="btn pri" onclick="fileBk()">${T('saveBkFile')}</button>
+  <button class="btn sec2" onclick="copyBk()">${T('copyData')}</button>
+  <div class="lab">${T('pasteRestore')}</div><textarea class="field" id="bk" placeholder='{"workers":...}'></textarea>
+  <button class="btn sec2" onclick="restore()">${T('restore')}</button>`)}
+async function copyBk(){const txt=JSON.stringify({...S,sample:false});if(window.Android){Android.copy(txt);toast(T('copied'));return}try{await navigator.clipboard.writeText(txt);toast(T('copied'))}catch(e){$('#bk').value=txt;$('#bk').select();toast(T('selectCopy'))}}
+function restore(){try{const d=JSON.parse($('#bk').value);if(!Array.isArray(d.workers)||!Array.isArray(d.tickets))throw 0;d.gifts=d.gifts||[];
+  ask(T('restoreQ'),T('restore'),()=>{S=d;save();closeS();R();toast(T('restored'))})}catch(e){toast(T('badData'))}}
+
+// ---------- file saving ----------
+async function getDL(){try{return window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){return null}}
+async function saveFile(name,data,okMsg){if(window.Android){Android.saveFile(name,name.endsWith('.json')?'application/json':name.endsWith('.csv')?'text/csv':'text/plain',String(data));return true}const dl=await getDL();if(!dl){toast(T('noFile'));return false}
+  try{await dl.save({filename:name,data});toast(okMsg);return true}catch(e){if(!e||e.code!=='declined')toast(T('fileFail'));return false}}
+function fileBk(){saveFile('So-Tho-Nail-backup-'+today()+'.json',JSON.stringify({...S,sample:false}),T('fileSaved'))}
+
+// ---------- PDF ----------
+function loadJS(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function libs(){if(!window.html2canvas)await loadJS('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  if(!window.jspdf)await loadJS('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')}
+function pdfHTML(rg,l,r,gs){
+  let h=`<div class="pdh brk"><div><div class="pt">${rptTitleX()}</div><h1>${rptLabel(rg)}</h1><p>${fmtDate(rg.a)}${rg.a!==rg.b?' – '+fmtDate(rg.b):''}</p></div><div class="pl">Sổ Thợ Nail</div></div>
+  <div class="pk p4 brk">${[[T('total'),money(r.total),1],[T('svcL').replace(/^./,c=>c.toUpperCase()),money(r.svc)],[T('tips'),money(r.tip)],[T('custs'),r.n],[T('cashW'),money(r.cash)],[T('cardW'),money(r.card)],[T('giftUsedP'),money(r.gift)],[T('giftSoldP'),money(gs.total)]].map(k=>`<div class="${k[2]?'hi':''}"><span>${k[0]}</span><b>${k[1]}</b></div>`).join('')}</div>`;
+  const rows=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
+  const cap=s=>s.replace(/^./,c=>c.toUpperCase());
+  h+=`<h2 class="brk">${T('staffPay')}</h2><div class="tr th brk w7"><span>${T('staff')}</span><span>%</span><span>${T('daysCol')}</span><span>${cap(T('custsL'))}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${cap(T('comL'))}</span><span>${cap(T('staffGets','').trim())}</span></div>`+
+  rows.map(({w,x})=>`<div class="tr brk w7"><span><i style="background:${w.color}"></i>${esc(w.name)}</span><span>${w.pct}%</span><span>${daysOf(l,w.id)}</span><span>${x.n}</span><span>${money(x.svc)}</span><span>${money(x.tip)}</span><span>${money(x.svc*w.pct/100)}</span><span><b>${money(x.pay)}</b></span></div>`).join('')+
+  `${stfMode()?'':`<div class="tr tf brk w7"><span>${T('totalStaff')}</span><span></span><span></span><span>${r.n}</span><span>${money(r.svc)}</span><span>${money(r.tip)}</span><span>${money(r.pay-r.tip)}</span><span><b>${money(r.pay)}</b></span></div>`}
+  ${stfMode()?'':`<div class="keep brk"><span>${T('shopKeeps')}</span><b>${money(r.total-r.pay)}</b></div>`}`;
+  if(st.rp==='day'){h+=`<h2 class="brk">${T('custDetail')}</h2><div class="tr th brk w6"><span>${T('time')}</span><span>${T('staff')}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${T('paidBy')}</span><span>${T('tot')}</span></div>`+
+    [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tr brk w6"><span>${t.kind==='day'?T('dayTotalT')+(t.n?' ('+t.n+')':''):t.time}</span><span>${esc(W(t.wid).name)}</span><span>${money(t.amt)}</span><span>${money(t.tip)}</span><span>${payLabel(t)}${t.pay==='gift'?' '+esc((G(t.gid)||{}).code||''):''}</span><span><b>${money(t.amt+t.tip)}</b></span></div>`).join('')}
+  else{const B=[];if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',y+'-'+pad(i+1)+'-01');B.push([monthName(y,i),rptIn(x.a,x.b)])}}
+    else{let d=rg.a;while(d<=rg.b){B.push([fmtShort(d),rptIn(d,d)]);d=addD(d,1)}}
+    h+=`<h2 class="brk">${T('detailBy',st.rp==='year')}</h2><div class="tr th brk w8"><span>${st.rp==='year'?T('pmonth'):T('pday')}</span><span>${cap(T('custsL'))}</span><span>${cap(T('svcL'))}</span><span>${cap(T('tipL'))}</span><span>${T('cashW')}</span><span>${T('cardW')}</span><span>Gift</span><span>${T('tot')}</span></div>`+
+    B.filter(b=>b[1].length).map(([n,ls])=>{const x=sum(ls);return`<div class="tr brk w8"><span>${n}</span><span>${x.n}</span><span>${money(x.svc)}</span><span>${money(x.tip)}</span><span>${money(x.cash)}</span><span>${money(x.card)}</span><span>${money(x.gift)}</span><span><b>${money(x.total)}</b></span></div>`}).join('')}
+  const gl=giftsIn(rg.a,rg.b);
+  if(gl.length){h+=`<h2 class="brk">${T('giftSoldP')} (${gl.length}) · ${money(gs.total)}</h2><div class="tr th brk w6"><span>${T('code')}</span><span>${T('date')}</span><span>${T('buyer')}</span><span>${T('giftAmt')}</span><span>${T('paidBy')}</span><span>${T('balance')}</span></div>`+
+    gl.map(g=>`<div class="tr brk w6"><span>${esc(g.code)}</span><span>${fmtDate(g.date)}</span><span>${esc(g.buyer)}</span><span>${money(g.amount)}</span><span>${g.pay==='cash'?T('cashW'):T('cardW')}</span><span><b>${money(Math.max(0,gBal(g)))}</b></span></div>`).join('')}
+  return h+`<div class="pf brk"><span>${T('exported',fmtDate(today()),nowHM())}</span><span>Sổ Thợ Nail · ${T('by')} Ryan Nguyen</span></div>`}
+async function exportPDF(btn){if(window.Android){const d=printDoc();Android.printHtml(d.html,d.name);return}if(btn.disabled)return;btn.disabled=true;
+  try{await libs();const rg=range(st.rp,st.rd),l=rptL(rg),r=sum(l),gs=gsum(stfMode()?[]:giftsIn(rg.a,rg.b));
+    $('#busyT').textContent=T('makingPdf');$('#busy').classList.add('on');scrollTo(0,0);
+    const el=document.createElement('div');el.className='pdf';el.innerHTML=pdfHTML(rg,l,r,gs);document.body.appendChild(el);
+    try{await document.fonts.ready}catch(e){}
+    const PW=595.28,PH=841.89,M=28,W0=el.offsetWidth,pagePx=Math.floor(W0*(PH-2*M)/PW),H=el.offsetHeight;
+    const marks=[...el.querySelectorAll('.brk')].map(n=>n.offsetTop+n.offsetHeight);
+    const cuts=[0];let cur=0;while(H-cur>pagePx){const ok=marks.filter(m=>m>cur&&m<=cur+pagePx);const b=ok.length?Math.max(...ok):cur+pagePx;cuts.push(b);cur=b}cuts.push(H);
+    const SC=2,cv=await html2canvas(el,{scale:SC,backgroundColor:'#ffffff',logging:false,scrollX:0,scrollY:0});el.remove();$('#busy').classList.remove('on');
+    const pdf=new window.jspdf.jsPDF({unit:'pt',format:'a4'});
+    for(let i=0;i<cuts.length-1;i++){const y=cuts[i]*SC,hh=Math.min((cuts[i+1]-cuts[i])*SC,cv.height-y);if(hh<=0)continue;
+      const c=document.createElement('canvas');c.width=cv.width;c.height=hh;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,hh);g.drawImage(cv,0,y,cv.width,hh,0,0,cv.width,hh);
+      if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.92),'JPEG',0,M,PW,hh*PW/cv.width);
+      pdf.setFontSize(8);pdf.setTextColor(150);pdf.text((i+1)+' / '+(cuts.length-1),PW-40,PH-14)}
+    await saveFile((LANG==='en'?'Report-':'Bao-cao-')+rptFileTag(rg)+'.pdf',pdf.output('blob'),T('pdfDone'))}
+  catch(e){$('#busy').classList.remove('on');toast(T('pdfFail'));document.querySelectorAll('.pdf').forEach(n=>n.remove())}
+  btn.disabled=false}
+
+
+// ---------- Android app bridge ----------
+function appBack(){if($('#dlg').classList.contains('on')){closeD();return true}if($('#sheet').classList.contains('on')){closeS();return true}if($('#lock').classList.contains('on'))return false;if(st.tab!=='day'){go('day');return true}return false}
+function appPause(){hiddenAt=Date.now()}
+function appResume(){if(hiddenAt&&Date.now()-hiddenAt>60000&&getPin()&&!$('#lock').classList.contains('on'))showLock('enter')}
+function printDoc(){const rg=range(st.rp,st.rd),l=rptL(rg),r=sum(l),gs=gsum(stfMode()?[]:giftsIn(rg.a,rg.b));
+  return{name:(LANG==='en'?'Report-':'Bao-cao-')+rptFileTag(rg),html:`<!DOCTYPE html><html lang="${LANG}"><head><meta charset="utf-8"><style>${document.querySelector('style').textContent}
+html,body{background:#fff!important;padding:0!important;margin:0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdf{position:static!important;width:auto!important;padding:0!important}.brk{break-inside:avoid;page-break-inside:avoid}@page{size:A4;margin:12mm}</style></head><body><div class="pdf">${pdfHTML(rg,l,r,gs)}</div></body></html>`}}
+
+// ---------- passcode ----------
+const PK='so-tho-nail.pin';let L={mode:'enter',buf:'',first:'',msg:''},hiddenAt=0;
+function getPin(){try{return localStorage.getItem(PK)}catch(e){return null}}
+async function hash(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('stn:'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=7;for(const c of'stn:'+s)h=(h*31+c.charCodeAt(0))|0;return'x'+h}}
+function showLock(mode){closeS();L={mode:mode||(getPin()?'enter':'new'),buf:'',first:'',msg:''};drawLock();$('#lock').classList.add('on')}
+function hideLock(){$('#lock').classList.remove('on')}
+function drawLock(){const t={enter:'enterPin',new:'newPin',confirm:'confirmPin',old:'oldPin'}[L.mode];
+  const left=L.mode==='enter'?['forgot()',T('forgot')]:L.mode==='old'?['hideLock()',T('cancel')]:['',''];
+  $('#lock').innerHTML=`<button class="lsw" style="position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;background:#ffffff1f;border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px;color:#fff" onclick="setLang(LANG==='vi'?'en':'vi')">${LANG==='vi'?'EN':'VI'}</button>
+  <div class="lk"><div class="lgo">💅</div><h2>Sổ Thợ Nail</h2><p class="${L.msg&&L.msg[0]==='!'?'err':''}">${L.msg?T(L.msg.replace('!','')):T(t)}</p>
+  <div class="dots" id="dots">${[0,1,2,3].map(i=>`<i class="${i<L.buf.length?'f':''}"></i>`).join('')}</div>
+  <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="key('${n}')">${n}</button>`).join('')}<button class="sm" onclick="${left[0]}">${left[1]}</button><button onclick="key('0')">0</button><button class="sm" onclick="key('del')">⌫</button></div>
+  <small class="by">${T('by')} Ryan Nguyen</small></div>`}
+function shake(){const d=$('#dots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake')}
+let busy=false;
+async function key(k){if(busy)return;if(k==='del'){L.buf=L.buf.slice(0,-1);drawLock();return}if(L.buf.length>=4)return;L.buf+=k;drawLock();if(L.buf.length<4)return;
+  const b=L.buf;if(L.mode==='new'){L={mode:'confirm',buf:'',first:b,msg:''};drawLock();return}busy=true;await new Promise(r=>setTimeout(r,120));
+  if(L.mode==='enter'){const hb=await hash(b),sw_=S.workers.find(w=>!w.del&&w.pin===hb);if(hb===getPin())loginAs(null);else if(sw_)loginAs(sw_.id);else{L.buf='';L.msg='!wrongPin';drawLock();shake()}}
+  else if(L.mode==='old'){if(await hash(b)===getPin()){L={mode:'new',buf:'',first:'',msg:'newPin2'};drawLock()}else{L.buf='';L.msg='!wrongPin';drawLock();shake()}}
+  else if(L.mode==='new'){L={mode:'confirm',buf:'',first:b,msg:''};drawLock()}
+  else{const hb3=await hash(b);if(b===L.first&&S.workers.some(w=>!w.del&&w.pin===hb3)){L={mode:'new',buf:'',first:'',msg:'!pinUsed'};drawLock();shake()}else if(b===L.first){try{localStorage.setItem(PK,hb3)}catch(e){}toast(T('pinSet'));loginAs(null)}else{L={mode:'new',buf:'',first:'',msg:'!mismatch'};drawLock();shake()}}
+  busy=false}
+function forgot(){ask(T('forgotQ'),T('delAll'),()=>{try{localStorage.removeItem(PK);localStorage.removeItem(KEY)}catch(e){}S={workers:[],tickets:[],gifts:[],sample:false};save();R();showLock('new')})}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();else if(hiddenAt&&Date.now()-hiddenAt>60000&&getPin()&&!$('#lock').classList.contains('on'))showLock('enter')});
+
+
+// ================= Offline web-app (Netlify) version =================
+D.pickFile=['📂 Mở file sao lưu','📂 Open backup file'];
+D.install=['Để dùng offline: bấm <b>Chia sẻ</b> <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px"><path d="M12 3v12M7 8l5-5 5 5M5 12v8h14v-8"/></svg> → <b>Thêm vào MH chính</b>, rồi mở app từ icon.','To use offline: tap <b>Share</b> <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px"><path d="M12 3v12M7 8l5-5 5 5M5 12v8h14v-8"/></svg> → <b>Add to Home Screen</b>, then open the app from its icon.'];
+
+function dlBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+function shareBlob(blob,name,okMsg){let f=null;try{f=new File([blob],name,{type:blob.type})}catch(e){}
+  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).then(()=>{if(okMsg)toast(okMsg)}).catch(e=>{if(e&&e.name!=='AbortError'){dlBlob(blob,name)}});return}
+  dlBlob(blob,name);if(okMsg)toast(okMsg)}
+function saveFile(name,data,okMsg){shareBlob(new Blob([data],{type:name.endsWith('.json')?'application/json':name.endsWith('.csv')?'text/csv':'text/plain'}),name,okMsg);return true}
+
+// ---- report drawn on canvas (works offline, keeps Vietnamese text) ----
+function reportCanvases(){
+  const rg=range(st.rp,st.rd),l=rptL(rg),r=sum(l),gl=stfMode()?[]:giftsIn(rg.a,rg.b),gs=gsum(gl);
+  const WD=1240,H=1754,M=72,CW=WD-2*M,BOT=H-M-46,F='-apple-system,"Helvetica Neue",Roboto,"Segoe UI",Arial,sans-serif';
+  const cap=s=>s.replace(/^./,c=>c.toUpperCase());
+  const pages=[];let c,g,y;
+  const newPage=()=>{c=document.createElement('canvas');c.width=WD;c.height=H;g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,WD,H);y=M;pages.push(c)};
+  const font=(sz,w)=>{g.font=`${w||400} ${sz}px ${F}`};
+  const fit=(s,mw,sz,w)=>{s=String(s);font(sz,w);if(g.measureText(s).width<=mw)return s;while(s.length>1&&g.measureText(s+'…').width>mw)s=s.slice(0,-1);return s+'…'};
+  const text=(s,x,yy,sz,w,col,al)=>{font(sz,w);g.fillStyle=col||'#1c1424';g.textAlign=al||'left';g.textBaseline='alphabetic';g.fillText(s,x,yy)};
+  const rrect=(x,yy,w,h,rad,fill,stroke)=>{g.beginPath();if(g.roundRect)g.roundRect(x,yy,w,h,rad);else g.rect(x,yy,w,h);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=2;g.stroke()}};
+  newPage();
+  text(rptTitleX(),M,y+22,20,700,'#c2185b');
+  text(fit(rptLabel(rg),CW-300,46,700),M,y+74,46,700);
+  text(fmtDate(rg.a)+(rg.a!==rg.b?' – '+fmtDate(rg.b):''),M,y+110,22,400,'#7d7286');
+  font(24,700);const bw=g.measureText('Sổ Thợ Nail').width+40;rrect(WD-M-bw,y,bw,56,12,null,'#e6d6ea');text('Sổ Thợ Nail',WD-M-20,y+37,24,700,'#4a1c4f','right');
+  y+=134;g.fillStyle='#c2185b';g.fillRect(M,y,CW,5);y+=32;
+  const K=[[T('total'),money(r.total),1],[cap(T('svcL')),money(r.svc)],[T('tips'),money(r.tip)],[T('custs'),String(r.n)],[T('cashW'),money(r.cash)],[T('cardW'),money(r.card)],[T('giftUsedP'),money(r.gift)],[T('giftSoldP'),money(gs.total)]];
+  const kw=(CW-3*18)/4,kh=108;
+  K.forEach((k,i)=>{const x=M+(i%4)*(kw+18),yy=y+Math.floor(i/4)*(kh+18);rrect(x,yy,kw,kh,16,k[2]?'#2a1838':null,k[2]?null:'#ebe5ef');
+    text(fit(k[0],kw-40,19),x+20,yy+40,19,400,k[2]?'#e5d3ea':'#7d7286');text(fit(k[1],kw-40,34,700),x+20,yy+84,34,700,k[2]?'#fff':'#1c1424')});
+  y+=2*kh+18+44;
+  const RH=46;
+  function table(title,cols,rows){
+    if(y+60+RH*2>BOT)newPage();
+    text(title,M,y+30,26,700,'#4a1c4f');y+=50;
+    const xs=[];let acc=M;cols.forEach(cl=>{xs.push(acc);acc+=cl.w*CW});
+    const px=(i,cl)=>cl.a==='r'?xs[i]+cl.w*CW-14:xs[i]+14;
+    const head=()=>{rrect(M,y,CW,RH,10,'#f5f2f7');cols.forEach((cl,i)=>text(fit(cl.t,cl.w*CW-22,17,700),px(i,cl),y+30,17,700,'#7d7286',cl.a==='r'?'right':'left'));y+=RH};
+    head();
+    rows.forEach(rw=>{if(y+RH>BOT){newPage();head()}
+      if(rw.bg){g.fillStyle=rw.bg;g.fillRect(M,y,CW,RH)}
+      rw.cells.forEach((v,i)=>{const cl=cols[i],dot=rw.dot&&i===0,x=px(i,cl)+(dot?24:0),bold=rw.bold||i===cols.length-1;
+        if(dot){g.fillStyle=rw.dot;g.beginPath();g.arc(px(i,cl)+8,y+RH/2,8,0,7);g.fill()}
+        text(fit(v,cl.w*CW-26-(dot?24:0),20,bold?700:400),x,y+31,20,bold?700:400,'#1c1424',cl.a==='r'?'right':'left')});
+      y+=RH;g.fillStyle='#f0eaf2';g.fillRect(M,y-2,CW,2)});
+    y+=26}
+  const ws=S.workers.map(w=>({w,x:sum(l.filter(t=>t.wid===w.id))})).filter(o=>o.x.n).sort((a,b)=>b.x.total-a.x.total);
+  table(T('staffPay'),[{t:T('staff'),w:.18},{t:'%',w:.07,a:'r'},{t:T('daysCol'),w:.1,a:'r'},{t:cap(T('custsL')),w:.09,a:'r'},{t:cap(T('svcL')),w:.14,a:'r'},{t:cap(T('tipL')),w:.12,a:'r'},{t:cap(T('comL')),w:.13,a:'r'},{t:cap(T('staffGets','').trim()),w:.17,a:'r'}],
+    ws.map(({w,x})=>({dot:w.color,cells:[w.name,w.pct+'%',daysOf(l,w.id),x.n,money(x.svc),money(x.tip),money(x.svc*w.pct/100),money(x.pay)]})).concat(stfMode()?[]:[{bold:1,bg:'#fdf6f9',cells:[T('totalStaff'),'','',r.n,money(r.svc),money(r.tip),money(r.pay-r.tip),money(r.pay)]}]));
+  if(!stfMode()){if(y+60>BOT)newPage();y-=10;text(T('shopKeeps'),M+14,y+30,24,400);text(money(r.total-r.pay),WD-M-14,y+30,26,700,'#c2185b','right');y+=74;}
+  if(st.rp==='day'){
+    table(T('custDetail'),[{t:T('time'),w:.11},{t:T('staff'),w:.2},{t:cap(T('svcL')),w:.16,a:'r'},{t:cap(T('tipL')),w:.14,a:'r'},{t:T('paidBy'),w:.21},{t:T('tot'),w:.18,a:'r'}],
+      [...l].sort((a,b)=>a.time<b.time?-1:1).map(t=>({cells:[t.kind==='day'?T('dayTotalT')+(t.n?' ('+t.n+')':''):t.time,W(t.wid).name,money(t.amt),money(t.tip),payLabel(t)+(t.pay==='gift'?' '+((G(t.gid)||{}).code||''):''),money(t.amt+t.tip)]})));
+  }else{const B=[];
+    if(st.rp==='year'){const yr=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const x=range('month',yr+'-'+pad(i+1)+'-01');B.push([monthName(yr,i),rptIn(x.a,x.b)])}}
+    else{let d=rg.a;while(d<=rg.b){B.push([fmtShort(d),rptIn(d,d)]);d=addD(d,1)}}
+    table(T('detailBy',st.rp==='year'),[{t:st.rp==='year'?T('pmonth'):T('pday'),w:.19},{t:cap(T('custsL')),w:.09,a:'r'},{t:cap(T('svcL')),w:.13,a:'r'},{t:cap(T('tipL')),w:.11,a:'r'},{t:T('cashW'),w:.12,a:'r'},{t:T('cardW'),w:.12,a:'r'},{t:'Gift',w:.11,a:'r'},{t:T('tot'),w:.13,a:'r'}],
+      B.filter(b=>b[1].length).map(([n,ls])=>{const x=sum(ls);return{cells:[n,x.n,money(x.svc),money(x.tip),money(x.cash),money(x.card),money(x.gift),money(x.total)]}}))}
+  if(gl.length)table(`${T('giftSoldP')} (${gl.length}) · ${money(gs.total)}`,[{t:T('code'),w:.16},{t:T('date'),w:.16},{t:T('buyer'),w:.22},{t:T('giftAmt'),w:.14,a:'r'},{t:T('paidBy'),w:.16},{t:T('balance'),w:.16,a:'r'}],
+    gl.map(gc=>({cells:[gc.code,fmtDate(gc.date),gc.buyer,money(gc.amount),gc.pay==='cash'?T('cashW'):T('cardW'),money(Math.max(0,gBal(gc)))]})));
+  const ex=T('exported',fmtDate(today()),nowHM());
+  pages.forEach((pc,i)=>{g=pc.getContext('2d');g.fillStyle='#ebe5ef';g.fillRect(M,H-M-22,CW,2);
+    text(ex,M,H-M+8,16,400,'#9a90a2');text(`Sổ Thợ Nail · ${T('by')} Ryan Nguyen   ·   ${i+1}/${pages.length}`,WD-M,H-M+8,16,400,'#9a90a2','right')});
+  return pages}
+
+function pdfFromCanvases(cs){const enc=new TextEncoder(),chunks=[],off=[];let len=0;
+  const put=x=>{const b=typeof x==='string'?enc.encode(x):x;chunks.push(b);len+=b.length};
+  const obj=id=>{off[id]=len;put(id+' 0 obj\n')};
+  const PW=595.28,PH=841.89,n=cs.length;
+  put(new Uint8Array([37,80,68,70,45,49,46,52,10,37,226,227,207,211,10]));
+  obj(1);put('<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+  obj(2);put('<< /Type /Pages /Kids ['+cs.map((_,i)=>(3+i*3)+' 0 R').join(' ')+'] /Count '+n+' >>\nendobj\n');
+  cs.forEach((c,i)=>{const p=3+i*3,ct=p+1,im=p+2;
+    const bin=atob(c.toDataURL('image/jpeg',.9).split(',')[1]),jb=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)jb[k]=bin.charCodeAt(k);
+    obj(p);put(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im${i} ${im} 0 R >> >> /Contents ${ct} 0 R >>\nendobj\n`);
+    const s=`q ${PW} 0 0 ${PH} 0 0 cm /Im${i} Do Q`;
+    obj(ct);put(`<< /Length ${s.length} >>\nstream\n${s}\nendstream\nendobj\n`);
+    obj(im);put(`<< /Type /XObject /Subtype /Image /Width ${c.width} /Height ${c.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jb.length} >>\nstream\n`);put(jb);put('\nendstream\nendobj\n')});
+  const size=3+n*3,xref=len;let x='xref\n0 '+size+'\n0000000000 65535 f \n';for(let i=1;i<size;i++)x+=String(off[i]).padStart(10,'0')+' 00000 n \n';
+  put(x+'trailer\n<< /Size '+size+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF\n');
+  return new Blob(chunks,{type:'application/pdf'})}
+
+function exportPDF(btn){try{const rg=range(st.rp,st.rd);
+    shareBlob(pdfFromCanvases(reportCanvases()),(LANG==='en'?'Report-':'Bao-cao-')+rptFileTag(rg)+'.pdf',T('pdfDone'))}
+  catch(e){console.error(e);toast(T('pdfFail'))}}
+
+// ---- backup: also restore from a file ----
+function openBk(){openS(head(T('backup'))+`<p class="note">${T('bkTxt')}</p>
+  <button class="btn pri" onclick="fileBk()">${T('saveBkFile')}</button>
+  <label class="btn sec2" style="cursor:pointer">${T('pickFile')}<input type="file" accept=".json,application/json,text/plain" style="display:none" onchange="readBk(this)"></label>
+  <button class="btn sec2" onclick="copyBk()">${T('copyData')}</button>
+  <div class="lab">${T('pasteRestore')}</div><textarea class="field" id="bk" placeholder='{"workers":...}'></textarea>
+  <button class="btn sec2" onclick="restore()">${T('restore')}</button>`)}
+function readBk(inp){const f=inp.files&&inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{$('#bk').value=rd.result;restore()};rd.readAsText(f)}
+
+// ---- install hint (only when opened in Safari, not from the Home Screen icon) ----
+function installHint(){const sa=navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+  let b=$('#ih');if(sa){if(b)b.remove();return}
+  if(!b){b=document.createElement('div');b.id='ih';b.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:8;background:#1c1424;color:#fff;border-radius:14px;padding:12px 40px 12px 14px;font-size:13.5px;line-height:1.45;box-shadow:0 6px 20px #0004';document.body.appendChild(b)}
+  b.innerHTML=T('install')+'<button onclick="this.parentNode.remove()" style="position:absolute;right:8px;top:8px;color:#fff;font-size:18px;width:28px;height:28px">×</button>'}
+const _R=R;R=function(){_R();if($('#ih'))installHint()};
+setTimeout(installHint,1500);
+
+// ---- offline cache + ask the browser to keep data ----
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+
+
+// ---------- no pinch-zoom, fit to screen ----------
+['gesturestart','gesturechange','gestureend'].forEach(n=>document.addEventListener(n,e=>e.preventDefault(),{passive:false}));
+document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
+
+
+// ================= Owner / staff logins =================
+Object.assign(D,{
+  staffPin:['Mã đăng nhập của thợ (4 số)','Staff login code (4 digits)'],
+  pinKeep:['Đã có mã – để trống nếu giữ nguyên','Code set – leave blank to keep'],
+  pinNone:['Chưa có – nhập 4 số để thợ đăng nhập','None – enter 4 digits to allow login'],
+  pinRemove:['Xoá mã đăng nhập của thợ này','Remove this login code'],
+  pinBad:['Mã phải đúng 4 số','Code must be exactly 4 digits'],
+  pinUsed:['Mã này đã được dùng (chủ tiệm hoặc thợ khác)','This code is already used (owner or another staff)'],
+  hasLogin:['có mã đăng nhập','has login'],
+  staffAddT:['Cho thợ tự nhập khách','Let staff add their own customers'],
+  staffAddD:['Thợ chỉ nhập và sửa được khách của mình, trong ngày hôm nay.','Staff can only add and edit their own customers, for today.'],
+  loginSec:['Đăng nhập','Logins'],
+  loginNote:['<b>Chủ tiệm</b> dùng mã chính và thấy hết. <b>Mỗi thợ</b> đăng nhập bằng mã riêng và chỉ thấy số của mình. Đặt mã cho thợ: bấm vào tên thợ ở trên.','The <b>owner</b> uses the main code and sees everything. <b>Each staff member</b> logs in with their own code and sees only their own numbers. To set a code, tap a staff name above.'],
+  noEdit:['Chỉ sửa được khách của bạn trong hôm nay','You can only edit your own customers from today'],
+  viewOnly:['Chỉ xem','View only'],
+  enterPin:['Nhập mã số (chủ tiệm hoặc thợ)','Enter your code (owner or staff)'],
+  hello:[n=>`Xin chào ${n}`,n=>`Hi ${n}`],
+  forgotQ:['<b>Chỉ dành cho chủ tiệm.</b> Quên mã chính thì phải <b>xoá hết dữ liệu</b> trên máy này và tạo mã mới; sau đó khôi phục từ file sao lưu. Thợ quên mã thì nhờ chủ tiệm đặt lại. Xoá?','<b>Owner only.</b> If the main code is forgotten you must <b>delete all data</b> on this phone and create a new code, then restore from a backup file. Staff who forget their code should ask the owner to reset it. Delete?'],
+});
+HELP.vi.splice(5,0,['🔑 Thợ đăng nhập riêng','Chủ tiệm vào tab <b>Thợ</b> → bấm tên thợ → nhập <b>Mã đăng nhập của thợ</b> (4 số, khác mã của chủ) → Lưu. Ở trang đăng nhập, thợ bấm <b>Nhân viên</b> → chọn tên → nhập mã; app chỉ hiện <b>Hôm nay</b>, <b>Lịch</b> và <b>Báo cáo</b> của riêng thợ đó; không thấy thợ khác, gift card hay cài đặt. Bấm 🔒 ở góc trên để đăng xuất. Muốn cho thợ tự nhập khách thì bật <b>Cho thợ tự nhập khách</b> trong tab Thợ.','login']);
+HELP.en.splice(5,0,['🔑 Staff logins','Owner: <b>Staff</b> tab → tap a name → enter a <b>Staff login code</b> (4 digits, different from the owner code) → Save. On the login page they tap <b>Staff</b> → pick their name → enter their code; the app then shows only their own <b>Today</b>, <b>Calendar</b> and <b>Reports</b>; no other staff, gift cards or settings. Tap 🔒 at the top to log out. To let staff add their own customers, turn on <b>Let staff add their own customers</b> in the Staff tab.','login']);
+
+st.role='owner';st.me='';
+const isStaff=()=>st.role==='staff';
+function loginAs(id){st.role=id?'staff':'owner';st.me=id||'';st.tab='day';st.day=today();st.cal=today();st.rd=today();st.view='shop';st.rview='shop';st.vw=id||'';st.open.clear();closeS();hideLock();R();scrollTo(0,0);if(id)toast(T('hello',W(id).name))}
+function staffCan(id){if(!S.staffAdd){if(!id)return false;toast(T('viewOnly'));return false}
+  if(id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||(staffLock()&&t.date!==today())){toast(T('noEdit'));return false}}return true}
+
+// staff edit sheet with login code
+function drawW(){openS(head(F.id?T('editStaff'):T('addStaffT'))+`
+  <div class="lab">${T('staffName')}</div><input class="field" id="wN" value="${esc(F.name)}" placeholder="${T('namePh')}">
+  <div class="lab">${T('comPct')}</div><input class="field" id="wP" inputmode="numeric" value="${F.pct}">
+  <div class="lab">${T('color')}</div><div class="colors">${COLORS.map(c=>`<button class="${F.color===c?'on':''}" style="background:${c}" onclick="keepW();F.color='${c}';drawW()"></button>`).join('')}</div>
+  <div class="lab">🔑 ${T('staffPin')}</div><input class="field" id="wPin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="-webkit-text-security:disc;letter-spacing:6px" value="${esc(F.pinIn||'')}" placeholder="${F.pin&&!F.rmPin?T('pinKeep'):T('pinNone')}">
+  ${F.pin&&!F.rmPin?`<button class="btn sec2" style="padding:10px;font-size:14px" onclick="keepW();F.rmPin=true;drawW()">${T('pinRemove')}</button>`:''}
+  <label style="display:flex;align-items:center;gap:12px;cursor:pointer;margin-top:14px;background:var(--card);border-radius:14px;padding:12px 14px"><span style="flex:1"><b>📅 ${T('anyDayT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('anyDayD')}</small></span><input type="checkbox" class="sw" id="wAny" ${F.anyDay?'checked':''}></label>
+  <label style="display:flex;align-items:center;gap:12px;cursor:pointer;margin-top:10px;background:var(--card);border-radius:14px;padding:12px 14px"><span style="flex:1"><b>🧾 ${T('ckPermT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('ckPermD')}</small></span><input type="checkbox" class="sw" id="wCk" ${F.ckEdit?'checked':''}></label>
+  <div id="wErr" class="err-t"></div>
+  <div style="margin-top:20px"><button class="btn pri" onclick="saveW()">${T('save')}</button>
+  ${F.id?`<button class="btn del" onclick="ask(T('delStaffQ',esc(F.name)),T('del'),()=>{const w=S.workers.find(x=>x.id==='${F.id}');w.del=true;delete w.pin;save();closeS();R();toast(T('staffDeleted'))})">${T('delStaff')}</button>`:''}</div>`)}
+function keepW(){F.name=$('#wN').value;F.pct=$('#wP').value;F.pinIn=$('#wPin').value;F.anyDay=$('#wAny').checked;F.ckEdit=$('#wCk').checked}
+async function saveW(){const name=$('#wN').value.trim();if(!name){$('#wN').style.borderColor='#c62828';return}
+  const pct=Math.min(100,Math.max(0,parseFloat($('#wP').value)||0)),pin=$('#wPin').value.trim();
+  let ph=F.rmPin?undefined:F.pin;
+  if(pin){if(!/^\d{4}$/.test(pin)){$('#wErr').textContent=T('pinBad');return}
+    ph=await hash(pin);if(ph===getPin()||S.workers.some(w=>w.id!==F.id&&!w.del&&w.pin===ph)){$('#wErr').textContent=T('pinUsed');return}}
+  let w;if(F.id){w=S.workers.find(x=>x.id===F.id);Object.assign(w,{name,pct,color:F.color})}else{w={id:uid(),name,pct,color:F.color,del:false};S.workers.push(w)}
+  if(ph)w.pin=ph;else delete w.pin;w.anyDay=!!$('#wAny').checked;w.ckEdit=!!$('#wCk').checked;
+  save();closeS();R();toast(T('staffSaved'))}
+
+
+// sample data: demo staff codes
+(async()=>{if(S.sample&&!S.workers.some(w=>w.pin)){const c=['1111','2222','3333','4444'];for(let i=0;i<S.workers.length&&i<4;i++)S.workers[i].pin=await hash(c[i]);save();R()}})();
+D.sampleTxt=['Số liệu hiện tại là giả để bạn xem thử. Xoá đi khi bắt đầu dùng thật.<br>🔑 Mã thợ mẫu: <b>Lan 1111 · Vy 2222 · Tâm 3333 · Kim 4444</b>','These numbers are fake so you can try the app. Clear them when you start for real.<br>🔑 Sample staff codes: <b>Lan 1111 · Vy 2222 · Tâm 3333 · Kim 4444</b>'];
+
+
+// ================= Login page: Owner / Staff =================
+Object.assign(D,{
+  whoAreYou:['Bạn đăng nhập với vai trò nào?','How are you signing in?'],
+  ownerR:['Chủ tiệm','Owner'],ownerD:['Xem và quản lý toàn bộ tiệm','See and manage the whole salon'],
+  staffR:['Nhân viên','Staff'],staffD:['Chỉ xem số của riêng mình','See only your own numbers'],
+  pickName:['Chọn tên của bạn','Choose your name'],
+  noStaffPins:['Chưa có nhân viên nào có mã đăng nhập.<br>Nhờ chủ tiệm đặt mã trong tab Thợ.','No staff have a login code yet.<br>Ask the owner to set one in the Staff tab.'],
+  back:['‹ Quay lại','‹ Back'],
+  ownerPinE:['Nhập mã chủ tiệm','Enter the owner code'],
+  staffPinE:[n=>`${n}, nhập mã của bạn`,n=>`${n}, enter your code`],
+});
+function showLock(mode){closeS();
+  if(!getPin())mode='new';else if(!mode||mode==='enter')mode='pick';
+  L={mode,buf:'',first:'',msg:'',who:''};drawLock();$('#lock').classList.add('on')}
+function lockGo(mode,who){L={mode,buf:'',first:'',msg:'',who:who||''};drawLock()}
+function drawLock(){
+  const lang=`<button class="lsw" onclick="setLang(LANG==='vi'?'en':'vi')">${LANG==='vi'?'EN':'VI'}</button>`;
+  const sw=L.who&&L.who!=='owner'?W(L.who):null;
+  const top=sw?`<div class="lgo" style="background:${sw.color};font-size:28px;font-weight:700">${esc((sw.name.trim()[0]||'?').toUpperCase())}</div><h2>${esc(sw.name)}</h2>`
+    :L.who==='owner'?`<div class="lgo">💅</div><h2>${T('ownerR')}</h2>`:`<div class="lgo">💅</div><h2>Sổ Thợ Nail</h2>`;
+  let body='';
+  if(L.mode==='pick'){
+    body=`<p>${T('whoAreYou')}</p><div class="roles">
+      <button class="rolebtn" onclick="lockGo('enter','owner')"><span class="ic">👑</span><span>${T('ownerR')}<small>${T('ownerD')}</small></span><span class="ar">›</span></button>
+      <button class="rolebtn" onclick="lockGo('staffpick')"><span class="ic">💅</span><span>${T('staffR')}<small>${T('staffD')}</small></span><span class="ar">›</span></button></div>`;
+  }else if(L.mode==='staffpick'){
+    const ws=S.workers.filter(w=>!w.del&&w.pin);
+    body=`<p>${T('pickName')}</p>`+(ws.length?`<div class="names">${ws.map(w=>`<button onclick="lockGo('enter','${w.id}')"><span class="av" style="background:${w.color}">${esc((w.name.trim()[0]||'?').toUpperCase())}</span><span class="nm">${esc(w.name)}</span></button>`).join('')}</div>`:`<p class="nost">${T('noStaffPins')}</p>`)+
+      `<button class="lback" onclick="lockGo('pick')">${T('back')}</button>`;
+  }else{
+    const t={enter:L.who==='owner'?T('ownerPinE'):T('staffPinE',sw?sw.name:''),new:T('newPin'),confirm:T('confirmPin'),old:T('oldPin')}[L.mode];
+    const left=L.mode==='enter'?(L.who==='owner'?['forgot()',T('forgot')]:["lockGo('staffpick')",T('back')]):L.mode==='old'?['hideLock()',T('cancel')]:['',''];
+    const err=L.msg&&L.msg[0]==='!';
+    body=`<p class="${err?'err':''}">${L.msg?T(L.msg.replace('!','')):t}</p>
+      <div class="dots" id="dots">${[0,1,2,3].map(i=>`<i class="${i<L.buf.length?'f':''}"></i>`).join('')}</div>
+      <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="key('${n}')">${n}</button>`).join('')}<button class="sm" onclick="${left[0]}">${left[1]}</button><button onclick="key('0')">0</button><button class="sm" onclick="key('del')">⌫</button></div>`+
+      (L.mode==='enter'?`<button class="lback" style="background:#ffffff1f;border-radius:24px;padding:12px 22px;color:#fff" onclick="lockGo('pick')">${T('switchUser')}</button>`:'');
+  }
+  $('#lock').innerHTML=lang+`<div class="lk">${top}${body}<small class="by">${T('by')} Ryan Nguyen</small></div>`}
+async function key(k){if(busy)return;if(k==='del'){L.buf=L.buf.slice(0,-1);drawLock();return}if(L.buf.length>=4)return;L.buf+=k;drawLock();if(L.buf.length<4)return;
+  const b=L.buf;if(L.mode==='new'){L={mode:'confirm',buf:'',first:b,msg:'',who:''};drawLock();return}
+  busy=true;await new Promise(r=>setTimeout(r,120));const hb=await hash(b);
+  if(L.mode==='enter'){
+    if(L.who==='owner'&&hb===getPin())loginAs(null);
+    else{const w=L.who!=='owner'&&S.workers.find(x=>x.id===L.who&&!x.del&&x.pin===hb);if(w)loginAs(w.id);else{L.buf='';L.msg='!wrongPin';drawLock();shake()}}}
+  else if(L.mode==='old'){if(hb===getPin()){L={mode:'new',buf:'',first:'',msg:'newPin2',who:''};drawLock()}else{L.buf='';L.msg='!wrongPin';drawLock();shake()}}
+  else{if(b!==L.first){L={mode:'new',buf:'',first:'',msg:'!mismatch',who:''};drawLock();shake()}
+    else if(S.workers.some(w=>!w.del&&w.pin===hb)){L={mode:'new',buf:'',first:'',msg:'!pinUsed',who:''};drawLock();shake()}
+    else{try{localStorage.setItem(PK,hb)}catch(e){}toast(T('pinSet'));loginAs(null)}}
+  busy=false}
+
+
+// ================= Day total entry + days worked =================
+Object.assign(D,{
+  modeOne:['👤 Từng khách','👤 One customer'],modeDay:['📋 Tổng cả ngày','📋 Day total'],
+  dayTotalT:['Tổng cả ngày','Day total'],numCust:['Số khách trong ngày','Customers today'],
+  svcTotal:['Tổng tiền dịch vụ','Total services'],tipTotal:['Tổng tiền bo','Total tips'],
+  cashPart:['Phần khách trả tiền mặt (gồm bo)','Paid in cash (incl. tips)'],
+  cardAuto:[(m,t)=>`💳 Thẻ: <b>${m}</b> · Tổng: <b>${t}</b>`,(m,t)=>`💳 Card: <b>${m}</b> · Total: <b>${t}</b>`],
+  cashTooBig:['Tiền mặt lớn hơn tổng','Cash is more than the total'],needN:['Nhập số khách','Enter number of customers'],
+  dayTotalL:['Mặt + Thẻ','Cash + Card'],dayHint:['Nhập một lần cho cả ngày của thợ: số khách, tổng tiền, tổng bo và phần tiền mặt. Phần còn lại tự tính là thẻ.','Enter one total for the staff member’s whole day: customers, total services, total tips and the cash part. The rest is counted as card.'],
+  saveDay:['Lưu tổng ngày','Save day total'],delDay:['Xoá tổng ngày này','Delete this day total'],
+  nDays:[n=>`${n} ngày làm`,n=>`${n} day${n==1?'':'s'} worked`],
+  weekDays:[n=>`Ngày làm trong tuần: ${n}/7`,n=>`Days worked this week: ${n}/7`],off:['nghỉ','off'],daysCol:['Ngày làm','Days'],
+});
+HELP.vi[2][1]+='<br>Hoặc bấm nút <b>📋 Tổng kết ngày</b> (bên trái) để nhập tổng tiền dịch vụ và tổng tiền bo của cả ngày. Nhân viên tự nhập được tổng ngày của mình.';
+HELP.en[2][1]+='<br>Or tap <b>📋 Day total</b> (on the left) to enter the whole day’s total services and total tips. Staff can enter their own day total.';
+const daysOf=(l,wid)=>new Set(l.filter(t=>!wid||t.wid===wid).map(t=>t.date)).size;
+function modeSeg(m){return`<div class="seg" style="margin-bottom:4px"><button class="${m==='one'?'on':''}" onclick="openT()">${T('modeOne')}</button><button class="${m==='day'?'on':''}" onclick="openDT()">${T('modeDay')}</button></div>`}
+let DE=null;
+function openDT(id){
+  if(st.role==='staff'&&!staffCan(id))return;
+  if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{openSetup()});return}
+  const t=id?S.tickets.find(x=>x.id===id):null;
+  const defW=st.role==='staff'?st.me:(st.tab==='day'&&st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id);
+  DE=t?{id:t.id,date:t.date,wid:t.wid,n:String(t.n||''),amt:String(t.amt),tip:t.tip?String(t.tip):'',cash:t.cash?String(t.cash):''}:{id:null,date:st.day,wid:defW,n:'',amt:'',tip:'',cash:''};
+  drawDT()}
+function syncDT(){DE.n=$('#dN').value;DE.amt=$('#dA').value;DE.tip=$('#dT').value;DE.cash=$('#dC').value;const d=$('#dD');if(d)DE.date=d.value||DE.date}
+function dtCalc(){const tot=num($('#dA').value)+num($('#dT').value),c=num($('#dC').value);
+  $('#dtCard').innerHTML=T('cardAuto',money(Math.max(0,tot-c)),money(tot));$('#dtCard').style.color=c>tot?'#c62828':''}
+function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role!=='staff'||w.id===st.me));
+  openS(head(DE.id?T('dayTotalT'):T('addCustT'))+(DE.id?'':modeSeg('day'))+`
+  <p class="note" style="margin:6px 2px 2px">${T('dayHint')}</p>
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${DE.wid===w.id?'on':''}" onclick="syncDT();DE.wid='${w.id}';drawDT()"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('numCust')}</div><input class="field" id="dN" inputmode="numeric" pattern="[0-9]*" placeholder="0" value="${esc(DE.n)}" style="font-size:22px!important;font-weight:700">
+  <div class="lab">${T('svcTotal')}</div><div class="money"><span>$</span><input id="dA" inputmode="decimal" placeholder="0" value="${esc(DE.amt)}" oninput="dtCalc()"></div>
+  <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtCalc()"></div>
+  <div class="lab">${T('cashPart')}</div><div class="money"><span>$</span><input id="dC" inputmode="decimal" placeholder="0" value="${esc(DE.cash)}" oninput="dtCalc()"></div>
+  <div id="dtCard" style="margin-top:10px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
+  ${staffLock()?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}">`}
+  <div id="dErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" onclick="saveDT()">${T('saveDay')}</button>
+  ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
+  dtCalc();if(!DE.id&&!DE.n)setTimeout(()=>$('#dN')&&$('#dN').focus(),280)}
+function saveDT(){syncDT();const n=parseInt(DE.n,10),amt=num(DE.amt),tip=num(DE.tip),cash=num(DE.cash),tot=r2(amt+tip);
+  if(!(n>0)){$('#dErr').textContent=T('needN');return}
+  if(!amt){$('#dErr').textContent=T('needAmt');return}
+  if(cash>tot){$('#dErr').textContent=T('cashTooBig');return}
+  const t={id:DE.id||uid(),kind:'day',date:st.role==='staff'?today():DE.date,wid:st.role==='staff'?st.me:DE.wid,n,amt,tip,cash,card:r2(tot-cash),pay:'mix',time:'23:59'};
+  const isEdit=!!DE.id;if(isEdit)S.tickets=S.tickets.map(x=>x.id===DE.id?t:x);else S.tickets.push(t);
+  lastW=t.wid;save();closeS();st.day=t.date;R();toast(isEdit?T('updated'):T('saved'))}
+
+
+// ================= Day total v2: own button, services + tips only, staff can enter =================
+Object.assign(D,{
+  fabDay:['📋 Tổng kết ngày','📋 Day total'],
+  dayHint:['Nhập tổng cả ngày của thợ: tổng tiền dịch vụ và tổng tiền bo.','Enter the staff member’s total for the whole day: total services and total tips.'],
+  dayTotalL:['Tổng ngày','Day total'],
+  dayPreview:[(t,p)=>`Tổng: <b>${t}</b> · Thợ nhận: <b>${p}</b>`,(t,p)=>`Total: <b>${t}</b> · Staff gets: <b>${p}</b>`],
+  dayLoaded:['Thợ này đã có tổng ngày — đang sửa tổng cũ.','This staff member already has a day total — editing it.'],
+});
+function findDay(wid,date){return S.tickets.find(t=>t.kind==='day'&&t.wid===wid&&t.date===date)}
+function openDT(id){
+  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||(staffLock()&&t.date!==today())){toast(T('noEdit'));return}}
+  if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{openSetup()});return}
+  let t=id?S.tickets.find(x=>x.id===id):null;
+  const date=staffLock()?today():(t?t.date:st.day);
+  const wid=t?t.wid:(st.role==='staff'?st.me:(st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id));
+  if(!t){t=findDay(wid,date)||null}
+  DE=t?{id:t.id,date:t.date,wid:t.wid,amt:String(t.amt),tip:t.tip?String(t.tip):''}:{id:null,date,wid,amt:'',tip:''};
+  drawDT()}
+function pickDW(wid){syncDT();const ex=findDay(wid,DE.date);
+  if(ex&&ex.id!==DE.id){DE={id:ex.id,date:ex.date,wid,amt:String(ex.amt),tip:ex.tip?String(ex.tip):''};toast(T('dayLoaded'))}
+  else{DE.wid=wid;if(!ex&&DE.id){const cur=S.tickets.find(x=>x.id===DE.id);if(cur&&cur.wid!==wid)DE.id=null}}
+  drawDT()}
+function syncDT(){DE.amt=$('#dA').value;DE.tip=$('#dT').value;const d=$('#dD');if(d)DE.date=d.value||DE.date}
+function dtCalc(){const a=num($('#dA').value),tp=num($('#dT').value);
+  $('#dtCard').innerHTML=T('dayPreview',money(a+tp),money(a*W(DE.wid).pct/100+tp))}
+function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role!=='staff'||w.id===st.me));
+  openS(head(T('dayTotalT'))+`
+  <p class="note" style="margin:0 2px 4px">${T('dayHint')}</p>
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${DE.wid===w.id?'on':''}" onclick="pickDW('${w.id}')"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('svcTotal')}</div><div class="money"><span>$</span><input id="dA" inputmode="decimal" placeholder="0" value="${esc(DE.amt)}" oninput="dtCalc()"></div>
+  <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtCalc()"></div>
+  <div class="quick">${[10,20,30,50].map(v=>`<button onclick="$('#dT').value=${v};dtCalc()">$${v}</button>`).join('')}<button style="color:var(--mut)" onclick="$('#dT').value='';dtCalc()">${T('noTip')}</button></div>
+  <div id="dtCard" style="margin-top:12px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
+  ${staffLock()?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE={id:ex.id,date:ex.date,wid:ex.wid,amt:String(ex.amt),tip:ex.tip?String(ex.tip):''};toast(T('dayLoaded'));drawDT()}">`}
+  <div id="dErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" style="background:var(--ink)" onclick="saveDT()">${T('saveDay')}</button>
+  ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
+  dtCalc();if(!DE.id&&!DE.amt)setTimeout(()=>$('#dA')&&$('#dA').focus(),280)}
+function saveDT(){syncDT();const amt=num(DE.amt),tip=num(DE.tip);
+  if(!amt){$('#dErr').textContent=T('needAmt');return}
+  const date=staffLock()?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
+  const dup=findDay(wid,date);const id=DE.id||(dup&&dup.id)||uid();
+  const t={id,kind:'day',date,wid,n:0,amt,tip,cash:0,card:0,pay:'mix',time:'23:59'};
+  const isEdit=S.tickets.some(x=>x.id===id);
+  if(isEdit)S.tickets=S.tickets.map(x=>x.id===id?t:x);else S.tickets.push(t);
+  lastW=wid;save();closeS();st.day=date;R();toast(isEdit?T('updated'):T('saved'))}
+// second floating button (left of "+ Add customer")
+(function(){const b=document.createElement('button');b.className='fab fab2';b.id='fab2';b.onclick=()=>openDT();document.body.appendChild(b)})();
+const _R3=R;R=function(){_R3();const b=$('#fab2');if(b){b.textContent=T('fabDay');b.style.display=st.tab==='day'?'':'none'}};
+
+
+// ================= Day total v3: cash / card split + weekly attendance =================
+Object.assign(D,{
+  payMethod:['Khách trả bằng','Paid with'],allCash:['Tất cả tiền mặt','All cash'],allCard:['Tất cả thẻ','All card'],
+  cashAmt:['💵 Tiền mặt','💵 Cash'],cardAmt:['💳 Thẻ','💳 Card'],
+  splitBad:[m=>`Tiền mặt + thẻ phải bằng tổng ${m}`,m=>`Cash + card must equal the total ${m}`],
+  attT:['Ngày làm trong tuần','Days worked this week'],attNote:['Ngày không có số là ngày nghỉ (—). Số trong ô là tiền thợ nhận.','Days with no entry are days off (—). Each cell shows what the staff member earned.'],
+  dayHint:['Nhập tổng cả ngày của thợ: tổng tiền dịch vụ, tổng tiền bo, và phần trả tiền mặt / thẻ.','Enter the staff member’s total for the day: services, tips, and how much was cash / card.'],
+});
+function openDT(id){
+  if(st.role==='staff'&&id){const t=S.tickets.find(x=>x.id===id);if(!t||t.wid!==st.me||(staffLock()&&t.date!==today())){toast(T('noEdit'));return}}
+  if(!activeW().length&&!id){ask(T('needStaff'),T('addStaffT'),()=>{openSetup()});return}
+  let t=id?S.tickets.find(x=>x.id===id):null;
+  const date=staffLock()?today():(t?t.date:st.day);
+  const wid=t?t.wid:(st.role==='staff'?st.me:(st.view==='staff'&&st.vw&&!W(st.vw).del?st.vw:lastW&&!W(lastW).del?lastW:activeW()[0].id));
+  if(!t)t=findDay(wid,date)||null;
+  DE=t?dayToDE(t):{id:null,date,wid,amt:'',tip:'',cash:'',card:''};
+  drawDT()}
+function dayToDE(t){const tot=r2(t.amt+t.tip),none=!(t.cash||t.card);return{id:t.id,date:t.date,wid:t.wid,amt:String(t.amt),tip:t.tip?String(t.tip):'',cash:none?'':String(t.cash||0),card:none?String(tot):String(t.card||0)}}
+function pickDW(wid){syncDT();const ex=findDay(wid,DE.date);
+  if(ex&&ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'))}
+  else{DE.wid=wid;if(!ex&&DE.id){const cur=S.tickets.find(x=>x.id===DE.id);if(cur&&cur.wid!==wid)DE.id=null}}
+  drawDT()}
+function syncDT(){DE.amt=$('#dA').value;DE.tip=$('#dT').value;DE.cash=$('#dC').value;DE.card=$('#dK').value;const d=$('#dD');if(d)DE.date=d.value||DE.date}
+const dTot=()=>r2(num($('#dA').value)+num($('#dT').value));
+function dtFrom(src){const tot=dTot();
+  if(src==='cash'){$('#dK').value=String(r2(Math.max(0,tot-num($('#dC').value))))}
+  else if(src==='card'){$('#dC').value=String(r2(Math.max(0,tot-num($('#dK').value))))}
+  else if(src==='all-cash'){$('#dC').value=String(tot);$('#dK').value='0'}
+  else if(src==='all-card'){$('#dK').value=String(tot);$('#dC').value='0'}
+  else{$('#dK').value=String(r2(Math.max(0,tot-num($('#dC').value))))}
+  dtCalc()}
+function dtCalc(){const a=num($('#dA').value),tp=num($('#dT').value),c=num($('#dC').value),k=num($('#dK').value),ok=Math.abs(c+k-(a+tp))<0.01;
+  $('#dtCard').innerHTML=T('dayPreview',money(a+tp),money(a*W(DE.wid).pct/100+tp))+(ok||!(a+tp)?'':`<div style="color:#c62828;font-size:14px;margin-top:4px">${T('splitBad',money(a+tp))}</div>`)}
+function drawDT(){const ws=S.workers.filter(w=>(!w.del||w.id===DE.wid)&&(st.role!=='staff'||w.id===st.me));
+  openS(head(T('dayTotalT'))+`
+  <p class="note" style="margin:0 2px 4px">${T('dayHint')}</p>
+  <div class="lab">${T('staffDid')}</div><div class="chips">${ws.map(w=>`<button class="chip ${DE.wid===w.id?'on':''}" onclick="pickDW('${w.id}')"><span class="dot" style="background:${w.color}"></span>${esc(w.name)}</button>`).join('')}</div>
+  <div class="lab">${T('svcTotal')}</div><div class="money"><span>$</span><input id="dA" inputmode="decimal" placeholder="0" value="${esc(DE.amt)}" oninput="dtFrom('total')"></div>
+  <div class="lab">${T('tipTotal')}</div><div class="money"><span>$</span><input id="dT" inputmode="decimal" placeholder="0" value="${esc(DE.tip)}" oninput="dtFrom('total')"></div>
+  <div class="lab">${T('payMethod')}</div>
+  <div class="tog"><button class="cash" onclick="dtFrom('all-cash')">${T('allCash')}</button><button class="card" onclick="dtFrom('all-card')">${T('allCard')}</button></div>
+  <div class="row2" style="margin-top:8px">
+    <div><div class="lab" style="margin-top:4px">${T('cashAmt')}</div><div class="money" style="border-color:#c8e6c9"><span>$</span><input id="dC" inputmode="decimal" placeholder="0" value="${esc(DE.cash)}" oninput="dtFrom('cash')" style="font-size:22px!important"></div></div>
+    <div><div class="lab" style="margin-top:4px">${T('cardAmt')}</div><div class="money" style="border-color:#bbdefb"><span>$</span><input id="dK" inputmode="decimal" placeholder="0" value="${esc(DE.card)}" oninput="dtFrom('card')" style="font-size:22px!important"></div></div>
+  </div>
+  <div id="dtCard" style="margin-top:12px;font-size:17px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px #0000000d"></div>
+  ${staffLock()?'':`<div class="lab">${T('date')}</div><input class="field" type="date" id="dD" value="${DE.date}" onchange="syncDT();const ex=findDay(DE.wid,DE.date);if(ex&&ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'));drawDT()}">`}
+  <div id="dErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" style="background:var(--ink)" onclick="saveDT()">${T('saveDay')}</button>
+  ${DE.id?`<button class="btn del" onclick="ask(T('delCustQ'),T('del'),()=>{S.tickets=S.tickets.filter(x=>x.id!=='${DE.id}');save();closeS();R();toast(T('deleted'))})">${T('delDay')}</button>`:''}</div>`);
+  if(!DE.card&&!DE.cash)dtFrom('total');else dtCalc();
+  if(!DE.id&&!DE.amt)setTimeout(()=>$('#dA')&&$('#dA').focus(),280)}
+function saveDT(){syncDT();const amt=num(DE.amt),tip=num(DE.tip),tot=r2(amt+tip),cash=num(DE.cash),card=num(DE.card);
+  if(!amt){$('#dErr').textContent=T('needAmt');return}
+  if(Math.abs(cash+card-tot)>=0.01){$('#dErr').textContent=T('splitBad',money(tot));return}
+  const date=staffLock()?today():DE.date,wid=st.role==='staff'?st.me:DE.wid;
+  const dup=findDay(wid,date);const id=DE.id||(dup&&dup.id)||uid();
+  const t={id,kind:'day',date,wid,n:0,amt,tip,cash,card,pay:'mix',time:'23:59'};
+  const isEdit=S.tickets.some(x=>x.id===id);
+  if(isEdit)S.tickets=S.tickets.map(x=>x.id===id?t:x);else S.tickets.push(t);
+  lastW=wid;save();closeS();st.day=date;R();toast(isEdit?T('updated'):T('saved'))}
+// pay label for a day total shows the split
+const dayPill=t=>t.cash&&t.card?T('dayTotalL'):t.cash?T('cashW'):t.card?T('cardW'):T('dayTotalL');
+// weekly attendance table (whole salon, week view)
+function attTable(rg,l){const ds=[];for(let i=0;i<7;i++)ds.push(addD(rg.a,i));
+  const lb=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];
+  const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w.id));if(!ws.length)return'';
+  return`<div class="sec">${T('attT')}</div><div class="card att"><div class="atr ah"><span></span>${lb.map(x=>`<span>${x}</span>`).join('')}<span>∑</span></div>`+
+  ws.map(w=>{const cells=ds.map(d=>{const x=sum(l.filter(t=>t.wid===w.id&&t.date===d));return x.n||x.total?`<span class="on">${short(x.pay)}</span>`:d>today()?'<span style="color:#c9bfd0">·</span>':'<span class="off">—</span>'}).join('');
+    return`<div class="atr"><span class="nm"><i style="background:${w.color}"></i>${esc(w.name)}</span>${cells}<b>${daysOf(l,w.id)}</b></div>`}).join('')+
+  `</div><p class="note">${T('attNote')}</p>`}
+
+
+// ================= Delete data (owner) =================
+Object.assign(D,{
+  wipeBtn:['🗑️ Xoá dữ liệu','🗑️ Delete data'],wipeT:['Xoá dữ liệu','Delete data'],
+  wipeNote:['Nên bấm <b>Sao lưu → Lưu file sao lưu</b> trước khi xoá. Nhập <b>mã chủ tiệm</b> rồi chọn cách xoá.','Use <b>Backup → Save backup file</b> first. Enter the <b>owner code</b>, then choose what to delete.'],
+  ownerCode:['Mã chủ tiệm','Owner code'],
+  wipeTickets:['Xoá khách & tổng ngày<br><small>Giữ lại thợ và gift card</small>','Delete customers & day totals<br><small>Keep staff and gift cards</small>'],
+  wipeAll:['Xoá hết<br><small>Thợ, khách, tổng ngày, gift card</small>','Delete everything<br><small>Staff, customers, day totals, gift cards</small>'],
+  wipeQ1:['Xoá toàn bộ khách và tổng ngày? Không lấy lại được, trừ khi có file sao lưu.','Delete all customers and day totals? This can’t be undone unless you have a backup file.'],
+  wipeQ2:['Xoá HẾT thợ, khách, tổng ngày và gift card? Không lấy lại được, trừ khi có file sao lưu.','Delete ALL staff, customers, day totals and gift cards? This can’t be undone unless you have a backup file.'],
+  wipeDone:['Đã xoá dữ liệu','Data deleted'],
+});
+function openWipe(){openS(head(T('wipeT'))+`<p class="note" style="margin:0 2px 8px">${T('wipeNote')}</p>
+  <div class="lab">🔒 ${T('ownerCode')}</div><input class="field" id="wPinC" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="-webkit-text-security:disc;letter-spacing:8px;font-size:22px!important">
+  <div id="wpErr" class="err-t"></div>
+  <button class="btn del" style="margin-top:14px;line-height:1.35" onclick="doWipe('t')">${T('wipeTickets')}</button>
+  <button class="btn del" style="margin-top:10px;line-height:1.35;background:#c62828;color:#fff" onclick="doWipe('all')">${T('wipeAll')}</button>
+  <button class="btn sec2" onclick="openBk()">${T('backup')}</button>`)}
+async function doWipe(kind){const v=$('#wPinC').value.trim();
+  if(!/^\d{4}$/.test(v)||await hash(v)!==getPin()){$('#wpErr').textContent=T('wrongPin');$('#wPinC').value='';return}
+  ask(T(kind==='all'?'wipeQ2':'wipeQ1'),T('del'),()=>{
+    if(kind==='all')S={workers:[],tickets:[],gifts:[],sample:false,staffAdd:S.staffAdd};
+    else{S.tickets=[];S.sample=false}
+    save();closeS();st.open.clear();st.vw='';R();toast(T('wipeDone'))})}
+
+
+// ---------- no rubber-band bounce at the top/bottom ----------
+(function(){let tx=0,ty=0;
+document.addEventListener('touchstart',e=>{if(e.touches.length===1){tx=e.touches[0].clientX;ty=e.touches[0].clientY}},{passive:true});
+document.addEventListener('touchmove',e=>{if(e.touches.length!==1)return;const dx=e.touches[0].clientX-tx,dy=e.touches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy))return;
+  const sc=(e.target.closest&&e.target.closest('.sheet.on'))||document.scrollingElement;const top=sc.scrollTop<=0,bot=sc.scrollTop+sc.clientHeight>=sc.scrollHeight-1;
+  if((top&&dy>0)||(bot&&dy<0))e.preventDefault()},{passive:false});})();
+
+
+// ================= Per-staff permission: edit other days =================
+Object.assign(D,{
+  anyDayT:['Cho sửa / xoá ngày trước, ngày sau','Allow editing other days'],
+  anyDayD:['Thợ này được nhập, sửa, xoá số của mình ở ngày khác, không chỉ hôm nay.','This staff member can add, edit and delete their own entries on other days, not just today.'],
+  anyDayTag:['sửa ngày khác','edits other days'],
+});
+const staffLock=()=>st.role==='staff'&&!W(st.me).anyDay;
+HELP.vi[5][1]+=' Muốn cho thợ nào sửa hoặc xoá số của ngày trước, ngày sau: bấm tên thợ → bật <b>Cho sửa / xoá ngày trước, ngày sau</b>.';
+HELP.en[5][1]+=' To let a staff member edit or delete entries on other days: tap their name → turn on <b>Allow editing other days</b>.';
+
+
+// ================= Day total: date picker at the top (owner, or staff who are allowed) =================
+function dtSetDate(d){if(!d)return;syncDT();const ex=findDay(DE.wid,d);
+  if(ex){if(ex.id!==DE.id){DE=dayToDE(ex);toast(T('dayLoaded'))}}
+  else if(DE.id){DE={id:null,date:d,wid:DE.wid,amt:'',tip:'',cash:'',card:''}}
+  else DE.date=d;
+  DE.date=d;drawDT()}
+const _drawDT0=drawDT;
+drawDT=function(){_drawDT0();const old=$('#dD');if(!old)return;
+  const lab=old.previousElementSibling;if(lab&&lab.classList.contains('lab'))lab.remove();old.remove();
+  const box=document.createElement('div');
+  box.innerHTML=`<div class="lab">📅 ${T('date')}</div><div class="dtrow"><button type="button" onclick="dtSetDate(addD(DE.date,-1))" aria-label="prev">‹</button><div class="dtmid"><input type="date" id="dD" value="${DE.date}" onchange="dtSetDate(this.value)"><small>${fmtDay(DE.date)}${DE.date===today()?' · '+T('today'):''}</small></div><button type="button" onclick="dtSetDate(addD(DE.date,1))" aria-label="next">›</button></div>`;
+  const note=$('#sheet .note');if(note)note.after(box);else $('#sheet').appendChild(box)};
+
+
+// ================= Remember who logged in last; 🔑 to switch user =================
+D.switchUser=['🔑 Đổi người đăng nhập','🔑 Switch user'];
+HELP.vi[0][1]+=' Lần sau mở app sẽ vào thẳng màn hình nhập mã của người đăng nhập lần trước. Muốn vào bằng chủ tiệm hay nhân viên khác, bấm <b>🔑</b>.';
+HELP.en[0][1]+=' Next time, the app opens straight to the code screen of whoever logged in last. To sign in as the owner or another staff member, tap <b>🔑</b>.';
+const LASTK='so-tho-nail.last';
+function getLast(){try{return localStorage.getItem(LASTK)||''}catch(e){return''}}
+function setLast(v){try{localStorage.setItem(LASTK,v)}catch(e){}}
+const _loginAs0=loginAs;loginAs=function(id){setLast(id||'owner');_loginAs0(id)};
+function showLock(mode){closeS();
+  if(!getPin())mode='new';
+  else if(!mode||mode==='enter'){const l=getLast(),ok=l==='owner'||S.workers.some(w=>w.id===l&&!w.del&&w.pin);
+    L={mode:ok?'enter':'pick',buf:'',first:'',msg:'',who:ok?l:''};drawLock();$('#lock').classList.add('on');return}
+  else if(mode==='switch')mode='pick';
+  L={mode,buf:'',first:'',msg:'',who:''};drawLock();$('#lock').classList.add('on')}
+
+
+// ================= Download sheet (CSV for Excel / Numbers) =================
+Object.assign(D,{
+  csvBtn:['📊 Tải bảng số (Excel)','📊 Download sheet (Excel)'],csvDone:['Đã tải bảng số ✓','Sheet saved ✓'],
+  csvH:[['Ngày','Thứ','Thợ','Loại','Giờ','Số khách','Tiền dịch vụ','Tiền bo','Tổng','Tiền mặt','Thẻ','Gift card','% hoa hồng','Thợ nhận'],['Date','Day','Staff','Type','Time','Customers','Services','Tips','Total','Cash','Card','Gift card','Commission %','Staff gets']],
+  csvCust:['Khách','Customer'],csvDay:['Tổng ngày','Day total'],csvSum:['TỔNG CỘNG','TOTAL'],csvDays:['Số ngày làm','Days worked'],
+  csvPeriod:['Thời gian','Period'],csvMade:['Xuất lúc','Exported'],csvBy:['Sổ Thợ Nail · App viết bởi Ryan Nguyen','Sổ Thợ Nail · App by Ryan Nguyen'],
+});
+const dowShort=s=>{const d=pd(s);return LANG==='en'?DOWE[d.getDay()]:(d.getDay()?'T'+(d.getDay()+1):'CN')};
+function csvText(){const rg=range(st.rp,st.rd),l=[...rptL(rg)].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.time<b.time?-1:1));
+  const q=v=>{v=String(v==null?'':v);return /[",\n;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v},n2=v=>String(r2(v));
+  const rows=[[T('csvPeriod'),rptLabel(rg)],[T('csvMade'),fmtDate(today())+' '+nowHM()],[],T('csvH')];
+  l.forEach(t=>{const x=sum([t]),w=W(t.wid);rows.push([fmtDate(t.date),dowShort(t.date),w.name,t.kind==='day'?T('csvDay'):T('csvCust'),t.kind==='day'?'':t.time,x.n,n2(t.amt),n2(t.tip),n2(x.total),n2(x.cash),n2(x.card),n2(x.gift),w.pct,n2(x.pay)])});
+  const r=sum(l);rows.push([]);rows.push([T('csvSum'),'','','','',r.n,n2(r.svc),n2(r.tip),n2(r.total),n2(r.cash),n2(r.card),n2(r.gift),'',n2(r.pay)]);
+  rows.push([T('csvDays'),r.days]);rows.push([]);rows.push([T('csvBy')]);
+  return{name:(LANG==='en'?'Sheet-':'Bang-so-')+rptFileTag(rg)+'.csv',csv:'﻿'+rows.map(rw=>rw.map(q).join(',')).join('\r\n')}}
+function csvExport(){const c=csvText();saveFile(c.name,c.csv,T('csvDone'))}
+
+
+// ================= Import from Excel (.csv) =================
+Object.assign(D,{
+  impBtn:['📥 Nhập từ Excel (.csv)','📥 Import from Excel (.csv)'],impT:['Nhập từ Excel','Import from Excel'],
+  impNote:['Chọn file <b>.csv</b> do app xuất ra (nút <b>Tải bảng số</b>). Nếu đã sửa trong Excel, nhớ <b>lưu lại dạng CSV</b>. App sẽ cho xem trước rồi mới nhập.','Choose a <b>.csv</b> file exported by the app (<b>Download sheet</b>). If you edited it in Excel, <b>save it as CSV</b>. You’ll see a preview before anything is added.'],
+  impPick:['📂 Chọn file CSV','📂 Choose CSV file'],
+  impBad:['Không đọc được file. Hãy chọn file .csv do app xuất ra.','Could not read the file. Choose a .csv exported by the app.'],
+  impXlsx:['Đây là file Excel (.xlsx). Trong Excel chọn <b>Lưu dưới dạng → CSV UTF-8</b> rồi chọn lại file đó.','This is an Excel (.xlsx) file. In Excel use <b>Save As → CSV UTF-8</b>, then choose that file.'],
+  impFile:['File','File'],
+  impSum:[(a,b)=>`Tìm thấy <b>${a}</b> dòng khách và <b>${b}</b> dòng tổng ngày.`,(a,b)=>`Found <b>${a}</b> customer rows and <b>${b}</b> day-total rows.`],
+  impNew:[n=>`✅ Sẽ thêm mới: <b>${n}</b> dòng`,n=>`✅ New rows to add: <b>${n}</b>`],
+  impUpd:[n=>`✏️ Tổng ngày sẽ cập nhật: <b>${n}</b>`,n=>`✏️ Day totals to update: <b>${n}</b>`],
+  impDup:[n=>`⏭️ Đã có sẵn, bỏ qua: <b>${n}</b>`,n=>`⏭️ Already in the app, skipped: <b>${n}</b>`],
+  impStaff:[s=>`👩 Thợ mới sẽ được tạo: <b>${s}</b>`,s=>`👩 New staff to create: <b>${s}</b>`],
+  impGo:['Nhập vào app','Import now'],impDone:[n=>`Đã nhập ${n} dòng ✓`,n=>`Imported ${n} rows ✓`],impNothing:['Không có gì mới để nhập.','Nothing new to import.'],
+  splitL:['Mặt + Thẻ','Cash + Card'],
+});
+HELP.vi[HELP.vi.length-2][1]+='<br>Có file bảng số (.csv) do app xuất? Tab <b>Thợ</b> → <b>Nhập từ Excel</b> để đưa số vào lại; dòng nào đã có sẵn sẽ tự bỏ qua.';
+HELP.en[HELP.en.length-2][1]+='<br>Have a sheet (.csv) exported by the app? <b>Staff</b> tab → <b>Import from Excel</b> to bring the numbers back in; rows already in the app are skipped.';
+let IMP=null;
+function openImp(){IMP=null;drawImp()}
+function drawImp(){openS(head(T('impT'))+`<p class="note" style="margin:0 2px 10px">${T('impNote')}</p>
+  <label class="btn pri" style="cursor:pointer">${T('impPick')}<input type="file" accept=".csv,text/csv,text/plain,.txt" style="display:none" onchange="readImp(this)"></label>
+  <div id="impErr" class="err-t"></div>
+  ${IMP?`<div class="card" style="padding:14px 16px;margin-top:12px;font-size:15px;line-height:1.8">
+    <div style="color:var(--mut);font-size:13px">${T('impFile')}: ${esc(IMP.file)}</div>
+    <div>${T('impSum',IMP.cust,IMP.day)}</div><div>${T('impNew',IMP.add)}</div>${IMP.upd?`<div>${T('impUpd',IMP.upd)}</div>`:''}<div>${T('impDup',IMP.dup)}</div>
+    ${IMP.newStaff.length?`<div>${T('impStaff',esc(IMP.newStaff.join(', ')))}</div>`:''}</div>
+    <button class="btn pri" style="background:var(--ink);margin-top:10px" onclick="doImp()" ${IMP.add+IMP.upd?'':'disabled'}>${IMP.add+IMP.upd?T('impGo'):T('impNothing')}</button>`:''}`)}
+function readImp(inp){const f=inp.files&&inp.files[0];if(!f)return;
+  if(/\.xls[xm]?$/i.test(f.name)){$('#impErr').innerHTML=T('impXlsx');return}
+  const rd=new FileReader();rd.onload=()=>{try{IMP=parseImp(String(rd.result));IMP.file=f.name;drawImp()}catch(e){$('#impErr').textContent=T('impBad')}};rd.readAsText(f)}
+function csvRows(text,delim){const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
+    else if(c==='"')q=true;else if(c===delim){row.push(cur);cur=''}else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur=''}else if(c!=='\r')cur+=c}
+  if(cur||row.length){row.push(cur);rows.push(row)}return rows}
+function parseDateAny(s,vi){s=String(s||'').trim();let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/),y,mo,d;
+  if(m){y=+m[1];mo=+m[2];d=+m[3]}else{m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(!m)return'';
+    let a=+m[1],b=+m[2];y=+m[3];if(y<100)y+=2000;
+    if(a>12){d=a;mo=b}else if(b>12){mo=a;d=b}else if(vi){d=a;mo=b}else{mo=a;d=b}}
+  if(!(mo>=1&&mo<=12&&d>=1&&d<=31&&y>2000&&y<2100))return'';return y+'-'+pad(mo)+'-'+pad(d)}
+const normTime=s=>{const m=String(s||'').trim().match(/^(\d{1,2}):(\d{2})/);return m?pad(+m[1])+':'+m[2]:'12:00'};
+const numAny=v=>{let s=String(v==null?'':v).replace(/[$\s ]/g,'');if(/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s))s=s.replace(/\./g,'').replace(',','.');else if(/^\d+,\d{1,2}$/.test(s))s=s.replace(',','.');else s=s.replace(/,/g,'');const x=parseFloat(s);return isFinite(x)?r2(x):0};
+const findStaff=n=>{if(window.SOLO)return S.workers.find(w=>!w.del);n=n.trim().toLowerCase();return S.workers.find(w=>!w.del&&w.name.trim().toLowerCase()===n)||S.workers.find(w=>w.name.trim().toLowerCase()===n)};
+function parseImp(text){text=text.replace(/^﻿/,'');
+  const hl=text.split(/\r?\n/).find(l=>/^"?(Ngày|Date)"?\s*[,;\t]/.test(l.trim()));if(!hl)throw 0;
+  const delim=hl.includes('\t')?'\t':(hl.split(';').length>hl.split(',').length?';':',');
+  const rows=csvRows(text,delim),hi=rows.findIndex(r=>r[0]&&/^(Ngày|Date)$/.test(r[0].trim()));if(hi<0)throw 0;
+  const H=rows[hi].map(x=>x.trim()),vi=H[0]==='Ngày',N=D.csvH[vi?0:1],ix=k=>H.indexOf(N[k]);
+  const c={date:0,staff:ix(2),type:ix(3),time:ix(4),svc:ix(6),tip:ix(7),cash:ix(9),card:ix(10),gift:ix(11),pct:ix(12)};
+  if(c.staff<0||c.svc<0)throw 0;
+  const out={rows:[],cust:0,day:0,add:0,upd:0,dup:0,newStaff:[]};
+  for(const r of rows.slice(hi+1)){const date=parseDateAny(r[c.date],vi),name=(r[c.staff]||'').trim();if(!date||!name)continue;
+    const it={date,name,isDay:/^(Tổng ngày|Day total)$/i.test((r[c.type]||'').trim()),time:normTime(c.time>=0?r[c.time]:''),
+      amt:numAny(r[c.svc]),tip:c.tip>=0?numAny(r[c.tip]):0,cash:c.cash>=0?numAny(r[c.cash]):0,card:c.card>=0?numAny(r[c.card]):0,gift:c.gift>=0?numAny(r[c.gift]):0,pct:c.pct>=0?parseFloat(r[c.pct]):NaN};
+    if(!it.amt&&!it.tip)continue;out.rows.push(it)}
+  if(!out.rows.length)throw 0;
+  out.rows.forEach(it=>{it.isDay?out.day++:out.cust++;const w=findStaff(it.name);
+    if(!w){if(!out.newStaff.includes(it.name))out.newStaff.push(it.name);it.st='add';out.add++;return}
+    if(it.isDay){const ex=findDay(w.id,it.date);
+      if(!ex){it.st='add';out.add++}
+      else if(ex.amt===it.amt&&ex.tip===it.tip&&(ex.cash||0)===it.cash&&(ex.card||0)===it.card){it.st='dup';out.dup++}
+      else{it.st='upd';it.exId=ex.id;out.upd++}}
+    else{const ex=S.tickets.find(t=>t.kind!=='day'&&t.wid===w.id&&t.date===it.date&&t.time===it.time&&t.amt===it.amt&&t.tip===it.tip);
+      if(ex){it.st='dup';out.dup++}else{it.st='add';out.add++}}});
+  return out}
+function doImp(){if(!IMP)return;let n=0;
+  IMP.rows.forEach(it=>{if(it.st==='dup')return;let w=findStaff(it.name);
+    if(!w){w={id:uid(),name:it.name,pct:isFinite(it.pct)?Math.min(100,Math.max(0,it.pct)):60,color:COLORS[S.workers.length%COLORS.length],del:false};S.workers.push(w)}
+    const tot=r2(it.amt+it.tip);
+    if(it.isDay){let cash=it.cash,card=it.card;if(Math.abs(cash+card-tot)>=0.01)card=r2(Math.max(0,tot-cash));
+      const ex=findDay(w.id,it.date),t={id:ex?ex.id:uid(),kind:'day',date:it.date,wid:w.id,n:0,amt:it.amt,tip:it.tip,cash,card,pay:'mix',time:'23:59'};
+      if(ex)S.tickets=S.tickets.map(x=>x.id===ex.id?t:x);else S.tickets.push(t)}
+    else{const c=it.cash,k=it.card,g=it.gift;let t={id:uid(),date:it.date,wid:w.id,amt:it.amt,tip:it.tip,time:it.time};
+      if(c>0&&!k&&!g)t.pay='cash';else if(!c&&!g)t.pay='card';else t={...t,pay:'split',cash:c,card:k,gift:g};
+      S.tickets.push(t)}
+    n++});
+  S.sample=false;save();closeS();IMP=null;R();toast(n?T('impDone',n):T('impNothing'))}
+
+
+// ================= Pay checks (custom date ranges) =================
+Object.assign(D,{
+  pcheck:['Check','Check'],checksT:['Các check (kỳ lương)','Pay checks'],newCheck:['＋ Tạo check mới','＋ New check'],newCheckT:['Tạo check mới','New check'],
+  ckEmpty:['Chưa có check nào.<br>Bấm <b>＋ Tạo check mới</b>, chọn ngày đầu và ngày cuối.','No checks yet.<br>Tap <b>＋ New check</b> and pick a start and end date.'],
+  ckEmptyS:['Chủ tiệm chưa tạo check nào.','The owner hasn’t created any checks yet.'],
+  ckNo:['Số check','Check number'],ckStart:['Ngày đầu','Start date'],ckEnd:['Ngày cuối','End date'],ckNote:['Ghi chú (không bắt buộc)','Note (optional)'],
+  ck1w:['1 tuần','1 week'],ck2w:['2 tuần','2 weeks'],ckMonthEnd:['Đến hết tháng','To month end'],
+  ckSave:['Lưu check','Save check'],ckDel:['Xoá check này','Delete this check'],ckDelQ:['Xoá check này? Số liệu khách vẫn giữ nguyên.','Delete this check? Customer data stays.'],
+  ckBad:['Ngày cuối phải bằng hoặc sau ngày đầu','End date must be on or after the start date'],ckNoBad:['Số check này đã có','This check number already exists'],
+  ckAll:['‹ Tất cả check','‹ All checks'],ckEdit:['Sửa','Edit'],ckDays:[n=>`${n} ngày`,n=>`${n} day${n==1?'':'s'}`],
+  ckPrev:[(d,t)=>`${d} · Tổng thu ${t}`,(d,t)=>`${d} · Revenue ${t}`],
+});
+if(!Array.isArray(S.checks))S.checks=[];
+if(S.sample&&!S.checks.length){const d=pd(today()),a1=ymd(new Date(d.getFullYear(),d.getMonth(),1));S.checks=[{id:'ck1',no:1,a:a1,b:addD(a1,13),note:''},{id:'ck2',no:2,a:addD(a1,14),b:addD(a1,27),note:''}];save()}
+const CK=()=>Array.isArray(S.checks)?S.checks:(S.checks=[]);
+const curCheck=()=>CK().find(c=>c.id===st.ck);
+const fmtDM=s=>{const d=pd(s);return LANG==='en'?`${d.getMonth()+1}/${d.getDate()}`:`${d.getDate()}/${d.getMonth()+1}`};
+const ckLabel=c=>`Check #${c.no}`,ckRange=c=>`${fmtDM(c.a)} – ${fmtDate(c.b)}`,daysBetween=(a,b)=>Math.round((pd(b)-pd(a))/864e5)+1;
+const _range0=range;range=function(p,s){if(p==='check'){const c=curCheck();if(c)return{a:c.a,b:c.b,label:`${ckLabel(c)} · ${ckRange(c)}`};p='month'}return _range0(p,s)};
+const _shift0=shift;shift=function(p,s,dir){if(p==='check'){const l=[...visCK()].sort((x,y)=>x.no-y.no),i=l.findIndex(c=>c.id===st.ck),n=l[i+dir];if(n)st.ck=n.id;return s}return _shift0(p,s,dir)};
+const _vRep0=vRep;
+vRep=function(){
+  if(st.rp==='check'&&!curCheck()){const h=_vRep0();return h.slice(0,h.indexOf('</div>')+6)+vChecks()}
+  let h=_vRep0();
+  if(st.rp==='check'){const c=curCheck(),i=h.indexOf('</div>')+6;
+    h=h.slice(0,i)+`<div class="ckbar"><button onclick="st.ck=null;R()">${T('ckAll')}</button><span>${T('ckDays',daysBetween(c.a,c.b))}${c.note?' · '+esc(c.note):''}</span>${canEditCk(c)?`<button onclick="openCk('${c.id}')">${T('ckEdit')}</button>`:'<span></span>'}</div>`+h.slice(i)}
+  return h};
+function vChecks(){const l=[...visCK()].sort((a,b)=>b.no-a.no);
+  let h=`<div class="sec" style="margin-top:4px">🧾 ${T('checksT')}</div>`;
+  if(canEditCk())h+=`<button class="btn pri" style="margin-bottom:12px" onclick="openCk()">${T('newCheck')}</button>`;
+  if(!l.length)return h+`<div class="empty">${T(st.role==='staff'&&!W(st.me).ckEdit?'ckEmptyS':'ckEmpty')}</div>`;
+  return h+l.map(c=>{const x=sum(inRange(c.a,c.b));
+    return`<button class="ckcard" onclick="st.ck='${c.id}';R();scrollTo(0,0)"><div class="ckh"><b>${ckLabel(c)}${c.wid&&st.role!=='staff'?` <small style="font-size:13px;color:var(--mut);font-weight:600">· ${esc(W(c.wid).name)}</small>`:''}</b><span>${ckRange(c)} · ${T('ckDays',daysBetween(c.a,c.b))}</span></div>${c.note?`<div class="ckn">${esc(c.note)}</div>`:''}
+    <div class="ckv">${st.role==='staff'?`<div><small>${T('earn')}</small><b>${money(x.pay)}</b></div><div><small>${T('tips')}</small><b>${money(x.tip)}</b></div><div><small>${T('daysCol')}</small><b>${x.days}</b></div>`
+      :`<div><small>${T('total')}</small><b>${money(x.total)}</b></div><div><small>${T('totalStaff')}</small><b>${money(x.pay)}</b></div><div><small>${T('shopKeeps')}</small><b style="color:var(--acc)">${money(x.total-x.pay)}</b></div>`}</div><span class="cka">›</span></button>`}).join('')}
+let CF=null;
+function openCk(id){if(!canEditCk(id?CK().find(x=>x.id===id):null))return;const c=id?CK().find(x=>x.id===id):null,last=[...CK()].sort((a,b)=>b.no-a.no)[0],td=pd(today());
+  const a=c?c.a:(last?addD(last.b,1):ymd(new Date(td.getFullYear(),td.getMonth(),1)));
+  CF=c?{...c}:{id:null,no:(last?last.no:0)+1,a,b:addD(a,13),note:''};drawCk()}
+function ckSync(){CF.no=$('#cN').value;CF.a=$('#cA').value||CF.a;CF.b=$('#cB').value||CF.b;CF.note=$('#cT').value}
+function ckPrev(){const a=$('#cA').value,b=$('#cB').value,el=$('#cP');if(!el)return;if(!a||!b||b<a){el.textContent='';return}
+  el.innerHTML=T('ckPrev',T('ckDays',daysBetween(a,b)),'<b>'+money(sum(inRange(a,b)).total)+'</b>')}
+function ckEnd(n){const a=$('#cA').value;if(!a)return;if(n==='m'){const d=pd(a);$('#cB').value=ymd(new Date(d.getFullYear(),d.getMonth()+1,0))}else $('#cB').value=addD(a,n);ckPrev()}
+function drawCk(){openS(head(CF.id?ckLabel(CF):T('newCheckT'))+`
+  <div class="lab">${T('ckNo')}</div><input class="field" id="cN" inputmode="numeric" value="${esc(CF.no)}" style="font-size:22px!important;font-weight:700">
+  <div class="row2"><div><div class="lab">${T('ckStart')}</div><input class="field" type="date" id="cA" value="${CF.a}" onchange="ckPrev()"></div><div><div class="lab">${T('ckEnd')}</div><input class="field" type="date" id="cB" value="${CF.b}" onchange="ckPrev()"></div></div>
+  <div class="quick"><button style="color:var(--acc)" onclick="ckEnd(6)">${T('ck1w')}</button><button style="color:var(--acc)" onclick="ckEnd(13)">${T('ck2w')}</button><button style="color:var(--acc)" onclick="ckEnd('m')">${T('ckMonthEnd')}</button></div>
+  <div id="cP" style="margin-top:12px;background:var(--card);border-radius:14px;padding:12px 14px;font-size:15px"></div>
+  <div class="lab">${T('ckNote')}</div><input class="field" id="cT" value="${esc(CF.note)}">
+  <div id="cErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" onclick="saveCk()">${T('ckSave')}</button>
+  ${CF.id?`<button class="btn del" onclick="ask(T('ckDelQ'),T('del'),()=>{S.checks=CK().filter(x=>x.id!=='${CF.id}');save();st.ck=null;closeS();R();toast(T('deleted'))})">${T('ckDel')}</button>`:''}</div>`);ckPrev()}
+function saveCk(){ckSync();const no=parseInt(CF.no,10);
+  if(!(no>0)){$('#cErr').textContent=T('ckNo');return}
+  if(!CF.a||!CF.b||CF.b<CF.a){$('#cErr').textContent=T('ckBad');return}
+  if(CK().some(c=>c.no===no&&c.id!==CF.id)){$('#cErr').textContent=T('ckNoBad');return}
+  const c={id:CF.id||uid(),no,a:CF.a,b:CF.b,note:CF.note.trim()};if(CF.wid)c.wid=CF.wid;else if(!CF.id&&st.role==='staff')c.wid=st.me;
+  if(CF.id)S.checks=CK().map(x=>x.id===CF.id?c:x);else CK().push(c);
+  save();closeS();st.rp='check';st.ck=c.id;go('rep');toast(T('saved'))}
+HELP.vi.splice(8,0,['🧾 Check (kỳ lương)','Tab <b>Báo cáo</b> → bấm <b>Check</b> → <b>＋ Tạo check mới</b>. Chọn <b>ngày đầu</b> và <b>ngày cuối</b> (có nút nhanh 1 tuần, 2 tuần, đến hết tháng) → <b>Lưu check</b>. App đặt số tự động: Check #1, #2… Bấm vào một check để xem tổng thu, tiền bo, tiền trả từng thợ (sau hoa hồng), tiệm giữ lại, số ngày làm; xuất PDF hay Excel cho đúng khoảng ngày đó. Thợ đăng nhập sẽ thấy tiền nhận của mình trong từng check.']);
+HELP.en.splice(8,0,['🧾 Pay checks','<b>Reports</b> tab → tap <b>Check</b> → <b>＋ New check</b>. Pick a <b>start</b> and <b>end date</b> (quick buttons: 1 week, 2 weeks, to month end) → <b>Save check</b>. Numbers are automatic: Check #1, #2… Tap a check to see revenue, tips, each staff member’s pay after commission, what the salon keeps and days worked; export PDF or Excel for exactly that range. Staff who log in see their own earnings for each check.']);
+
+
+// ================= Per-staff permission: create / edit checks =================
+Object.assign(D,{
+  ckPermT:['Cho tạo / sửa check','Allow creating / editing checks'],
+  ckPermD:['Thợ này được tạo check riêng của mình và sửa, xoá check đó.','This staff member can create their own checks and edit or delete them.'],
+  ckPermTag:['tạo check','makes checks'],
+});
+const visCK=()=>CK().filter(c=>st.role!=='staff'||!c.wid||c.wid===st.me);
+const canEditCk=c=>st.role!=='staff'||(!!W(st.me).ckEdit&&(!c||c.wid===st.me));
+HELP.vi[8][1]+=' Chủ có thể cho thợ tự tạo check: bấm tên thợ → bật <b>Cho tạo / sửa check</b>. Check thợ tạo chỉ thợ đó và chủ thấy.';
+HELP.en[8][1]+=' The owner can let a staff member make checks: tap their name → turn on <b>Allow creating / editing checks</b>. Checks a staff member makes are seen only by them and the owner.';
+
+
+// ================= SỔ THỢ NAIL — personal app for one nail tech =================
+window.SOLO=true;document.body.classList.add('solo');
+Object.assign(D,{
+  sub:['Sổ tiền của thợ nail','Nail tech earnings book'],tabSet:['Cài đặt','Settings'],
+  earn:['Bạn nhận','You earn'],ownerPinE:['Nhập mã số của bạn','Enter your passcode'],
+  ownerR:[()=>(S.workers.find(w=>!w.del)||{}).name||'Sổ Thợ Nail',()=>(S.workers.find(w=>!w.del)||{}).name||'Sổ Thợ Nail'],
+  newPin:['Tạo mã số 4 số để giữ sổ riêng của bạn','Create a 4-digit passcode for your private book'],
+  setupT:['Chào bạn! Bắt đầu nhé','Welcome! Let’s get started'],
+  setupD:['App này là sổ riêng của bạn: tự ghi khách, tiền bo, ngày làm và check. Số liệu chỉ nằm trên điện thoại này.','This is your private book: record customers, tips, days worked and checks. Your data stays on this phone only.'],
+  myName:['Tên của bạn','Your name'],myPct:['Bạn nhận bao nhiêu % hoa hồng?','Your commission %'],
+  myPctD:['Tiền bạn nhận = tiền làm × % + toàn bộ tiền bo.','You earn = services × % + all tips.'],
+  start:['Bắt đầu','Start'],trySample:['Xem thử với số mẫu','Try with sample numbers'],
+  meT:['Thông tin của tôi','My info'],editMe:['Sửa','Edit'],
+  sampleTxt:['Đây là số mẫu để bạn xem thử. Xoá đi khi bắt đầu ghi thật.','These are sample numbers to try the app. Clear them when you start for real.'],
+  clearSample:['Xoá số mẫu','Clear sample'],clearSampleQ:['Xoá hết số mẫu và bắt đầu ghi thật?','Delete the sample numbers and start for real?'],
+  changePin:['🔒 Đổi mã số','🔒 Change passcode'],lockNow:['Khoá app ngay','Lock now'],
+  impBtn:['📥 Nhập từ Excel (.csv)','📥 Import from Excel (.csv)'],
+  localOnly:['Số liệu chỉ nằm trên điện thoại này. Không ai khác — kể cả chủ tiệm — xem được.','Your data stays on this phone. Nobody else — not even the salon owner — can see it.'],
+});
+const meId=()=>(S.workers.find(w=>!w.del)||{}).id;
+function soloFix(){const w=S.workers.find(x=>!x.del);if(w){w.anyDay=true;w.ckEdit=true}S.staffAdd=true;S.solo=true}
+const _laSolo=loginAs;loginAs=function(){soloFix();const id=meId();if(!id){hideLock();st.role='staff';st.me='';R();openSetup();return}_laSolo(id)};
+function showLock(mode){closeS();if(!getPin())mode='new';else if(!mode||mode==='enter'||mode==='switch')mode='enter';
+  L={mode,buf:'',first:'',msg:'',who:mode==='enter'?'owner':''};drawLock();$('#lock').classList.add('on')}
+TABS.push(['set','tabSet','<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>']);
+function vSet(){const w=S.workers.find(x=>!x.del);
+  let h=`<div class="sec" style="margin-top:4px">${T('meT')}</div>`;
+  if(w)h+=`<div class="card" style="padding:14px 16px;display:flex;align-items:center;gap:14px"><div class="av" style="background:${w.color};width:52px;height:52px;font-size:22px">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div style="flex:1"><b style="font-size:19px">${esc(w.name)}</b><div style="color:var(--mut);font-size:14px">${T('commission',w.pct)}</div></div><button class="btn sec2" style="width:auto;margin:0;padding:10px 18px" onclick="openSetup(true)">${T('editMe')}</button></div>`;
+  if(S.sample)h+=`<div class="card" style="padding:14px"><b>${T('sampleOn')}</b><p class="note" style="margin:6px 0 10px">${T('sampleTxt')}</p><button class="btn del" style="margin:0" onclick="ask(T('clearSampleQ'),T('del'),()=>{S.tickets=[];S.checks=[];S.sample=false;save();R();toast(T('cleared'))})">${T('clearSample')}</button></div>`;
+  h+=`<div class="sec">${T('data')}</div>
+  <button class="btn sec2" onclick="openHelp()">${T('guide')}</button>
+  <button class="btn sec2" onclick="openBk()">${T('backup')}</button>
+  <button class="btn sec2" onclick="openImp()">${T('impBtn')}</button>
+  <button class="btn sec2" onclick="showLock('old')">${T('changePin')}</button>
+  <button class="btn sec2" onclick="showLock('enter')">${T('lockNow')}</button>
+  <button class="btn del" onclick="openWipe()">${T('wipeBtn')}</button>
+  <div class="lab" style="margin-top:16px">🌐 ${T('language')}</div><div class="langsw"><button class="${LANG==='vi'?'on':''}" onclick="setLang('vi')">Tiếng Việt</button><button class="${LANG==='en'?'on':''}" onclick="setLang('en')">English</button></div>
+  <p class="note">${T('localOnly')}</p>
+  <p class="note" style="text-align:center;margin-top:24px">💅 Sổ Thợ Nail<br>${T('by')} <b>Ryan Nguyen</b></p>`;
+  return h}
+let SF=null;
+function openSetup(edit){const w=S.workers.find(x=>!x.del);SF={name:w?w.name:'',pct:w?w.pct:60,edit:!!(edit&&w)};
+  openS(`<h3>${SF.edit?T('meT'):T('setupT')}${SF.edit?`<button onclick="closeS()">${T('close')}</button>`:''}</h3>
+  ${SF.edit?'':`<p class="note" style="margin:0 2px 8px;font-size:14.5px">${T('setupD')}</p>`}
+  <div class="lab">${T('myName')}</div><input class="field" id="sN" value="${esc(SF.name)}" placeholder="${T('namePh')}">
+  <div class="lab">${T('myPct')}</div><div class="money"><input id="sP" inputmode="decimal" value="${SF.pct}" style="font-size:26px"><span>%</span></div>
+  <div class="quick">${[50,55,60,65,70].map(v=>`<button style="color:var(--acc)" onclick="$('#sP').value=${v}">${v}%</button>`).join('')}</div>
+  <p class="note">${T('myPctD')}</p><div id="sErr" class="err-t"></div>
+  <button class="btn pri" style="margin-top:10px" onclick="saveSetup(false)">${SF.edit?T('save'):T('start')}</button>
+  ${SF.edit?'':`<button class="btn sec2" onclick="saveSetup(true)">${T('trySample')}</button>`}`)}
+function saveSetup(sample){const name=$('#sN').value.trim(),pct=Math.min(100,Math.max(0,parseFloat($('#sP').value)||0));
+  if(!name){$('#sErr').textContent=T('myName');$('#sN').focus();return}
+  let w=S.workers.find(x=>!x.del);
+  if(w){w.name=name;w.pct=pct}else{w={id:uid(),name,pct,color:'#c2185b',del:false};S.workers=[w]}
+  soloFix();if(sample)soloSample(w.id);save();closeS();loginAs(null)}
+function soloSample(wid){const prices=[25,30,35,40,45,50,55,60,65,70,85],t=[];
+  for(let k=62;k>=0;k--){const ds=addD(today(),-k),dw=pd(ds).getDay();if(dw===0||dw===1&&Math.random()<.7||Math.random()<.1)continue;
+    if(Math.random()<.2){const amt=300+Math.round(Math.random()*30)*10,tip=Math.round(amt*.15),cash=Math.round((amt+tip)*.4);t.push({id:uid(),kind:'day',date:ds,wid,n:0,amt,tip,cash,card:amt+tip-cash,pay:'mix',time:'23:59'});continue}
+    const n=4+Math.floor(Math.random()*5);for(let j=0;j<n;j++){const amt=prices[Math.floor(Math.random()*prices.length)];
+      t.push({id:uid(),date:ds,wid,amt,tip:Math.random()<.85?Math.round(amt*(.12+Math.random()*.1)):0,pay:Math.random()<.6?'card':'cash',time:pad(9+Math.floor(j*1.4))+':'+pad(Math.floor(Math.random()*4)*15)})}}
+  S.tickets=t;const d=pd(today()),a1=ymd(new Date(d.getFullYear(),d.getMonth()-1,1));
+  S.checks=[0,1,2,3].map(i=>({id:uid(),no:i+1,a:addD(a1,i*14),b:addD(a1,i*14+13),note:'',wid}));S.sample=true}
+const _RSolo=R;R=function(){_RSolo();if(!$('#lock').classList.contains('on')&&!meId()&&!$('#sheet').classList.contains('on'))setTimeout(()=>{if(!meId())openSetup()},60)};
+HELP.vi=[
+['🔒 Mã số','Lần đầu mở app, tạo mã 4 số rồi nhập lại để xác nhận. Sau đó nhập tên và % hoa hồng của bạn. App tự khoá khi rời app hơn 1 phút. Đổi mã trong tab <b>Cài đặt</b>.'],
+['💅 Ghi từng khách','Tab <b>Hôm nay</b> → <b>＋ Thêm khách</b>. Nhập tiền làm, tiền bo (nút nhanh $5, $10, 15%, 20%), chọn <b>Tiền mặt / Thẻ</b> → <b>Lưu khách</b>. Bấm vào dòng khách để sửa hoặc xoá.','addcust'],
+['📋 Tổng kết ngày','Không ghi từng khách? Bấm <b>📋 Tổng kết ngày</b>: chọn ngày, nhập tổng tiền làm, tổng tiền bo, phần tiền mặt / thẻ → <b>Lưu tổng ngày</b>. Mỗi ngày chỉ có một tổng; bấm lại để sửa.'],
+['📅 Lịch','Xem cả tháng; ô càng đậm là ngày càng nhiều tiền. Bấm vào một ngày để xem chi tiết.','cal'],
+['📊 Báo cáo','Chọn <b>Ngày / Tuần / Tháng / Năm</b>: thấy <b>Bạn nhận</b> (hoa hồng + bo), tiền làm, tiền bo, tiền mặt, thẻ, số khách, ngày làm (xanh) và ngày nghỉ (đỏ). Bấm <b>Xuất phiếu lương PDF</b> hoặc <b>Tải bảng số (Excel)</b> để lưu.','slip'],
+['🧾 Check','Báo cáo → <b>Check</b> → <b>＋ Tạo check mới</b>, chọn ngày đầu và ngày cuối giống kỳ lương của tiệm. Bấm vào check để xem bạn đáng nhận bao nhiêu và so với check tiệm trả.'],
+['💰 Cách tính','<b>Bạn nhận</b> = tiền làm × % hoa hồng + toàn bộ tiền bo. Đổi % trong <b>Cài đặt → Sửa</b>.'],
+['💾 Sao lưu','Tab <b>Cài đặt</b> → <b>Sao lưu / Khôi phục</b> → <b>Lưu file sao lưu</b>, cất vào Tệp hoặc iCloud mỗi tuần. Đổi điện thoại thì <b>Mở file sao lưu</b>. Có file bảng số (.csv)? Dùng <b>Nhập từ Excel</b>.','backup'],
+['🔐 Riêng tư','Số liệu chỉ nằm trên điện thoại của bạn, không gửi lên mạng, không ai khác xem được — kể cả chủ tiệm. Bấm <b>EN / VI</b> để đổi tiếng Anh / tiếng Việt.']];
+HELP.en=[
+['🔒 Passcode','The first time, create a 4-digit passcode and enter it again. Then enter your name and commission %. The app locks itself after 1 minute away. Change the code in <b>Settings</b>.'],
+['💅 Log each customer','<b>Today</b> tab → <b>＋ Add customer</b>. Enter the service amount and tip (quick $5, $10, 15%, 20%), choose <b>Cash / Card</b> → <b>Save customer</b>. Tap a line to edit or delete.','addcust'],
+['📋 Day total','Not logging each customer? Tap <b>📋 Day total</b>: pick the day, enter total services, total tips and the cash / card split → <b>Save day total</b>. One total per day; tap again to edit.'],
+['📅 Calendar','See the whole month; darker days earned more. Tap a day for details.','cal'],
+['📊 Reports','Choose <b>Day / Week / Month / Year</b>: see <b>You earn</b> (commission + tips), services, tips, cash, card, customers, days worked (green) and days off (red). Tap <b>Export pay slip PDF</b> or <b>Download sheet (Excel)</b> to save.','slip'],
+['🧾 Checks','Reports → <b>Check</b> → <b>＋ New check</b>, pick the same start and end dates as the salon’s pay period. Tap a check to see what you should be paid and compare it with your paycheck.'],
+['💰 How it’s counted','<b>You earn</b> = services × commission % + all tips. Change your % in <b>Settings → Edit</b>.'],
+['💾 Backup','<b>Settings</b> → <b>Backup / Restore</b> → <b>Save backup file</b>, keep it in Files or iCloud every week. New phone? <b>Open backup file</b>. Have a sheet (.csv)? Use <b>Import from Excel</b>.','backup'],
+['🔐 Private','Your data stays on your phone, is never sent online, and nobody else — not even the salon owner — can see it. Tap <b>EN / VI</b> to switch language.']];
+
+R();showLock();
+</script>
+</body>
+</html>

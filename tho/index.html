@@ -532,7 +532,7 @@ const rptL=rg=>inRange(rg.a,rg.b).filter(t=>!stfMode()||t.wid===st.vw);
 const rptTitleX=()=>T(stfMode()?'slipTitle':'rptTitle',T('p'+st.rp).toUpperCase());
 const rptLabel=rg=>stfMode()?W(st.vw).name+' · '+rg.label:rg.label;
 const slug=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const rptFileTag=rg=>(stfMode()?slug(W(st.vw).name)+'-':'')+(st.rp==='day'?rg.a:rg.a+'_'+rg.b);
+let rptFileTag=rg=>(stfMode()?slug(W(st.vw).name)+'-':'')+(st.rp==='day'?rg.a:rg.a+'_'+rg.b);
 function rsegHTML(){return`<div class="seg"><button class="${st.rview!=='staff'?'on':''}" onclick="st.rview='shop';R()">🏠 ${T('wholeShop')}</button><button class="${st.rview==='staff'?'on':''}" onclick="st.rview='staff';R()">👩 ${T('oneStaff')}</button></div>`}
 function vStaffRep(rg,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w.id));
   if(!ws.length)return`<div class="empty">${T('noStaff')}</div>`;
@@ -1455,6 +1455,20 @@ const canEditCk=c=>st.role!=='staff'||(!!W(st.me).ckEdit&&(!c||c.wid===st.me));
 HELP.vi[8][1]+=' Chủ có thể cho thợ tự tạo check: bấm tên thợ → bật <b>Cho tạo / sửa check</b>. Check thợ tạo chỉ thợ đó và chủ thấy.';
 HELP.en[8][1]+=' The owner can let a staff member make checks: tap their name → turn on <b>Allow creating / editing checks</b>. Checks a staff member makes are seen only by them and the owner.';
 
+// ---------- Xuất phiếu lương PDF theo check ----------
+Object.assign(D,{ckPdf:['📄 Xuất phiếu lương PDF theo check','📄 Export pay slip PDF by check'],ckPick:['Chọn check để xuất PDF','Pick a check to export as PDF'],ckNone:['Chưa có check nào.','No checks yet.']});
+const _rftP=rptFileTag;rptFileTag=function(rg){const t=_rftP(rg),c=st.rp==='check'&&curCheck();return c?'Check-'+c.no+'-'+t:t};
+function ckPDF(id){closeS();st.rp='check';st.ck=id;R();scrollTo(0,0);setTimeout(()=>{const b=document.querySelector('#main .btn.pdfb');if(b)exportPDF(b)},80)}
+function openCkPick(){const l=[...visCK()].sort((a,b)=>b.no-a.no);
+  openS(head(T('ckPick'))+(l.length?l.map(c=>{const x=sum(inRange(c.a,c.b));
+    return`<button class="ckpick" onclick="ckPDF('${c.id}')"><span><b>${ckLabel(c)}</b><small>${ckRange(c)} · ${T('ckDays',daysBetween(c.a,c.b))}</small></span><span class="ckpv">${money(st.role==='staff'?x.pay:x.total)}<i>📄 PDF</i></span></button>`}).join(''):`<div class="empty">${T('ckNone')}</div>`))}
+const _vChecksP=vChecks;vChecks=function(){let h=_vChecksP();if(!visCK().length)return h;
+  h=h.replace(/<button class="ckcard" onclick="st\.ck='([^']+)';R\(\);scrollTo\(0,0\)">/g,(m,id)=>m+`<span class="ckp" onclick="event.stopPropagation();ckPDF('${id}')">📄 PDF</span>`);
+  const i=h.indexOf('<button class="ckcard"');return h.slice(0,i)+`<button class="btn sec2" style="margin:0 0 12px" onclick="openCkPick()">${T('ckPdf')}</button>`+h.slice(i)};
+(function(){const c=document.createElement('style');c.textContent='.ckp{position:absolute;right:34px;top:12px;font-size:13px;font-weight:700;color:var(--acc);background:#c2185b14;border-radius:10px;padding:5px 9px}.ckpick{display:flex;width:100%;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-bottom:9px;font:inherit;color:var(--ink)}.ckpick b{display:block;font-size:17px}.ckpick small{color:var(--mut);font-size:13px}.ckpv{text-align:right;font-weight:800;font-size:17px;white-space:nowrap}.ckpv i{display:block;font-style:normal;font-size:12.5px;color:var(--acc);margin-top:3px}';document.head.appendChild(c)})();
+HELP.vi.forEach(h=>{if(h[0].startsWith('🧾'))h[1]+=' Muốn xuất <b>phiếu lương PDF</b> cho một check: bấm <b>📄 PDF</b> trên check đó, hoặc bấm <b>Xuất phiếu lương PDF theo check</b> rồi chọn check.'});
+HELP.en.forEach(h=>{if(h[0].startsWith('🧾'))h[1]+=' To export a <b>pay slip PDF</b> for one check: tap <b>📄 PDF</b> on that check, or tap <b>Export pay slip PDF by check</b> and pick a check.'});
+
 
 // ================= SỔ THỢ NAIL — personal app for one nail tech =================
 window.SOLO=true;document.body.classList.add('solo');
@@ -1530,7 +1544,7 @@ HELP.vi=[
 ['✏️ Sửa hoặc xoá','Bấm vào dòng khách (hoặc dòng tổng ngày) để mở lại → sửa số rồi <b>Lưu</b>, hoặc bấm <b>Xoá</b>. Bạn sửa được mọi ngày, trước hay sau.','edit'],
 ['📅 Lịch','Xem cả tháng; ô càng đậm là ngày càng nhiều tiền, dưới mỗi ô là số tiền ngày đó. Bấm vào một ngày để mở ngày đó.','cal'],
 ['📊 Báo cáo & ngày làm','Tab <b>Báo cáo</b>, chọn <b>Ngày / Tuần / Tháng / Năm</b>. Thấy <b>Bạn nhận</b>, tiền làm, tiền bo, tiền mặt, thẻ, số khách. Phần <b>Ngày làm trong tuần</b>: ngày làm <b style="color:#2e7d32">xanh</b>, ngày nghỉ <b style="color:#c62828">đỏ</b> (ngày không có số là ngày nghỉ).','rep'],
-['🧾 Check (kỳ lương)','Báo cáo → <b>Check</b> → <b>＋ Tạo check mới</b>. Chọn <b>ngày đầu</b> và <b>ngày cuối</b> giống kỳ lương của tiệm → <b>Lưu check</b>. Bấm vào Check #1, #2… để xem bạn đáng nhận bao nhiêu trong kỳ đó và <b>so với check tiệm trả</b>.','check'],
+['🧾 Check (kỳ lương)','Báo cáo → <b>Check</b> → <b>＋ Tạo check mới</b>. Chọn <b>ngày đầu</b> và <b>ngày cuối</b> giống kỳ lương của tiệm → <b>Lưu check</b>. Bấm vào Check #1, #2… để xem bạn đáng nhận bao nhiêu trong kỳ đó và <b>so với check tiệm trả</b>. Xuất <b>phiếu lương PDF</b> cho một check: bấm <b>📄 PDF</b> trên check đó, hoặc bấm <b>Xuất phiếu lương PDF theo check</b> rồi chọn check.','check'],
 ['📄 Phiếu lương PDF & Excel','Trong Báo cáo hay trong một check: <b>Xuất phiếu lương PDF</b> để lưu hoặc gửi; <b>Tải bảng số (Excel)</b> để có file .csv mở bằng Excel, Numbers, Google Sheets.','slip'],
 ['💾 Sao lưu & nhập lại','Tab <b>Cài đặt</b> → <b>Sao lưu / Khôi phục</b> → <b>Lưu file sao lưu</b>, cất vào Tệp hoặc iCloud mỗi tuần. Đổi điện thoại: <b>Mở file sao lưu</b>. Có file bảng số (.csv)? Bấm <b>Nhập từ Excel</b>; dòng đã có sẽ tự bỏ qua.','backup'],
 ['💰 Cách tính','<b>Bạn nhận</b> = tiền làm × % hoa hồng + toàn bộ tiền bo.<br>Ví dụ: làm $1.000, hoa hồng 60%, bo $150 → bạn nhận $600 + $150 = <b>$750</b>. Đổi % trong <b>Cài đặt → Sửa</b>.'],
@@ -1545,7 +1559,7 @@ HELP.en=[
 ['✏️ Edit or delete','Tap a customer (or a day total) to open it → change it and <b>Save</b>, or tap <b>Delete</b>. You can edit any day, past or future.','edit'],
 ['📅 Calendar','See the whole month; darker days earned more, with the amount under each day. Tap a day to open it.','cal'],
 ['📊 Reports & days worked','<b>Reports</b> tab, choose <b>Day / Week / Month / Year</b>. See <b>You earn</b>, services, tips, cash, card and customers. <b>Days worked this week</b>: worked days are <b style="color:#2e7d32">green</b>, days off <b style="color:#c62828">red</b> (a day with no numbers is a day off).','rep'],
-['🧾 Pay checks','Reports → <b>Check</b> → <b>＋ New check</b>. Pick the same <b>start</b> and <b>end date</b> as the salon’s pay period → <b>Save check</b>. Tap Check #1, #2… to see what you should be paid for that period and <b>compare it with your paycheck</b>.','check'],
+['🧾 Pay checks','Reports → <b>Check</b> → <b>＋ New check</b>. Pick the same <b>start</b> and <b>end date</b> as the salon’s pay period → <b>Save check</b>. Tap Check #1, #2… to see what you should be paid for that period and <b>compare it with your paycheck</b>. To export a <b>pay slip PDF</b> for one check: tap <b>📄 PDF</b> on it, or tap <b>Export pay slip PDF by check</b> and pick a check.','check'],
 ['📄 Pay slip PDF & Excel','In Reports or inside a check: <b>Export pay slip PDF</b> to save or send; <b>Download sheet (Excel)</b> for a .csv file that opens in Excel, Numbers or Google Sheets.','slip'],
 ['💾 Backup & import','<b>Settings</b> → <b>Backup / Restore</b> → <b>Save backup file</b>, keep it in Files or iCloud every week. New phone: <b>Open backup file</b>. Have a sheet (.csv)? Tap <b>Import from Excel</b>; rows already there are skipped.','backup'],
 ['💰 How it’s counted','<b>You earn</b> = services × commission % + all tips.<br>Example: $1,000 services, 60% commission, $150 tips → $600 + $150 = <b>$750</b>. Change your % in <b>Settings → Edit</b>.'],

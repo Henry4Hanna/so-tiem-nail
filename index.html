@@ -549,9 +549,9 @@ function vStaffRep(rg,l){const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===
   if(st.rp==='day')return h+`<div class="sec">${T('custDetail')}</div><div class="card">`+[...tl].sort((a,b)=>a.time<b.time?-1:1).map(t=>`<div class="tk" onclick="openT('${t.id}')"><span class="tm">${t.kind==='day'?'📋':t.time}</span><span class="am">${t.kind==='day'&&t.n?`<small style="color:var(--mut);font-weight:600">${T('nCust',t.n)} · </small>`:''}${money(t.amt)}${t.tip?` <small>${T('tipPlus',money(t.tip))}</small>`:''}</span><span class="pay ${t.kind==='day'?(t.cash&&!t.card?'cash':t.card&&!t.cash?'card':'mix'):t.pay}">${payLabel(t)}</span></div>`).join('')+`</div>`;
   const B=[];
   if(st.rp==='year'){const y=pd(rg.a).getFullYear();for(let i=0;i<12;i++){const r2_=range('month',y+'-'+pad(i+1)+'-01');B.push({lb:LANG==='en'?MON[i][0]:'T'+(i+1),name:monthName(y,i),l:tl.filter(t=>t.date>=r2_.a&&t.date<=r2_.b)})}}
-  else{let d=rg.a,i=0;const wk=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];while(d<=rg.b){const dd=d;B.push({lb:st.rp==='week'?wk[i]:((i+1)%5===0||i===0?i+1:''),name:fmtShort(d),l:tl.filter(t=>t.date===dd)});d=addD(d,1);i++}}
+  else{let d=rg.a,i=0;const wk=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];while(d<=rg.b){const dd=d;B.push({lb:st.rp==='week'?wk[i]:((i+1)%5===0||i===0?i+1:''),name:fmtShort(d),d:dd,l:tl.filter(t=>t.date===dd)});d=addD(d,1);i++}}
   B.forEach(b=>b.x=sum(b.l));const mx=Math.max(1,...B.map(b=>b.x.pay));
-  if(st.rp==='week')h+=`<div class="sec">${T('weekDays',days)}</div><div class="wkg">${B.map(b=>`<div class="wkd ${b.l.length?'on':'offd'}"><b>${b.lb}</b><span>${b.l.length?money(b.x.pay):T('off')}</span></div>`).join('')}</div>`;
+  if(st.rp==='week')h+=`<div class="sec">${T('weekDays',days)}</div><div class="wkg">${B.map(b=>`<div class="wkd ${b.l.length?'on':b.d>today()?'':'offd'}"><b>${b.lb}</b><span>${b.l.length?money(b.x.pay):b.d>today()?'·':T('off')}</span></div>`).join('')}</div>`;
   h+=`<div class="chart"><h4>${T('payBy',st.rp==='year')}</h4><div class="bars">${B.map(b=>`<div><i style="height:${b.x.pay/mx*100}%;background:linear-gradient(${w.color},#2a1838)"></i><small>${b.lb}</small></div>`).join('')}</div></div>`;
   h+=`<div class="sec">${T('detailBy',st.rp==='year')}</div><div class="card">`+B.filter(b=>b.l.length).map(b=>`<div class="tot" style="align-items:center"><span>${b.name}<br><small style="color:var(--mut);font-size:12px">${b.x.n?T('nCust',b.x.n)+' · ':''}${cap1(T('svcL'))} ${money(b.x.svc)} · ${T('tipL')} ${money(b.x.tip)}</small></span><b>${money(b.x.pay)}</b></div>`).join('')+`</div>`;
   return h}
@@ -618,7 +618,7 @@ function vWork(){const a=activeW();
 
 // ---------- render ----------
 const TABS=[['day','tabDay','<path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/>'],['cal','tabCal','<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke-linecap="round"/>'],['rep','tabRep','<path d="M5 20V11M12 20V5M19 20v-6" stroke-linecap="round"/>'],['gift','tabGift','<rect x="3.5" y="8" width="17" height="12" rx="2"/><path d="M3.5 12h17M12 8v12M12 8c-1.5-3.5-5.5-4-5.5-1.5S12 8 12 8zm0 0c1.5-3.5 5.5-4 5.5-1.5S12 8 12 8z" stroke-linejoin="round"/>'],['work','tabWork','<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.8.8 3 2.6 3.5 5.2" stroke-linecap="round"/>']];
-function R(){document.documentElement.lang=LANG;$('#sub').textContent=st.role==='staff'?'👩 '+W(st.me).name:T('sub');$('#lb').textContent=LANG==='vi'?'EN':'VI';
+function R(){document.documentElement.lang=LANG;$('#sub').textContent=st.role==='staff'&&st.me?'👩 '+W(st.me).name:T('sub');$('#lb').textContent=LANG==='vi'?'EN':'VI';
   $('#tabs').innerHTML=TABS.filter(t=>st.role!=='staff'||['day','cal','rep'].includes(t[0])).map(t=>`<button class="${st.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${t[2]}</svg>${T(t[1])}</button>`).join('');
   $('#main').innerHTML={day:vDay,cal:vCal,rep:vRep,gift:vGift,work:vWork}[st.tab]();
   if(st.tab==='gift')drawGL();
@@ -1202,7 +1202,7 @@ function attTable(rg,l){const ds=[];for(let i=0;i<7;i++)ds.push(addD(rg.a,i));
   const lb=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];
   const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w.id));if(!ws.length)return'';
   return`<div class="sec">${T('attT')}</div><div class="card att"><div class="atr ah"><span></span>${lb.map(x=>`<span>${x}</span>`).join('')}<span>∑</span></div>`+
-  ws.map(w=>{const cells=ds.map(d=>{const x=sum(l.filter(t=>t.wid===w.id&&t.date===d));return x.n||x.total?`<span class="on">${short(x.pay)}</span>`:'<span class="off">—</span>'}).join('');
+  ws.map(w=>{const cells=ds.map(d=>{const x=sum(l.filter(t=>t.wid===w.id&&t.date===d));return x.n||x.total?`<span class="on">${short(x.pay)}</span>`:d>today()?'<span style="color:#c9bfd0">·</span>':'<span class="off">—</span>'}).join('');
     return`<div class="atr"><span class="nm"><i style="background:${w.color}"></i>${esc(w.name)}</span>${cells}<b>${daysOf(l,w.id)}</b></div>`}).join('')+
   `</div><p class="note">${T('attNote')}</p>`}
 

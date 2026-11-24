@@ -1,8 +1,8 @@
 // Sổ Thợ Nail – offline cache. App by Ryan Nguyen.
 // Only the app's own files are cached. Your salon data is never sent anywhere.
-const CACHE = 'so-tho-nail-v2';
+const CACHE = 'so-tho-nail-v6';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png',
-  './help/vi-addcust.jpg', './help/en-addcust.jpg', './help/vi-cal.jpg', './help/en-cal.jpg', './help/vi-slip.jpg', './help/en-slip.jpg', './help/vi-backup.jpg', './help/en-backup.jpg'];
+  './help/vi-setup.jpg', './help/en-setup.jpg', './help/vi-demo.jpg', './help/en-demo.jpg', './help/vi-today.jpg', './help/en-today.jpg', './help/vi-addcust.jpg', './help/en-addcust.jpg', './help/vi-daytotal.jpg', './help/en-daytotal.jpg', './help/vi-edit.jpg', './help/en-edit.jpg', './help/vi-cal.jpg', './help/en-cal.jpg', './help/vi-rep.jpg', './help/en-rep.jpg', './help/vi-check.jpg', './help/en-check.jpg', './help/vi-slip.jpg', './help/en-slip.jpg', './help/vi-backup.jpg', './help/en-backup.jpg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));

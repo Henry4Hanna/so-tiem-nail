@@ -304,7 +304,7 @@ main{padding-bottom:104px!important}
 .ckv small{display:block;font-size:11px;color:var(--mut)}.ckv b{font-size:15.5px}
 .cka{position:absolute;right:14px;top:18px;font-size:26px;color:var(--mut)}
 
-.solo .tog.t3{grid-template-columns:1fr 1fr}.solo .tog.t3 button.gift{display:none}.solo .lback{display:none}
+.solo .tog.t3{grid-template-columns:1fr 1fr}.solo .tog.t3 button.gift{display:none}.solo .lback{display:none}.dsw{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.dsw button{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:10px 4px;font:inherit;font-weight:700;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink)}.dsw button.on{border-color:var(--acc);box-shadow:0 0 0 3px #c2185b22}.dsw .av{width:36px;height:36px;font-size:16px;border-radius:50%;display:grid;place-items:center;color:#fff}.dsw small{font-weight:500;color:var(--mut);font-size:12px}
 </style>
 </head>
 <body>
@@ -1202,7 +1202,7 @@ const dayPill=t=>t.cash&&t.card?T('dayTotalL'):t.cash?T('cashW'):t.card?T('cardW
 // weekly attendance table (whole salon, week view)
 function attTable(rg,l){const ds=[];for(let i=0;i<7;i++)ds.push(addD(rg.a,i));
   const lb=LANG==='en'?['Mo','Tu','We','Th','Fr','Sa','Su']:['T2','T3','T4','T5','T6','T7','CN'];
-  const ws=S.workers.filter(w=>!w.del||l.some(t=>t.wid===w.id));if(!ws.length)return'';
+  const ws=S.workers.filter(w=>(!w.del||l.some(t=>t.wid===w.id))&&(st.role!=='staff'||w.id===st.me));if(!ws.length)return'';
   return`<div class="sec">${T('attT')}</div><div class="card att"><div class="atr ah"><span></span>${lb.map(x=>`<span>${x}</span>`).join('')}<span>∑</span></div>`+
   ws.map(w=>{const cells=ds.map(d=>{const x=sum(l.filter(t=>t.wid===w.id&&t.date===d));return x.n||x.total?`<span class="on">${short(x.pay)}</span>`:d>today()?'<span style="color:#c9bfd0">·</span>':'<span class="off">—</span>'}).join('');
     return`<div class="atr"><span class="nm"><i style="background:${w.color}"></i>${esc(w.name)}</span>${cells}<b>${daysOf(l,w.id)}</b></div>`}).join('')+
@@ -1461,7 +1461,7 @@ window.SOLO=true;document.body.classList.add('solo');
 Object.assign(D,{
   sub:['Sổ tiền của thợ nail','Nail tech earnings book'],tabSet:['Cài đặt','Settings'],
   earn:['Bạn nhận','You earn'],ownerPinE:['Nhập mã số của bạn','Enter your passcode'],
-  ownerR:[()=>(S.workers.find(w=>!w.del)||{}).name||'Sổ Thợ Nail',()=>(S.workers.find(w=>!w.del)||{}).name||'Sổ Thợ Nail'],
+  ownerR:[()=>(meW()||{}).name||'Sổ Thợ Nail',()=>(meW()||{}).name||'Sổ Thợ Nail'],
   newPin:['Tạo mã số 4 số để giữ sổ riêng của bạn','Create a 4-digit passcode for your private book'],
   setupT:['Chào bạn! Bắt đầu nhé','Welcome! Let’s get started'],
   setupD:['App này là sổ riêng của bạn: tự ghi khách, tiền bo, ngày làm và check. Số liệu chỉ nằm trên điện thoại này.','This is your private book: record customers, tips, days worked and checks. Your data stays on this phone only.'],
@@ -1475,18 +1475,20 @@ Object.assign(D,{
   impBtn:['📥 Nhập từ Excel (.csv)','📥 Import from Excel (.csv)'],
   localOnly:['Số liệu chỉ nằm trên điện thoại này. Không ai khác — kể cả chủ tiệm — xem được.','Your data stays on this phone. Nobody else — not even the salon owner — can see it.'],
 });
-const meId=()=>(S.workers.find(w=>!w.del)||{}).id;
-function soloFix(){const w=S.workers.find(x=>!x.del);if(w){w.anyDay=true;w.ckEdit=true}S.staffAdd=true;S.solo=true}
+function meW(){return S.workers.find(x=>!x.del&&x.id===S.cur)||S.workers.find(x=>!x.del)}
+const meId=()=>(meW()||{}).id;
+function soloFix(){S.workers.forEach(w=>{w.anyDay=true;w.ckEdit=true});S.staffAdd=true;S.solo=true}
 const _laSolo=loginAs;loginAs=function(){soloFix();const id=meId();if(!id){hideLock();st.role='staff';st.me='';R();openSetup();return}_laSolo(id)};
 function showLock(mode){closeS();if(!getPin())mode='new';else if(!mode||mode==='enter'||mode==='switch')mode='enter';
   L={mode,buf:'',first:'',msg:'',who:mode==='enter'?'owner':''};drawLock();$('#lock').classList.add('on')}
 TABS.push(['set','tabSet','<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>']);
-function vSet(){const w=S.workers.find(x=>!x.del);
+function vSet(){const w=meW();
   let h=`<div class="sec" style="margin-top:4px">${T('meT')}</div>`;
   if(w)h+=`<div class="card" style="padding:14px 16px;display:flex;align-items:center;gap:14px"><div class="av" style="background:${w.color};width:52px;height:52px;font-size:22px">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div style="flex:1"><b style="font-size:19px">${esc(w.name)}</b><div style="color:var(--mut);font-size:14px">${T('commission',w.pct)}</div></div><button class="btn sec2" style="width:auto;margin:0;padding:10px 18px" onclick="openSetup(true)">${T('editMe')}</button></div>`;
-  if(S.sample)h+=`<div class="card" style="padding:14px"><b>${T('sampleOn')}</b><p class="note" style="margin:6px 0 10px">${T('sampleTxt')}</p><button class="btn del" style="margin:0" onclick="ask(T('clearSampleQ'),T('del'),()=>{S.tickets=[];S.checks=[];S.sample=false;save();R();toast(T('cleared'))})">${T('clearSample')}</button></div>`;
+  if(S.sample)h+=demoCard();
   h+=`<div class="sec">${T('data')}</div>
   <button class="btn sec2" onclick="openHelp()">${T('guide')}</button>
+  ${S.sample?'':`<button class="btn sec2" onclick="askDemo()">${T('demoBtn')}</button>`}
   <button class="btn sec2" onclick="openBk()">${T('backup')}</button>
   <button class="btn sec2" onclick="openImp()">${T('impBtn')}</button>
   <button class="btn sec2" onclick="showLock('old')">${T('changePin')}</button>
@@ -1497,7 +1499,7 @@ function vSet(){const w=S.workers.find(x=>!x.del);
   <p class="note" style="text-align:center;margin-top:24px">💅 Sổ Thợ Nail<br>${T('by')} <b>Ryan Nguyen</b></p>`;
   return h}
 let SF=null;
-function openSetup(edit){const w=S.workers.find(x=>!x.del);SF={name:w?w.name:'',pct:w?w.pct:60,edit:!!(edit&&w)};
+function openSetup(edit){const w=meW();SF={name:w?w.name:'',pct:w?w.pct:60,edit:!!(edit&&w)};
   openS(`<h3>${SF.edit?T('meT'):T('setupT')}${SF.edit?`<button onclick="closeS()">${T('close')}</button>`:''}</h3>
   ${SF.edit?'':`<p class="note" style="margin:0 2px 8px;font-size:14.5px">${T('setupD')}</p>`}
   <div class="lab">${T('myName')}</div><input class="field" id="sN" value="${esc(SF.name)}" placeholder="${T('namePh')}">
@@ -1505,10 +1507,10 @@ function openSetup(edit){const w=S.workers.find(x=>!x.del);SF={name:w?w.name:'',
   <div class="quick">${[50,55,60,65,70].map(v=>`<button style="color:var(--acc)" onclick="$('#sP').value=${v}">${v}%</button>`).join('')}</div>
   <p class="note">${T('myPctD')}</p><div id="sErr" class="err-t"></div>
   <button class="btn pri" style="margin-top:10px" onclick="saveSetup(false)">${SF.edit?T('save'):T('start')}</button>
-  ${SF.edit?'':`<button class="btn sec2" onclick="saveSetup(true)">${T('trySample')}</button>`}`)}
+  ${SF.edit?'':`<button class="btn sec2" onclick="soloDemo()">${T('demoBtn')}</button><p class="note" style="text-align:center">${T('demoD')}</p>`}`)}
 function saveSetup(sample){const name=$('#sN').value.trim(),pct=Math.min(100,Math.max(0,parseFloat($('#sP').value)||0));
   if(!name){$('#sErr').textContent=T('myName');$('#sN').focus();return}
-  let w=S.workers.find(x=>!x.del);
+  let w=meW();
   if(w){w.name=name;w.pct=pct}else{w={id:uid(),name,pct,color:'#c2185b',del:false};S.workers=[w]}
   soloFix();if(sample)soloSample(w.id);save();closeS();loginAs(null)}
 function soloSample(wid){const prices=[25,30,35,40,45,50,55,60,65,70,85],t=[];
@@ -1520,25 +1522,75 @@ function soloSample(wid){const prices=[25,30,35,40,45,50,55,60,65,70,85],t=[];
   S.checks=[0,1,2,3].map(i=>({id:uid(),no:i+1,a:addD(a1,i*14),b:addD(a1,i*14+13),note:'',wid}));S.sample=true}
 const _RSolo=R;R=function(){_RSolo();if(!$('#lock').classList.contains('on')&&!meId()&&!$('#sheet').classList.contains('on'))setTimeout(()=>{if(!meId())openSetup()},60)};
 HELP.vi=[
-['🔒 Mã số','Lần đầu mở app, tạo mã 4 số rồi nhập lại để xác nhận. Sau đó nhập tên và % hoa hồng của bạn. App tự khoá khi rời app hơn 1 phút. Đổi mã trong tab <b>Cài đặt</b>.'],
-['💅 Ghi từng khách','Tab <b>Hôm nay</b> → <b>＋ Thêm khách</b>. Nhập tiền làm, tiền bo (nút nhanh $5, $10, 15%, 20%), chọn <b>Tiền mặt / Thẻ</b> → <b>Lưu khách</b>. Bấm vào dòng khách để sửa hoặc xoá.','addcust'],
-['📋 Tổng kết ngày','Không ghi từng khách? Bấm <b>📋 Tổng kết ngày</b>: chọn ngày, nhập tổng tiền làm, tổng tiền bo, phần tiền mặt / thẻ → <b>Lưu tổng ngày</b>. Mỗi ngày chỉ có một tổng; bấm lại để sửa.'],
-['📅 Lịch','Xem cả tháng; ô càng đậm là ngày càng nhiều tiền. Bấm vào một ngày để xem chi tiết.','cal'],
-['📊 Báo cáo','Chọn <b>Ngày / Tuần / Tháng / Năm</b>: thấy <b>Bạn nhận</b> (hoa hồng + bo), tiền làm, tiền bo, tiền mặt, thẻ, số khách, ngày làm (xanh) và ngày nghỉ (đỏ). Bấm <b>Xuất phiếu lương PDF</b> hoặc <b>Tải bảng số (Excel)</b> để lưu.','slip'],
-['🧾 Check','Báo cáo → <b>Check</b> → <b>＋ Tạo check mới</b>, chọn ngày đầu và ngày cuối giống kỳ lương của tiệm. Bấm vào check để xem bạn đáng nhận bao nhiêu và so với check tiệm trả.'],
-['💰 Cách tính','<b>Bạn nhận</b> = tiền làm × % hoa hồng + toàn bộ tiền bo. Đổi % trong <b>Cài đặt → Sửa</b>.'],
-['💾 Sao lưu','Tab <b>Cài đặt</b> → <b>Sao lưu / Khôi phục</b> → <b>Lưu file sao lưu</b>, cất vào Tệp hoặc iCloud mỗi tuần. Đổi điện thoại thì <b>Mở file sao lưu</b>. Có file bảng số (.csv)? Dùng <b>Nhập từ Excel</b>.','backup'],
-['🔐 Riêng tư','Số liệu chỉ nằm trên điện thoại của bạn, không gửi lên mạng, không ai khác xem được — kể cả chủ tiệm. Bấm <b>EN / VI</b> để đổi tiếng Anh / tiếng Việt.']];
+['👋 Bắt đầu','Lần đầu mở app: tạo <b>mã 4 số</b> rồi nhập lại để xác nhận. Sau đó nhập <b>tên</b> và <b>% hoa hồng</b> của bạn (nút nhanh 50–70%) → <b>Bắt đầu</b>. Muốn xem thử trước, bấm <b>🎬 Xem demo</b>.','setup'],
+['🎬 Xem demo','Demo có sẵn <b>3 thợ mẫu</b> (Lan, Vy, Tâm), mỗi người <b>1 tháng làm</b> và 2 check. Vào tab <b>Cài đặt</b>, bấm tên từng thợ để xem sổ của người đó. Xem xong bấm <b>Xoá demo</b>: số mẫu mất hết, số thật của bạn (nếu có) được trả lại. Mở demo lại bất cứ lúc nào bằng nút <b>🎬 Xem demo</b> trong Cài đặt.','demo'],
+['🏠 Màn hình Hôm nay','Ô màu ở trên là <b>Bạn nhận</b> hôm nay (hoa hồng + tiền bo). Bên dưới: số khách, tổng thu, tiền làm, tiền bo, tiền mặt, thẻ, và danh sách từng khách. Bấm <b>‹ ›</b> để qua ngày trước, ngày sau.','today'],
+['💅 Ghi từng khách','Bấm <b>＋ Thêm khách</b>. Nhập <b>tiền làm</b>, <b>tiền bo</b> (nút nhanh $5, $10, 15%, 20%), chọn <b>Tiền mặt</b> hoặc <b>Thẻ</b> → <b>Lưu khách</b>.','addcust'],
+['📋 Tổng kết ngày','Không ghi từng khách? Bấm <b>📋 Tổng kết ngày</b> (nút bên trái): chọn ngày, nhập <b>tổng tiền làm</b>, <b>tổng tiền bo</b> và phần <b>tiền mặt / thẻ</b> → <b>Lưu tổng ngày</b>. Mỗi ngày một tổng; bấm lại để sửa. Ngày có tổng vẫn tính là ngày làm.','daytotal'],
+['✏️ Sửa hoặc xoá','Bấm vào dòng khách (hoặc dòng tổng ngày) để mở lại → sửa số rồi <b>Lưu</b>, hoặc bấm <b>Xoá</b>. Bạn sửa được mọi ngày, trước hay sau.','edit'],
+['📅 Lịch','Xem cả tháng; ô càng đậm là ngày càng nhiều tiền, dưới mỗi ô là số tiền ngày đó. Bấm vào một ngày để mở ngày đó.','cal'],
+['📊 Báo cáo & ngày làm','Tab <b>Báo cáo</b>, chọn <b>Ngày / Tuần / Tháng / Năm</b>. Thấy <b>Bạn nhận</b>, tiền làm, tiền bo, tiền mặt, thẻ, số khách. Phần <b>Ngày làm trong tuần</b>: ngày làm <b style="color:#2e7d32">xanh</b>, ngày nghỉ <b style="color:#c62828">đỏ</b> (ngày không có số là ngày nghỉ).','rep'],
+['🧾 Check (kỳ lương)','Báo cáo → <b>Check</b> → <b>＋ Tạo check mới</b>. Chọn <b>ngày đầu</b> và <b>ngày cuối</b> giống kỳ lương của tiệm → <b>Lưu check</b>. Bấm vào Check #1, #2… để xem bạn đáng nhận bao nhiêu trong kỳ đó và <b>so với check tiệm trả</b>.','check'],
+['📄 Phiếu lương PDF & Excel','Trong Báo cáo hay trong một check: <b>Xuất phiếu lương PDF</b> để lưu hoặc gửi; <b>Tải bảng số (Excel)</b> để có file .csv mở bằng Excel, Numbers, Google Sheets.','slip'],
+['💾 Sao lưu & nhập lại','Tab <b>Cài đặt</b> → <b>Sao lưu / Khôi phục</b> → <b>Lưu file sao lưu</b>, cất vào Tệp hoặc iCloud mỗi tuần. Đổi điện thoại: <b>Mở file sao lưu</b>. Có file bảng số (.csv)? Bấm <b>Nhập từ Excel</b>; dòng đã có sẽ tự bỏ qua.','backup'],
+['💰 Cách tính','<b>Bạn nhận</b> = tiền làm × % hoa hồng + toàn bộ tiền bo.<br>Ví dụ: làm $1.000, hoa hồng 60%, bo $150 → bạn nhận $600 + $150 = <b>$750</b>. Đổi % trong <b>Cài đặt → Sửa</b>.'],
+['🔐 Mã số & riêng tư','App tự khoá khi rời app hơn 1 phút; bấm 🔒 để khoá ngay. Đổi mã trong Cài đặt. Số liệu chỉ nằm trên điện thoại của bạn, không gửi lên mạng, không ai khác xem được, kể cả chủ tiệm. Bấm <b>EN / VI</b> để đổi tiếng Anh / tiếng Việt.'],
+['⚠️ Xoá dữ liệu','Cài đặt → <b>Xoá dữ liệu</b> xoá hết số trên máy này. Nhớ <b>sao lưu</b> trước.']];
 HELP.en=[
-['🔒 Passcode','The first time, create a 4-digit passcode and enter it again. Then enter your name and commission %. The app locks itself after 1 minute away. Change the code in <b>Settings</b>.'],
-['💅 Log each customer','<b>Today</b> tab → <b>＋ Add customer</b>. Enter the service amount and tip (quick $5, $10, 15%, 20%), choose <b>Cash / Card</b> → <b>Save customer</b>. Tap a line to edit or delete.','addcust'],
-['📋 Day total','Not logging each customer? Tap <b>📋 Day total</b>: pick the day, enter total services, total tips and the cash / card split → <b>Save day total</b>. One total per day; tap again to edit.'],
-['📅 Calendar','See the whole month; darker days earned more. Tap a day for details.','cal'],
-['📊 Reports','Choose <b>Day / Week / Month / Year</b>: see <b>You earn</b> (commission + tips), services, tips, cash, card, customers, days worked (green) and days off (red). Tap <b>Export pay slip PDF</b> or <b>Download sheet (Excel)</b> to save.','slip'],
-['🧾 Checks','Reports → <b>Check</b> → <b>＋ New check</b>, pick the same start and end dates as the salon’s pay period. Tap a check to see what you should be paid and compare it with your paycheck.'],
-['💰 How it’s counted','<b>You earn</b> = services × commission % + all tips. Change your % in <b>Settings → Edit</b>.'],
-['💾 Backup','<b>Settings</b> → <b>Backup / Restore</b> → <b>Save backup file</b>, keep it in Files or iCloud every week. New phone? <b>Open backup file</b>. Have a sheet (.csv)? Use <b>Import from Excel</b>.','backup'],
-['🔐 Private','Your data stays on your phone, is never sent online, and nobody else — not even the salon owner — can see it. Tap <b>EN / VI</b> to switch language.']];
+['👋 Getting started','First time: create a <b>4-digit passcode</b> and enter it again. Then enter your <b>name</b> and <b>commission %</b> (quick 50–70% buttons) → <b>Start</b>. Want a look first? Tap <b>🎬 Try the demo</b>.','setup'],
+['🎬 Demo','The demo has <b>3 sample techs</b> (Lan, Vy, Tâm), each with <b>one month of work</b> and 2 checks. In <b>Settings</b>, tap a name to see that tech’s book. When done, tap <b>Clear demo</b>: the sample numbers are gone and your real numbers (if any) come back. Reopen it any time with <b>🎬 Try the demo</b> in Settings.','demo'],
+['🏠 Today screen','The colored card shows <b>You earn</b> today (commission + tips). Below: customers, revenue, services, tips, cash, card and each customer. Tap <b>‹ ›</b> for the previous or next day.','today'],
+['💅 Log each customer','Tap <b>＋ Add customer</b>. Enter the <b>service amount</b> and <b>tip</b> (quick $5, $10, 15%, 20%), choose <b>Cash</b> or <b>Card</b> → <b>Save customer</b>.','addcust'],
+['📋 Day total','Not logging each customer? Tap <b>📋 Day total</b> (left button): pick the day, enter <b>total services</b>, <b>total tips</b> and the <b>cash / card</b> split → <b>Save day total</b>. One total per day; tap again to edit. Days with a total count as days worked.','daytotal'],
+['✏️ Edit or delete','Tap a customer (or a day total) to open it → change it and <b>Save</b>, or tap <b>Delete</b>. You can edit any day, past or future.','edit'],
+['📅 Calendar','See the whole month; darker days earned more, with the amount under each day. Tap a day to open it.','cal'],
+['📊 Reports & days worked','<b>Reports</b> tab, choose <b>Day / Week / Month / Year</b>. See <b>You earn</b>, services, tips, cash, card and customers. <b>Days worked this week</b>: worked days are <b style="color:#2e7d32">green</b>, days off <b style="color:#c62828">red</b> (a day with no numbers is a day off).','rep'],
+['🧾 Pay checks','Reports → <b>Check</b> → <b>＋ New check</b>. Pick the same <b>start</b> and <b>end date</b> as the salon’s pay period → <b>Save check</b>. Tap Check #1, #2… to see what you should be paid for that period and <b>compare it with your paycheck</b>.','check'],
+['📄 Pay slip PDF & Excel','In Reports or inside a check: <b>Export pay slip PDF</b> to save or send; <b>Download sheet (Excel)</b> for a .csv file that opens in Excel, Numbers or Google Sheets.','slip'],
+['💾 Backup & import','<b>Settings</b> → <b>Backup / Restore</b> → <b>Save backup file</b>, keep it in Files or iCloud every week. New phone: <b>Open backup file</b>. Have a sheet (.csv)? Tap <b>Import from Excel</b>; rows already there are skipped.','backup'],
+['💰 How it’s counted','<b>You earn</b> = services × commission % + all tips.<br>Example: $1,000 services, 60% commission, $150 tips → $600 + $150 = <b>$750</b>. Change your % in <b>Settings → Edit</b>.'],
+['🔐 Passcode & privacy','The app locks after 1 minute away; tap 🔒 to lock now. Change the code in Settings. Your data stays on your phone, is never sent online, and nobody else, not even the salon owner, can see it. Tap <b>EN / VI</b> to switch language.'],
+['⚠️ Delete data','Settings → <b>Delete data</b> erases everything on this phone. <b>Back up</b> first.']];
+// ---------- DEMO: 3 thợ × 1 tháng (số thật được cất riêng, xoá demo là trả lại) ----------
+Object.assign(D,{
+  demoBtn:['🎬 Xem demo: 3 thợ, 1 tháng','🎬 Try the demo: 3 techs, 1 month'],
+  demoD:['Có sẵn 3 thợ mẫu với 1 tháng số. Xem xong bấm Xoá demo.','3 sample techs with one month of numbers. Tap Clear demo when done.'],
+  demoT:['🎬 Đang xem demo','🎬 Demo mode'],
+  demoP:['Bấm tên để xem sổ của từng thợ. Mỗi người có 1 tháng làm và 2 check.','Tap a name to see each tech’s book. Each has one month of work and 2 checks.'],
+  demoClr:['Xoá demo','Clear demo'],
+  demoClrQ:['Xoá hết số demo? Số thật của bạn (nếu có) sẽ được trả lại.','Delete all demo numbers? Your real numbers (if any) come back.'],
+  demoAskQ:['Mở demo 3 thợ? Số của bạn được cất riêng và trả lại khi bấm Xoá demo.','Open the 3-tech demo? Your numbers are kept aside and come back when you tap Clear demo.'],
+  demoOpen:['Mở demo','Open demo'],demoOn:['Đã mở demo','Demo opened'],
+});
+function demoCard(){const ws=S.workers.filter(w=>!w.del),me=meId();
+  return `<div class="card demo" style="padding:14px"><b style="font-size:17px">${T('demoT')}</b><p class="note" style="margin:6px 0 10px">${T('demoP')}</p>
+  <div class="dsw">${ws.map(w=>`<button class="${w.id===me?'on':''}" onclick="demoAs('${w.id}')"><span class="av" style="background:${w.color}">${esc(w.name[0])}</span>${esc(w.name)}<small>${w.pct}%</small></button>`).join('')}</div>
+  <button class="btn del" style="margin:12px 0 0" onclick="ask(T('demoClrQ'),T('demoClr'),demoClear)">${T('demoClr')}</button></div>`}
+function demoAs(id){S.cur=id;save();loginAs(null);st.tab='day';R();toast('👩 '+W(id).name)}
+function askDemo(){if(!S.tickets.length&&!S.checks.length)return soloDemo();ask(T('demoAskQ'),T('demoOpen'),soloDemo)}
+function demoClear(){let r=null;try{r=S.realBak?JSON.parse(S.realBak):null}catch(e){}
+  S.workers=r?r.workers:[];S.tickets=r?r.tickets:[];S.checks=r?r.checks:[];S.cur=r?r.cur:'';delete S.realBak;S.sample=false;
+  save();closeS();st.tab='day';toast(T('cleared'));loginAs(null);R()}
+function soloDemo(){
+  if(!S.sample&&(S.tickets.length||S.checks.length||S.workers.length))S.realBak=JSON.stringify({workers:S.workers,tickets:S.tickets,checks:S.checks,cur:S.cur||''});
+  let seed=20261124;const rnd=()=>(seed=(seed*1103515245+12345)%2147483648)/2147483648;
+  const P=[25,30,35,40,45,50,55,60,65,70,85],t=[];
+  const ws=[{id:uid(),name:'Lan',pct:60,color:'#c2185b',del:false,mode:'each',days:[2,3,4,5,6],extra:.4},
+            {id:uid(),name:'Vy',pct:55,color:'#7b1fa2',del:false,mode:'total',days:[1,2,3,4,5],extra:.2},
+            {id:uid(),name:'Tâm',pct:65,color:'#00897b',del:false,mode:'mix',days:[4,5,6,0],extra:.1}];
+  const a0=addD(today(),-29);
+  ws.forEach(w=>{for(let k=0;k<30;k++){const ds=addD(a0,k),dw=pd(ds).getDay();
+      const on=w.days.includes(dw)?rnd()>.08:rnd()<w.extra*.5;if(!on)continue;
+      const total=w.mode==='total'?rnd()<.9:w.mode==='mix'?rnd()<.45:rnd()<.08;
+      if(total){const amt=260+Math.round(rnd()*28)*10,tip=Math.round(amt*(.13+rnd()*.06)),cash=Math.round((amt+tip)*(.25+rnd()*.3)/5)*5;
+        t.push({id:uid(),kind:'day',date:ds,wid:w.id,n:0,amt,tip,cash,card:amt+tip-cash,pay:'mix',time:'23:59'});continue}
+      const n=4+Math.floor(rnd()*(dw===6?6:4));
+      for(let j=0;j<n;j++){const amt=P[Math.floor(rnd()*P.length)];
+        t.push({id:uid(),date:ds,wid:w.id,amt,tip:rnd()<.85?Math.round(amt*(.12+rnd()*.1)):0,pay:rnd()<.6?'card':'cash',time:pad(9+Math.floor(j*1.2))+':'+pad(Math.floor(rnd()*4)*15)})}}
+    delete w.mode;delete w.days;delete w.extra});
+  S.workers=ws;S.tickets=t;S.cur=ws[0].id;
+  S.checks=[];ws.forEach(w=>{S.checks.push({id:uid(),no:1,a:a0,b:addD(a0,13),note:'',wid:w.id},{id:uid(),no:2,a:addD(a0,14),b:addD(a0,27),note:'',wid:w.id})});
+  S.sample=true;soloFix();save();closeS();st.tab='day';loginAs(null);R();toast(T('demoOn'))}
 
 R();showLock();
 </script>

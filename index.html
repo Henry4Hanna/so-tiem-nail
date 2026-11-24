@@ -292,6 +292,17 @@ main{padding-bottom:104px!important}
 .dtmid small{display:block;color:var(--acc);font-size:12.5px;font-weight:600}
 
 .pay.split{background:#ede7f6;color:#4527a0}
+
+.seg button{padding:8px 0;font-size:13px}
+.ckbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-4px 0 10px}
+.ckbar button{color:var(--acc);font-weight:700;font-size:14px;padding:6px 2px}
+.ckbar span{color:var(--mut);font-size:12.5px;text-align:center;flex:1}
+.ckcard{display:block;width:100%;text-align:left;background:var(--card);border-radius:18px;padding:14px 40px 14px 16px;margin-bottom:10px;position:relative;box-shadow:0 1px 2px #0000000d}
+.ckh b{display:block;font-size:20px}.ckh span{font-size:13px;color:var(--mut)}
+.ckn{font-size:13px;color:var(--ink);margin-top:4px}
+.ckv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.ckv small{display:block;font-size:11px;color:var(--mut)}.ckv b{font-size:15.5px}
+.cka{position:absolute;right:14px;top:18px;font-size:26px;color:var(--mut)}
 </style>
 </head>
 <body>
@@ -560,7 +571,7 @@ function vCal(){const d=pd(st.cal),y=d.getFullYear(),m=d.getMonth(),days=new Dat
   return h+`</div><div class="sec">${T('monthSum')}</div>`+kpis(sum(l),gsum(giftsIn(rg.a,rg.b)))}
 
 function vRep(){if(st.role==='staff'){st.rview='staff';st.vw=st.me}const rg=range(st.rp,st.rd),l=inRange(rg.a,rg.b),r=sum(l),gl=giftsIn(rg.a,rg.b),gs=gsum(gl);
-  let h=`<div class="seg">${['day','week','month','year'].map(p=>`<button class="${st.rp===p?'on':''}" onclick="st.rp='${p}';R()">${T('p'+p)}</button>`).join('')}</div>
+  let h=`<div class="seg">${['day','week','month','year','check'].map(p=>`<button class="${st.rp===p?'on':''}" onclick="st.rp='${p}';${p==='check'?'st.ck=null;':''}R()">${T('p'+p)}</button>`).join('')}</div>
   <div class="nav"><button onclick="st.rd=shift(st.rp,st.rd,-1);R()">‹</button><div class="nl"><b>${rg.label}</b><small>${l.length?T('daysWorked',new Set(l.map(t=>t.date)).size):T('noData')}</small></div><button onclick="st.rd=shift(st.rp,st.rd,1);R()">›</button></div>
   ${st.role==='staff'?'':rsegHTML()}<button class="btn pdfb" onclick="exportPDF(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${T('exportPdf')}</button><button class="btn sec2 csvb" style="margin:-4px 0 12px;padding:12px" onclick="csvExport()">${T('csvBtn')}</button>`;if(stfMode()||st.rview==='staff')return h.replace(/<button class="btn pdfb"[\s\S]*?<\/button>/,'').replace(/<button class="btn sec2 csvb"[\s\S]*?<\/button>/,'')+vStaffRep(rg,l);h+=kpis(r,gs);
   let B=[];
@@ -590,7 +601,7 @@ function drawGL(){const q=st.q.trim().toLowerCase();let l=S.gifts.filter(g=>!q||
 
 function vWork(){const a=activeW();
   return`<div class="sec" style="margin-top:4px">${T('activeStaff',a.length)}</div><div class="card">`+
-  (a.length?a.map(w=>`<div class="wl" onclick="openW('${w.id}')"><div class="av" style="background:${w.color}">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div class="nm"><b>${esc(w.name)}</b><small>${T('commission',w.pct)}${w.pin?' · 🔑 '+T('hasLogin'):''}${w.anyDay?' · 📅 '+T('anyDayTag'):''}</small></div><span style="color:var(--mut)">›</span></div>`).join(''):`<div class="note" style="padding:10px 0">${T('noStaff')}</div>`)+
+  (a.length?a.map(w=>`<div class="wl" onclick="openW('${w.id}')"><div class="av" style="background:${w.color}">${esc((w.name.trim()[0]||'?').toUpperCase())}</div><div class="nm"><b>${esc(w.name)}</b><small>${T('commission',w.pct)}${w.pin?' · 🔑 '+T('hasLogin'):''}${w.anyDay?' · 📅 '+T('anyDayTag'):''}${w.ckEdit?' · 🧾 '+T('ckPermTag'):''}</small></div><span style="color:var(--mut)">›</span></div>`).join(''):`<div class="note" style="padding:10px 0">${T('noStaff')}</div>`)+
   `</div><button class="btn pri" onclick="openW()">${T('addStaff')}</button>
   <div class="sec">🔑 ${T('loginSec')}</div><div class="card" style="padding:14px"><p class="note" style="margin:0 0 12px">${T('loginNote')}</p><label style="display:flex;align-items:center;gap:12px;cursor:pointer"><span style="flex:1"><b>${T('staffAddT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('staffAddD')}</small></span><input type="checkbox" class="sw" ${S.staffAdd?'checked':''} onchange="S.staffAdd=this.checked;save()"></label></div>
   <div class="sec">${T('data')}</div>
@@ -949,17 +960,18 @@ function drawW(){openS(head(F.id?T('editStaff'):T('addStaffT'))+`
   <div class="lab">🔑 ${T('staffPin')}</div><input class="field" id="wPin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="-webkit-text-security:disc;letter-spacing:6px" value="${esc(F.pinIn||'')}" placeholder="${F.pin&&!F.rmPin?T('pinKeep'):T('pinNone')}">
   ${F.pin&&!F.rmPin?`<button class="btn sec2" style="padding:10px;font-size:14px" onclick="keepW();F.rmPin=true;drawW()">${T('pinRemove')}</button>`:''}
   <label style="display:flex;align-items:center;gap:12px;cursor:pointer;margin-top:14px;background:var(--card);border-radius:14px;padding:12px 14px"><span style="flex:1"><b>📅 ${T('anyDayT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('anyDayD')}</small></span><input type="checkbox" class="sw" id="wAny" ${F.anyDay?'checked':''}></label>
+  <label style="display:flex;align-items:center;gap:12px;cursor:pointer;margin-top:10px;background:var(--card);border-radius:14px;padding:12px 14px"><span style="flex:1"><b>🧾 ${T('ckPermT')}</b><small style="display:block;color:var(--mut);font-size:12.5px">${T('ckPermD')}</small></span><input type="checkbox" class="sw" id="wCk" ${F.ckEdit?'checked':''}></label>
   <div id="wErr" class="err-t"></div>
   <div style="margin-top:20px"><button class="btn pri" onclick="saveW()">${T('save')}</button>
   ${F.id?`<button class="btn del" onclick="ask(T('delStaffQ',esc(F.name)),T('del'),()=>{const w=S.workers.find(x=>x.id==='${F.id}');w.del=true;delete w.pin;save();closeS();R();toast(T('staffDeleted'))})">${T('delStaff')}</button>`:''}</div>`)}
-function keepW(){F.name=$('#wN').value;F.pct=$('#wP').value;F.pinIn=$('#wPin').value;F.anyDay=$('#wAny').checked}
+function keepW(){F.name=$('#wN').value;F.pct=$('#wP').value;F.pinIn=$('#wPin').value;F.anyDay=$('#wAny').checked;F.ckEdit=$('#wCk').checked}
 async function saveW(){const name=$('#wN').value.trim();if(!name){$('#wN').style.borderColor='#c62828';return}
   const pct=Math.min(100,Math.max(0,parseFloat($('#wP').value)||0)),pin=$('#wPin').value.trim();
   let ph=F.rmPin?undefined:F.pin;
   if(pin){if(!/^\d{4}$/.test(pin)){$('#wErr').textContent=T('pinBad');return}
     ph=await hash(pin);if(ph===getPin()||S.workers.some(w=>w.id!==F.id&&!w.del&&w.pin===ph)){$('#wErr').textContent=T('pinUsed');return}}
   let w;if(F.id){w=S.workers.find(x=>x.id===F.id);Object.assign(w,{name,pct,color:F.color})}else{w={id:uid(),name,pct,color:F.color,del:false};S.workers.push(w)}
-  if(ph)w.pin=ph;else delete w.pin;w.anyDay=!!$('#wAny').checked;
+  if(ph)w.pin=ph;else delete w.pin;w.anyDay=!!$('#wAny').checked;w.ckEdit=!!$('#wCk').checked;
   save();closeS();R();toast(T('staffSaved'))}
 
 
@@ -1365,6 +1377,81 @@ function doImp(){if(!IMP)return;let n=0;
       S.tickets.push(t)}
     n++});
   S.sample=false;save();closeS();IMP=null;R();toast(n?T('impDone',n):T('impNothing'))}
+
+
+// ================= Pay checks (custom date ranges) =================
+Object.assign(D,{
+  pcheck:['Check','Check'],checksT:['Các check (kỳ lương)','Pay checks'],newCheck:['＋ Tạo check mới','＋ New check'],newCheckT:['Tạo check mới','New check'],
+  ckEmpty:['Chưa có check nào.<br>Bấm <b>＋ Tạo check mới</b>, chọn ngày đầu và ngày cuối.','No checks yet.<br>Tap <b>＋ New check</b> and pick a start and end date.'],
+  ckEmptyS:['Chủ tiệm chưa tạo check nào.','The owner hasn’t created any checks yet.'],
+  ckNo:['Số check','Check number'],ckStart:['Ngày đầu','Start date'],ckEnd:['Ngày cuối','End date'],ckNote:['Ghi chú (không bắt buộc)','Note (optional)'],
+  ck1w:['1 tuần','1 week'],ck2w:['2 tuần','2 weeks'],ckMonthEnd:['Đến hết tháng','To month end'],
+  ckSave:['Lưu check','Save check'],ckDel:['Xoá check này','Delete this check'],ckDelQ:['Xoá check này? Số liệu khách vẫn giữ nguyên.','Delete this check? Customer data stays.'],
+  ckBad:['Ngày cuối phải bằng hoặc sau ngày đầu','End date must be on or after the start date'],ckNoBad:['Số check này đã có','This check number already exists'],
+  ckAll:['‹ Tất cả check','‹ All checks'],ckEdit:['Sửa','Edit'],ckDays:[n=>`${n} ngày`,n=>`${n} day${n==1?'':'s'}`],
+  ckPrev:[(d,t)=>`${d} · Tổng thu ${t}`,(d,t)=>`${d} · Revenue ${t}`],
+});
+if(!Array.isArray(S.checks))S.checks=[];
+if(S.sample&&!S.checks.length){const d=pd(today()),a1=ymd(new Date(d.getFullYear(),d.getMonth(),1));S.checks=[{id:'ck1',no:1,a:a1,b:addD(a1,13),note:''},{id:'ck2',no:2,a:addD(a1,14),b:addD(a1,27),note:''}];save()}
+const CK=()=>Array.isArray(S.checks)?S.checks:(S.checks=[]);
+const curCheck=()=>CK().find(c=>c.id===st.ck);
+const fmtDM=s=>{const d=pd(s);return LANG==='en'?`${d.getMonth()+1}/${d.getDate()}`:`${d.getDate()}/${d.getMonth()+1}`};
+const ckLabel=c=>`Check #${c.no}`,ckRange=c=>`${fmtDM(c.a)} – ${fmtDate(c.b)}`,daysBetween=(a,b)=>Math.round((pd(b)-pd(a))/864e5)+1;
+const _range0=range;range=function(p,s){if(p==='check'){const c=curCheck();if(c)return{a:c.a,b:c.b,label:`${ckLabel(c)} · ${ckRange(c)}`};p='month'}return _range0(p,s)};
+const _shift0=shift;shift=function(p,s,dir){if(p==='check'){const l=[...visCK()].sort((x,y)=>x.no-y.no),i=l.findIndex(c=>c.id===st.ck),n=l[i+dir];if(n)st.ck=n.id;return s}return _shift0(p,s,dir)};
+const _vRep0=vRep;
+vRep=function(){
+  if(st.rp==='check'&&!curCheck()){const h=_vRep0();return h.slice(0,h.indexOf('</div>')+6)+vChecks()}
+  let h=_vRep0();
+  if(st.rp==='check'){const c=curCheck(),i=h.indexOf('</div>')+6;
+    h=h.slice(0,i)+`<div class="ckbar"><button onclick="st.ck=null;R()">${T('ckAll')}</button><span>${T('ckDays',daysBetween(c.a,c.b))}${c.note?' · '+esc(c.note):''}</span>${canEditCk(c)?`<button onclick="openCk('${c.id}')">${T('ckEdit')}</button>`:'<span></span>'}</div>`+h.slice(i)}
+  return h};
+function vChecks(){const l=[...visCK()].sort((a,b)=>b.no-a.no);
+  let h=`<div class="sec" style="margin-top:4px">🧾 ${T('checksT')}</div>`;
+  if(canEditCk())h+=`<button class="btn pri" style="margin-bottom:12px" onclick="openCk()">${T('newCheck')}</button>`;
+  if(!l.length)return h+`<div class="empty">${T(st.role==='staff'&&!W(st.me).ckEdit?'ckEmptyS':'ckEmpty')}</div>`;
+  return h+l.map(c=>{const x=sum(inRange(c.a,c.b));
+    return`<button class="ckcard" onclick="st.ck='${c.id}';R();scrollTo(0,0)"><div class="ckh"><b>${ckLabel(c)}${c.wid&&st.role!=='staff'?` <small style="font-size:13px;color:var(--mut);font-weight:600">· ${esc(W(c.wid).name)}</small>`:''}</b><span>${ckRange(c)} · ${T('ckDays',daysBetween(c.a,c.b))}</span></div>${c.note?`<div class="ckn">${esc(c.note)}</div>`:''}
+    <div class="ckv">${st.role==='staff'?`<div><small>${T('earn')}</small><b>${money(x.pay)}</b></div><div><small>${T('tips')}</small><b>${money(x.tip)}</b></div><div><small>${T('daysCol')}</small><b>${x.days}</b></div>`
+      :`<div><small>${T('total')}</small><b>${money(x.total)}</b></div><div><small>${T('totalStaff')}</small><b>${money(x.pay)}</b></div><div><small>${T('shopKeeps')}</small><b style="color:var(--acc)">${money(x.total-x.pay)}</b></div>`}</div><span class="cka">›</span></button>`}).join('')}
+let CF=null;
+function openCk(id){if(!canEditCk(id?CK().find(x=>x.id===id):null))return;const c=id?CK().find(x=>x.id===id):null,last=[...CK()].sort((a,b)=>b.no-a.no)[0],td=pd(today());
+  const a=c?c.a:(last?addD(last.b,1):ymd(new Date(td.getFullYear(),td.getMonth(),1)));
+  CF=c?{...c}:{id:null,no:(last?last.no:0)+1,a,b:addD(a,13),note:''};drawCk()}
+function ckSync(){CF.no=$('#cN').value;CF.a=$('#cA').value||CF.a;CF.b=$('#cB').value||CF.b;CF.note=$('#cT').value}
+function ckPrev(){const a=$('#cA').value,b=$('#cB').value,el=$('#cP');if(!el)return;if(!a||!b||b<a){el.textContent='';return}
+  el.innerHTML=T('ckPrev',T('ckDays',daysBetween(a,b)),'<b>'+money(sum(inRange(a,b)).total)+'</b>')}
+function ckEnd(n){const a=$('#cA').value;if(!a)return;if(n==='m'){const d=pd(a);$('#cB').value=ymd(new Date(d.getFullYear(),d.getMonth()+1,0))}else $('#cB').value=addD(a,n);ckPrev()}
+function drawCk(){openS(head(CF.id?ckLabel(CF):T('newCheckT'))+`
+  <div class="lab">${T('ckNo')}</div><input class="field" id="cN" inputmode="numeric" value="${esc(CF.no)}" style="font-size:22px!important;font-weight:700">
+  <div class="row2"><div><div class="lab">${T('ckStart')}</div><input class="field" type="date" id="cA" value="${CF.a}" onchange="ckPrev()"></div><div><div class="lab">${T('ckEnd')}</div><input class="field" type="date" id="cB" value="${CF.b}" onchange="ckPrev()"></div></div>
+  <div class="quick"><button style="color:var(--acc)" onclick="ckEnd(6)">${T('ck1w')}</button><button style="color:var(--acc)" onclick="ckEnd(13)">${T('ck2w')}</button><button style="color:var(--acc)" onclick="ckEnd('m')">${T('ckMonthEnd')}</button></div>
+  <div id="cP" style="margin-top:12px;background:var(--card);border-radius:14px;padding:12px 14px;font-size:15px"></div>
+  <div class="lab">${T('ckNote')}</div><input class="field" id="cT" value="${esc(CF.note)}">
+  <div id="cErr" class="err-t"></div>
+  <div style="margin-top:18px"><button class="btn pri" onclick="saveCk()">${T('ckSave')}</button>
+  ${CF.id?`<button class="btn del" onclick="ask(T('ckDelQ'),T('del'),()=>{S.checks=CK().filter(x=>x.id!=='${CF.id}');save();st.ck=null;closeS();R();toast(T('deleted'))})">${T('ckDel')}</button>`:''}</div>`);ckPrev()}
+function saveCk(){ckSync();const no=parseInt(CF.no,10);
+  if(!(no>0)){$('#cErr').textContent=T('ckNo');return}
+  if(!CF.a||!CF.b||CF.b<CF.a){$('#cErr').textContent=T('ckBad');return}
+  if(CK().some(c=>c.no===no&&c.id!==CF.id)){$('#cErr').textContent=T('ckNoBad');return}
+  const c={id:CF.id||uid(),no,a:CF.a,b:CF.b,note:CF.note.trim()};if(CF.wid)c.wid=CF.wid;else if(!CF.id&&st.role==='staff')c.wid=st.me;
+  if(CF.id)S.checks=CK().map(x=>x.id===CF.id?c:x);else CK().push(c);
+  save();closeS();st.rp='check';st.ck=c.id;go('rep');toast(T('saved'))}
+HELP.vi.splice(8,0,['🧾 Check (kỳ lương)','Tab <b>Báo cáo</b> → bấm <b>Check</b> → <b>＋ Tạo check mới</b>. Chọn <b>ngày đầu</b> và <b>ngày cuối</b> (có nút nhanh 1 tuần, 2 tuần, đến hết tháng) → <b>Lưu check</b>. App đặt số tự động: Check #1, #2… Bấm vào một check để xem tổng thu, tiền bo, tiền trả từng thợ (sau hoa hồng), tiệm giữ lại, số ngày làm; xuất PDF hay Excel cho đúng khoảng ngày đó. Thợ đăng nhập sẽ thấy tiền nhận của mình trong từng check.']);
+HELP.en.splice(8,0,['🧾 Pay checks','<b>Reports</b> tab → tap <b>Check</b> → <b>＋ New check</b>. Pick a <b>start</b> and <b>end date</b> (quick buttons: 1 week, 2 weeks, to month end) → <b>Save check</b>. Numbers are automatic: Check #1, #2… Tap a check to see revenue, tips, each staff member’s pay after commission, what the salon keeps and days worked; export PDF or Excel for exactly that range. Staff who log in see their own earnings for each check.']);
+
+
+// ================= Per-staff permission: create / edit checks =================
+Object.assign(D,{
+  ckPermT:['Cho tạo / sửa check','Allow creating / editing checks'],
+  ckPermD:['Thợ này được tạo check riêng của mình và sửa, xoá check đó.','This staff member can create their own checks and edit or delete them.'],
+  ckPermTag:['tạo check','makes checks'],
+});
+const visCK=()=>CK().filter(c=>st.role!=='staff'||!c.wid||c.wid===st.me);
+const canEditCk=c=>st.role!=='staff'||(!!W(st.me).ckEdit&&(!c||c.wid===st.me));
+HELP.vi[8][1]+=' Chủ có thể cho thợ tự tạo check: bấm tên thợ → bật <b>Cho tạo / sửa check</b>. Check thợ tạo chỉ thợ đó và chủ thấy.';
+HELP.en[8][1]+=' The owner can let a staff member make checks: tap their name → turn on <b>Allow creating / editing checks</b>. Checks a staff member makes are seen only by them and the owner.';
 
 R();showLock();
 </script>
